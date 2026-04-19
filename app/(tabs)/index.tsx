@@ -1,14 +1,28 @@
-import React from 'react'
-import { Text, View } from 'react-native'
+import { useAppTheme } from "@/src/theme/useTheme";
+import { Pressable, Text, View } from "react-native";
 
-const index = () => {
+
+export default function HomeScreen() {
+  const { colors, mode, toggleTheme } = useAppTheme();
+
   return (
-    <View className="flex-1 items-center justify-center bg-white">
-      <Text className="text-xl font-bold text-blue-500">
-        Welcome to Nativewind!
+    <View style={{ flex: 1, backgroundColor: colors.background, padding: 24 }}>
+      <Text style={{ color: colors.text, fontSize: 24 }}>Recallly</Text>
+      <Text style={{ color: colors.mutedText, marginTop: 8 }}>
+        Current theme: {mode}
       </Text>
-    </View>
-  )
-}
 
-export default index
+      <Pressable
+        onPress={toggleTheme}
+        style={{
+          marginTop: 20,
+          backgroundColor: colors.primary,
+          padding: 14,
+          borderRadius: 12,
+        }}
+      >
+        <Text style={{ color: colors.primaryForeground }}>Toggle Theme</Text>
+      </Pressable>
+    </View>
+  );
+}

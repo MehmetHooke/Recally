@@ -1,4 +1,5 @@
 import "@/global.css";
+import { ThemeProvider } from "@/src/theme/ThemeProvider";
 import { Stack } from "expo-router";
 import { ActivityIndicator, View } from "react-native";
 import { AuthProvider, useAuth } from "../src/context/AuthContext";
@@ -6,7 +7,7 @@ import { AuthProvider, useAuth } from "../src/context/AuthContext";
 function RootLayoutInner() {
   const { user, loading } = useAuth();
 
-  
+
 
   if (loading) {
     return (
@@ -29,8 +30,14 @@ function RootLayoutInner() {
 
 export default function RootLayout() {
   return (
-    <AuthProvider>
-      <RootLayoutInner />
-    </AuthProvider>
+    <ThemeProvider>
+
+      <AuthProvider>
+      
+        <RootLayoutInner />
+      
+      </AuthProvider>
+    
+    </ThemeProvider>
   );
 }
