@@ -6,7 +6,7 @@ export default function HomeScreen() {
   const { colors, mode, toggleTheme } = useAppTheme();
 
   return (
-    <View style={{ flex: 1, backgroundColor: colors.background, padding: 24 }}>
+    <View style={{ flex: 1, backgroundColor: colors.background, padding: 24 }} className="justify-center">
       <Text style={{ color: colors.text, fontSize: 24 }}>Recallly</Text>
       <Text style={{ color: colors.mutedText, marginTop: 8 }}>
         Current theme: {mode}

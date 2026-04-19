@@ -20,9 +20,9 @@ function RootLayoutInner() {
   return (
     <Stack screenOptions={{ headerShown: false }}>
       {!user ? (
-        <Stack.Screen name="(auth)" />
+        <Stack.Screen options={{headerShown:false}} name="(auth)" />
       ) : (
-        <Stack.Screen name="(tabs)" />
+        <Stack.Screen options={{headerShown:false}} name="(tabs)" />
       )}
     </Stack>
   );
@@ -34,7 +34,7 @@ export default function RootLayout() {
 
       <AuthProvider>
       
-        <RootLayoutInner />
+        <RootLayoutInner  />
       
       </AuthProvider>
     
