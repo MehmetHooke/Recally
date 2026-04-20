@@ -45,3 +45,6 @@ app-example
 
 
 .env
+
+
+firebase-debug.log
