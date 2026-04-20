@@ -1,0 +1,185 @@
+[debug] [2026-04-20T13:13:57.115Z] ----------------------------------------------------------------------
+[debug] [2026-04-20T13:13:57.116Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\PC1\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js emulators:start --only functions
+[debug] [2026-04-20T13:13:57.116Z] CLI Version:   15.15.0
+[debug] [2026-04-20T13:13:57.117Z] Platform:      win32
+[debug] [2026-04-20T13:13:57.117Z] Node Version:  v24.11.0
+[debug] [2026-04-20T13:13:57.117Z] Time:          Mon Apr 20 2026 16:13:57 GMT+0300 (GMT+03:00)
+[debug] [2026-04-20T13:13:57.117Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2026-04-20T13:13:58.125Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-04-20T13:13:58.125Z] > authorizing via signed-in user (hoke628@gmail.com)
+[info] i  emulators: Starting emulators: functions {"metadata":{"emulator":{"name":"hub"},"message":"Starting emulators: functions"}}
+[debug] [2026-04-20T13:13:58.132Z] [logging] Logging Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
+[debug] [2026-04-20T13:13:58.132Z] assigned listening specs for emulators {"user":{"hub":[{"address":"127.0.0.1","family":"IPv4","port":4400},{"address":"::1","family":"IPv6","port":4400}],"ui":[{"address":"127.0.0.1","family":"IPv4","port":4000},{"address":"::1","family":"IPv6","port":4000}],"logging":[{"address":"127.0.0.1","family":"IPv4","port":4500}]},"metadata":{"message":"assigned listening specs for emulators"}}
+[debug] [2026-04-20T13:13:58.135Z] Write emulator hub locator at C:\Users\PC1\AppData\Local\Temp\hub-recallly-ca73d.json
+[debug] [2026-04-20T13:13:58.143Z] [functions] Functions Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
+[debug] [2026-04-20T13:13:58.143Z] [eventarc] Eventarc Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
+[debug] [2026-04-20T13:13:58.143Z] [tasks] Cloud Tasks Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
+[debug] [2026-04-20T13:13:58.143Z] late-assigned ports for functions and eventarc emulators {"user":{"hub":[{"address":"127.0.0.1","family":"IPv4","port":4400},{"address":"::1","family":"IPv6","port":4400}],"ui":[{"address":"127.0.0.1","family":"IPv4","port":4000},{"address":"::1","family":"IPv6","port":4000}],"logging":[{"address":"127.0.0.1","family":"IPv4","port":4500}],"functions":[{"address":"127.0.0.1","family":"IPv4","port":5001}],"eventarc":[{"address":"127.0.0.1","family":"IPv4","port":9299}],"tasks":[{"address":"127.0.0.1","family":"IPv4","port":9499}]},"metadata":{"message":"late-assigned ports for functions and eventarc emulators"}}
+[warn] !  functions: The following emulators are not running, calls to these services from the Functions emulator will affect production: apphosting, auth, firestore, database, hosting, pubsub, storage, dataconnect {"metadata":{"emulator":{"name":"functions"},"message":"The following emulators are not running, calls to these services from the Functions emulator will affect production: \u001b[1mapphosting, auth, firestore, database, hosting, pubsub, storage, dataconnect\u001b[22m"}}
+[debug] [2026-04-20T13:13:58.150Z] defaultcredentials: writing to file C:\Users\PC1\AppData\Roaming\firebase\hoke628_gmail_com_application_default_credentials.json
+[debug] [2026-04-20T13:13:58.151Z] Setting GAC to C:\Users\PC1\AppData\Roaming\firebase\hoke628_gmail_com_application_default_credentials.json {"metadata":{"emulator":{"name":"functions"},"message":"Setting GAC to C:\\Users\\PC1\\AppData\\Roaming\\firebase\\hoke628_gmail_com_application_default_credentials.json"}}
+[debug] [2026-04-20T13:13:58.152Z] Checked if tokens are valid: true, expires at: 1776693436647
+[debug] [2026-04-20T13:13:58.152Z] Checked if tokens are valid: true, expires at: 1776693436647
+[debug] [2026-04-20T13:13:58.152Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/recallly-ca73d/adminSdkConfig [none]
+[debug] [2026-04-20T13:13:58.712Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/recallly-ca73d/adminSdkConfig 200
+[debug] [2026-04-20T13:13:58.713Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/recallly-ca73d/adminSdkConfig {"projectId":"recallly-ca73d","storageBucket":"recallly-ca73d.firebasestorage.app"}
+[info] i  functions: Watching "C:\Users\PC1\Desktop\Codebase\Recallly\functions" for Cloud Functions... {"metadata":{"emulator":{"name":"functions"},"message":"Watching \"C:\\Users\\PC1\\Desktop\\Codebase\\Recallly\\functions\" for Cloud Functions..."}}
+[debug] [2026-04-20T13:13:58.730Z] Validating nodejs source
+[debug] [2026-04-20T13:13:59.374Z] > [functions] package.json contents: {
+  "name": "functions",
+  "scripts": {
+    "lint": "eslint --ext .js,.ts .",
+    "build": "tsc",
+    "build:watch": "tsc --watch",
+    "serve": "npm run build && firebase emulators:start --only functions",
+    "shell": "npm run build && firebase functions:shell",
+    "start": "npm run shell",
+    "deploy": "firebase deploy --only functions",
+    "logs": "firebase functions:log"
+  },
+  "engines": {
+    "node": "20"
+  },
+  "main": "lib/index.js",
+  "dependencies": {
+    "firebase-admin": "^13.6.0",
+    "firebase-functions": "^7.0.0"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.12.0",
+    "@typescript-eslint/parser": "^5.12.0",
+    "eslint": "^8.9.0",
+    "eslint-config-google": "^0.14.0",
+    "eslint-plugin-import": "^2.25.4",
+    "firebase-functions-test": "^3.4.1",
+    "typescript": "^6.0.0"
+  },
+  "private": true
+}
+[debug] [2026-04-20T13:13:59.374Z] Building nodejs source
+[debug] [2026-04-20T13:13:59.374Z] Failed to find version of module node: reached end of search path C:\Users\PC1\Desktop\Codebase\Recallly\functions\node_modules
+[warn] !  functions: Your requested "node" version "20" doesn't match your global version "24". Using node@24 from host. 
+[debug] [2026-04-20T13:13:59.376Z] Could not find functions.yaml. Must use http discovery
+[debug] [2026-04-20T13:13:59.381Z] Found firebase-functions binary at 'C:\Users\PC1\Desktop\Codebase\Recallly\functions\node_modules\.bin\firebase-functions'
+[info] Serving at port 8817
+
+[debug] [2026-04-20T13:13:59.889Z] Got response from /__/functions.yaml {"endpoints":{"testFunction":{"availableMemoryMb":null,"timeoutSeconds":null,"minInstances":null,"maxInstances":null,"ingressSettings":null,"concurrency":null,"serviceAccountEmail":null,"vpc":null,"platform":"gcfv2","region":["us-central1"],"labels":{},"callableTrigger":{},"entryPoint":"testFunction"}},"specVersion":"v1alpha1","requiredAPIs":[],"extensions":{}}
+[info] +  functions: Loaded functions definitions from source: testFunction. {"metadata":{"emulator":{"name":"functions"},"message":"Loaded functions definitions from source: testFunction."}}
+[info] +  functions[us-central1-testFunction]: http function initialized (http://127.0.0.1:5001/recallly-ca73d/us-central1/testFunction). {"metadata":{"emulator":{"name":"functions"},"message":"\u001b[1mhttp\u001b[22m function initialized (http://127.0.0.1:5001/recallly-ca73d/us-central1/testFunction)."}}
+[debug] [2026-04-20T13:14:03.920Z] Could not find VSCode notification endpoint: FetchError: request to http://localhost:40001/vscode/notify failed, reason: . If you are not running the Firebase SQL Connect VSCode extension, this is expected and not an issue.
+[info] 
+┌─────────────────────────────────────────────────────────────┐
+│ ✔  All emulators ready! It is now safe to connect your app. │
+│ i  View Emulator UI at http://127.0.0.1:4000/               │
+└─────────────────────────────────────────────────────────────┘
+
+┌───────────┬────────────────┬─────────────────────────────────┐
+│ Emulator  │ Host:Port      │ View in Emulator UI             │
+├───────────┼────────────────┼─────────────────────────────────┤
+│ Functions │ 127.0.0.1:5001 │ http://127.0.0.1:4000/functions │
+└───────────┴────────────────┴─────────────────────────────────┘
+  Emulator Hub host: 127.0.0.1 port: 4400
+  Other reserved ports: 4500
+
+Issues? Report them at https://github.com/firebase/firebase-tools/issues and attach the *-debug.log files.
+ 
+[debug] [2026-04-20T13:20:47.666Z] Received signal SIGHUP 1
+[info]  
+[info] i  emulators: Received SIGHUP for the first time. Starting a clean shutdown. 
+[info] i  emulators: Please wait for a clean shutdown or send the SIGHUP signal again to stop right now. 
+[info] i  emulators: Shutting down emulators. {"metadata":{"emulator":{"name":"hub"},"message":"Shutting down emulators."}}
+[info] i  ui: Stopping Emulator UI {"metadata":{"emulator":{"name":"ui"},"message":"Stopping Emulator UI"}}
+[info] i  functions: Stopping Functions Emulator {"metadata":{"emulator":{"name":"functions"},"message":"Stopping Functions Emulator"}}
+[info] i  eventarc: Stopping Eventarc Emulator {"metadata":{"emulator":{"name":"eventarc"},"message":"Stopping Eventarc Emulator"}}
+[info] i  tasks: Stopping Cloud Tasks Emulator {"metadata":{"emulator":{"name":"tasks"},"message":"Stopping Cloud Tasks Emulator"}}
+[info] i  hub: Stopping emulator hub {"metadata":{"emulator":{"name":"hub"},"message":"Stopping emulator hub"}}
+[info] i  logging: Stopping Logging Emulator {"metadata":{"emulator":{"name":"logging"},"message":"Stopping Logging Emulator"}}
+[debug] [2026-04-20T13:20:47.673Z] Could not find VSCode notification endpoint: FetchError: request to http://localhost:40001/vscode/notify failed, reason: . If you are not running the Firebase SQL Connect VSCode extension, this is expected and not an issue.
+[debug] [2026-04-20T13:31:14.843Z] ----------------------------------------------------------------------
+[debug] [2026-04-20T13:31:14.844Z] Command:       C:\nvm4w\nodejs\node.exe C:\Users\PC1\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js emulators:start --only functions
+[debug] [2026-04-20T13:31:14.845Z] CLI Version:   15.15.0
+[debug] [2026-04-20T13:31:14.845Z] Platform:      win32
+[debug] [2026-04-20T13:31:14.845Z] Node Version:  v20.20.2
+[debug] [2026-04-20T13:31:14.845Z] Time:          Mon Apr 20 2026 16:31:14 GMT+0300 (Türkiye Standart Saati)
+[debug] [2026-04-20T13:31:14.845Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2026-04-20T13:31:15.794Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-04-20T13:31:15.795Z] > authorizing via signed-in user (hoke628@gmail.com)
+[info] i  emulators: Starting emulators: functions {"metadata":{"emulator":{"name":"hub"},"message":"Starting emulators: functions"}}
+[debug] [2026-04-20T13:31:15.802Z] [logging] Logging Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
+[debug] [2026-04-20T13:31:15.802Z] assigned listening specs for emulators {"user":{"hub":[{"address":"127.0.0.1","family":"IPv4","port":4400},{"address":"::1","family":"IPv6","port":4400}],"ui":[{"address":"127.0.0.1","family":"IPv4","port":4000},{"address":"::1","family":"IPv6","port":4000}],"logging":[{"address":"127.0.0.1","family":"IPv4","port":4500}]},"metadata":{"message":"assigned listening specs for emulators"}}
+[debug] [2026-04-20T13:31:15.806Z] Found emulator hub locator: {"version":"15.15.0","origins":["http://127.0.0.1:4400","http://[::1]:4400"],"pid":3056}
+[debug] [2026-04-20T13:31:15.806Z] Write emulator hub locator at C:\Users\PC1\AppData\Local\Temp\hub-recallly-ca73d.json
+[debug] [2026-04-20T13:31:15.814Z] [functions] Functions Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
+[debug] [2026-04-20T13:31:15.815Z] [eventarc] Eventarc Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
+[debug] [2026-04-20T13:31:15.815Z] [tasks] Cloud Tasks Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
+[debug] [2026-04-20T13:31:15.815Z] late-assigned ports for functions and eventarc emulators {"user":{"hub":[{"address":"127.0.0.1","family":"IPv4","port":4400},{"address":"::1","family":"IPv6","port":4400}],"ui":[{"address":"127.0.0.1","family":"IPv4","port":4000},{"address":"::1","family":"IPv6","port":4000}],"logging":[{"address":"127.0.0.1","family":"IPv4","port":4500}],"functions":[{"address":"127.0.0.1","family":"IPv4","port":5001}],"eventarc":[{"address":"127.0.0.1","family":"IPv4","port":9299}],"tasks":[{"address":"127.0.0.1","family":"IPv4","port":9499}]},"metadata":{"message":"late-assigned ports for functions and eventarc emulators"}}
+[warn] !  functions: The following emulators are not running, calls to these services from the Functions emulator will affect production: apphosting, auth, firestore, database, hosting, pubsub, storage, dataconnect {"metadata":{"emulator":{"name":"functions"},"message":"The following emulators are not running, calls to these services from the Functions emulator will affect production: \u001b[1mapphosting, auth, firestore, database, hosting, pubsub, storage, dataconnect\u001b[22m"}}
+[debug] [2026-04-20T13:31:15.824Z] defaultcredentials: writing to file C:\Users\PC1\AppData\Roaming\firebase\hoke628_gmail_com_application_default_credentials.json
+[debug] [2026-04-20T13:31:15.825Z] Setting GAC to C:\Users\PC1\AppData\Roaming\firebase\hoke628_gmail_com_application_default_credentials.json {"metadata":{"emulator":{"name":"functions"},"message":"Setting GAC to C:\\Users\\PC1\\AppData\\Roaming\\firebase\\hoke628_gmail_com_application_default_credentials.json"}}
+[debug] [2026-04-20T13:31:15.826Z] Checked if tokens are valid: true, expires at: 1776693436647
+[debug] [2026-04-20T13:31:15.826Z] Checked if tokens are valid: true, expires at: 1776693436647
+[debug] [2026-04-20T13:31:15.826Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/recallly-ca73d/adminSdkConfig [none]
+[debug] [2026-04-20T13:31:16.373Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/recallly-ca73d/adminSdkConfig 200
+[debug] [2026-04-20T13:31:16.373Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/recallly-ca73d/adminSdkConfig {"projectId":"recallly-ca73d","storageBucket":"recallly-ca73d.firebasestorage.app"}
+[info] i  functions: Watching "C:\Users\PC1\Desktop\Codebase\Recallly\functions" for Cloud Functions... {"metadata":{"emulator":{"name":"functions"},"message":"Watching \"C:\\Users\\PC1\\Desktop\\Codebase\\Recallly\\functions\" for Cloud Functions..."}}
+[debug] [2026-04-20T13:31:16.390Z] Validating nodejs source
+[debug] [2026-04-20T13:31:17.271Z] > [functions] package.json contents: {
+  "name": "functions",
+  "scripts": {
+    "lint": "eslint --ext .js,.ts .",
+    "build": "tsc",
+    "build:watch": "tsc --watch",
+    "serve": "npm run build && firebase emulators:start --only functions",
+    "shell": "npm run build && firebase functions:shell",
+    "start": "npm run shell",
+    "deploy": "firebase deploy --only functions",
+    "logs": "firebase functions:log"
+  },
+  "engines": {
+    "node": "20"
+  },
+  "main": "lib/index.js",
+  "dependencies": {
+    "firebase-admin": "^13.6.0",
+    "firebase-functions": "^7.0.0"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.12.0",
+    "@typescript-eslint/parser": "^5.12.0",
+    "eslint": "^8.9.0",
+    "eslint-config-google": "^0.14.0",
+    "eslint-plugin-import": "^2.25.4",
+    "firebase-functions-test": "^3.4.1",
+    "typescript": "^6.0.0"
+  },
+  "private": true
+}
+[debug] [2026-04-20T13:31:17.272Z] Building nodejs source
+[debug] [2026-04-20T13:31:17.272Z] Failed to find version of module node: reached end of search path C:\Users\PC1\Desktop\Codebase\Recallly\functions\node_modules
+[info] +  functions: Using node@20 from host. 
+[debug] [2026-04-20T13:31:17.273Z] Could not find functions.yaml. Must use http discovery
+[debug] [2026-04-20T13:31:17.280Z] Found firebase-functions binary at 'C:\Users\PC1\Desktop\Codebase\Recallly\functions\node_modules\.bin\firebase-functions'
+[info] Serving at port 8698
+
+[debug] [2026-04-20T13:31:17.741Z] Got response from /__/functions.yaml {"endpoints":{"testFunction":{"availableMemoryMb":null,"timeoutSeconds":null,"minInstances":null,"maxInstances":null,"ingressSettings":null,"concurrency":null,"serviceAccountEmail":null,"vpc":null,"platform":"gcfv2","region":["us-central1"],"labels":{},"callableTrigger":{},"entryPoint":"testFunction"}},"specVersion":"v1alpha1","requiredAPIs":[],"extensions":{}}
+[info] +  functions: Loaded functions definitions from source: testFunction. {"metadata":{"emulator":{"name":"functions"},"message":"Loaded functions definitions from source: testFunction."}}
+[info] +  functions[us-central1-testFunction]: http function initialized (http://127.0.0.1:5001/recallly-ca73d/us-central1/testFunction). {"metadata":{"emulator":{"name":"functions"},"message":"\u001b[1mhttp\u001b[22m function initialized (http://127.0.0.1:5001/recallly-ca73d/us-central1/testFunction)."}}
+[debug] [2026-04-20T13:31:21.777Z] Could not find VSCode notification endpoint: FetchError: request to http://localhost:40001/vscode/notify failed, reason: . If you are not running the Firebase SQL Connect VSCode extension, this is expected and not an issue.
+[info] 
+┌─────────────────────────────────────────────────────────────┐
+│ ✔  All emulators ready! It is now safe to connect your app. │
+│ i  View Emulator UI at http://127.0.0.1:4000/               │
+└─────────────────────────────────────────────────────────────┘
+
+┌───────────┬────────────────┬─────────────────────────────────┐
+│ Emulator  │ Host:Port      │ View in Emulator UI             │
+├───────────┼────────────────┼─────────────────────────────────┤
+│ Functions │ 127.0.0.1:5001 │ http://127.0.0.1:4000/functions │
+└───────────┴────────────────┴─────────────────────────────────┘
+  Emulator Hub host: 127.0.0.1 port: 4400
+  Other reserved ports: 4500
+
+Issues? Report them at https://github.com/firebase/firebase-tools/issues and attach the *-debug.log files.
+ 
