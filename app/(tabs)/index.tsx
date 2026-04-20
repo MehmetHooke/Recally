@@ -1,28 +1,21 @@
-import { useAppTheme } from "@/src/theme/useTheme";
-import { Pressable, Text, View } from "react-native";
+import { callTestFunction } from "@/src/services/functions";
+import { Button, Text, View } from "react-native";
 
 
 export default function HomeScreen() {
-  const { colors, mode, toggleTheme } = useAppTheme();
+  const handleTest = async () => {
+    try {
+      const data = await callTestFunction("merhaba recallly");
+      console.log("FUNCTION RESULT:", data);
+    } catch (error) {
+      console.error("FUNCTION ERROR:", error);
+    }
+  };
 
   return (
-    <View style={{ flex: 1, backgroundColor: colors.background, padding: 24 }} className="justify-center">
-      <Text style={{ color: colors.text, fontSize: 24 }}>Recallly</Text>
-      <Text style={{ color: colors.mutedText, marginTop: 8 }}>
-        Current theme: {mode}
-      </Text>
-
-      <Pressable
-        onPress={toggleTheme}
-        style={{
-          marginTop: 20,
-          backgroundColor: colors.primary,
-          padding: 14,
-          borderRadius: 12,
-        }}
-      >
-        <Text style={{ color: colors.primaryForeground }}>Toggle Theme</Text>
-      </Pressable>
+    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      <Text>Function Test</Text>
+      <Button title="Test Function" onPress={handleTest} />
     </View>
   );
 }

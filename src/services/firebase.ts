@@ -1,9 +1,8 @@
-// src/services/firebase.ts
 import { getApp, getApps, initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
+import { connectFunctionsEmulator, getFunctions } from "firebase/functions";
 import { getStorage } from "firebase/storage";
-// auth'ı birazdan persistence ile kuracağız
 
 const firebaseConfig = {
   apiKey: process.env.EXPO_PUBLIC_FIREBASE_API_KEY,
@@ -17,7 +16,14 @@ const firebaseConfig = {
 
 const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
 
+export const functions = getFunctions(app, "us-central1");
+
+if (__DEV__) {
+  connectFunctionsEmulator(functions, "10.0.2.2", 5001);
+}
+
 export const auth = getAuth(app);
 export const db = getFirestore(app);
 export const storage = getStorage(app);
+
 export default app;
