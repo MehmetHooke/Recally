@@ -1,23 +1,33 @@
 import { generateCards } from "@/src/services/functions";
+import { saveGeneratedSet } from "@/src/services/sets";
 import { Button, Text, View } from "react-native";
 
 export default function HomeScreen() {
   const handleGenerate = async () => {
     try {
-      const data = await generateCards(
-        "React Native ile Firebase Functions kullanımı",
-        "React Native Notes"
-      );
-      console.log("GENERATE RESULT:", JSON.stringify(data, null, 2));
+      const sourceText = "React Native ile Firebase Functions kullanımı";
+      const title = "React Native Notes";
+
+      const data = await generateCards(sourceText, title);
+
+      const setId = await saveGeneratedSet({
+        title: data.title,
+        sourceText,
+        summary: data.summary,
+        keyConcepts: data.keyConcepts,
+        cards: data.cards,
+      });
+
+      console.log("SET SAVED:", setId);
     } catch (error) {
-      console.error("GENERATE ERROR:", error);
+      console.error("GENERATE+SAVE ERROR:", error);
     }
   };
 
   return (
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Text>Generate Cards Test</Text>
-      <Button title="Generate Cards" onPress={handleGenerate} />
+      <Text>Generate + Save Test</Text>
+      <Button title="Generate and Save" onPress={handleGenerate} />
     </View>
   );
 }
