@@ -1,18 +1,26 @@
 import { httpsCallable } from "firebase/functions";
 import { functions } from "./firebase";
 
-type TestFunctionResponse = {
-  ok: boolean;
-  receivedText: string;
-  message: string;
+export type GeneratedCard = {
+  question: string;
+  answer: string;
+  explanation: string;
 };
 
-export async function callTestFunction(text: string) {
-  const fn = httpsCallable<{ text: string }, TestFunctionResponse>(
-    functions,
-    "testFunction",
-  );
+export type GenerateCardsResponse = {
+  ok: boolean;
+  title: string;
+  summary: string;
+  keyConcepts: string[];
+  cards: GeneratedCard[];
+};
 
-  const result = await fn({ text });
+export async function generateCards(text: string, title: string) {
+  const fn = httpsCallable<
+    { text: string; title: string },
+    GenerateCardsResponse
+  >(functions, "generateCards");
+
+  const result = await fn({ text, title });
   return result.data;
 }
