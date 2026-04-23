@@ -1,7 +1,8 @@
+import { generateCards } from "@/src/services/functions";
+import { saveGeneratedSet } from "@/src/services/sets";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import { Alert, Button, Text, TextInput, View } from "react-native";
-import { createSet } from "../../src/services/setService";
 
 export default function AddContentScreen() {
   const router = useRouter();
@@ -24,9 +25,17 @@ export default function AddContentScreen() {
     try {
       setLoading(true);
 
-      const setId = await createSet(title, sourceText);
+      const data = await generateCards(sourceText, title);
 
-      console.log("Yeni set oluşturuldu:", setId);
+      const setId = await saveGeneratedSet({
+        title: data.title,
+        sourceText,
+        summary: data.summary,
+        keyConcepts: data.keyConcepts,
+        cards: data.cards,
+      });
+
+      console.log("Yeni gerçek set oluşturuldu:", setId);
 
       Alert.alert("Başarılı", "Set oluşturuldu.");
 
