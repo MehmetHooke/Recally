@@ -1,72 +1,90 @@
-import { getDueCards } from "@/src/services/cards";
-import { generateCards } from "@/src/services/functions";
-import { saveGeneratedSet } from "@/src/services/sets";
-import { router } from "expo-router";
-import { useState } from "react";
-import { Button, Text, View } from "react-native";
+import ProgressStatsCard from "@/src/components/home/ProgressStatsCard";
+import RecentSetsSection from "@/src/components/home/RecentSetsSection";
+import StreakCard from "@/src/components/home/StreakCard";
+import TodayReviewCard from "@/src/components/home/TodayReviewCard";
+import {
+  getHomeDashboardData,
+  type HomeDashboardData,
+} from "@/src/services/homeService";
+import { router, useFocusEffect } from "expo-router";
+import { useCallback, useState } from "react";
+import { ActivityIndicator, ScrollView, Text, View } from "react-native";
 
 export default function HomeScreen() {
-  const [lastSetId, setLastSetId] = useState<string | null>(null);
+  const [data, setData] = useState<HomeDashboardData | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  const handleGenerate = async () => {
+  const loadDashboard = async () => {
     try {
-      const sourceText = "React Native ile Firebase Functions kullanımı";
-      const title = "React Native Notes";
-
-      const data = await generateCards(sourceText, title);
-
-      const setId = await saveGeneratedSet({
-        title: data.title,
-        sourceText,
-        summary: data.summary,
-        keyConcepts: data.keyConcepts,
-        cards: data.cards,
-      });
-
-      setLastSetId(setId);
-
-      console.log("SET SAVED:", setId);
-
-      // İstersen bunu aç:
-      // router.push(`/set/${setId}/review`);
+      setLoading(true);
+      const result = await getHomeDashboardData();
+      setData(result);
     } catch (error) {
-      console.error("GENERATE+SAVE ERROR:", error);
+      console.error("HOME DASHBOARD ERROR:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleGetDueCards = async () => {
-    try {
-      if (!lastSetId) {
-        console.log("Önce set oluşturman lazım");
-        return;
-      }
+  useFocusEffect(
+    useCallback(() => {
+      loadDashboard();
+    }, [])
+  );
 
-      console.log("TEST SET ID:", lastSetId);
+  const handleStartReview = () => {
+    if (!data || data.recentSets.length === 0) return;
 
-      const cards = await getDueCards(lastSetId);
-      console.log("DUE CARDS:", cards);
-    } catch (error) {
-      console.error("GET DUE CARDS ERROR:", error);
-    }
+    const firstSetWithReview = data.recentSets[0];
+    router.push(`/set/${firstSetWithReview.id}/review`);
   };
 
-  const handleGoReview = () => {
-    if (!lastSetId) {
-      console.log("Önce set oluşturman lazım");
-      return;
-    }
-
-    router.push(`/set/${lastSetId}/review`);
+  const handleOpenSet = (setId: string) => {
+    router.push(`/set/${setId}/review`);
   };
+
+  if (loading) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator />
+      </View>
+    );
+  }
+
+  if (!data) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center", padding: 24 }}>
+        <Text>Dashboard could not be loaded.</Text>
+      </View>
+    );
+  }
 
   return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center", gap: 12 }}>
-      <Text>Generate + Save Test</Text>
-      <Text>Last Set ID: {lastSetId ?? "-"}</Text>
+    <ScrollView
+      contentContainerStyle={{
+        padding: 20,
+        gap: 16,
+      }}
+    >
+      <Text style={{ fontSize: 28, fontWeight: "700" }}>Home</Text>
 
-      <Button title="Generate and Save" onPress={handleGenerate} />
-      <Button title="Due Card Test" onPress={handleGetDueCards} />
-      <Button title="Go Review" onPress={handleGoReview} />
-    </View>
+      <TodayReviewCard
+        dueCount={data.dueTodayCount}
+        onStartReview={handleStartReview}
+      />
+
+      <RecentSetsSection
+        sets={data.recentSets}
+        onPressSet={handleOpenSet}
+      />
+
+      <ProgressStatsCard
+        totalSets={data.totalSets}
+        totalCards={data.totalCards}
+        dueTodayCount={data.dueTodayCount}
+      />
+
+      <StreakCard streakCount={data.streakCount} />
+    </ScrollView>
   );
 }
