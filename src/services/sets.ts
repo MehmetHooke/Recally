@@ -1,9 +1,10 @@
 import {
-    addDoc,
-    collection,
-    doc,
-    serverTimestamp,
-    writeBatch,
+  addDoc,
+  collection,
+  doc,
+  serverTimestamp,
+  Timestamp,
+  writeBatch,
 } from "firebase/firestore";
 import { auth, db } from "./firebase";
 
@@ -34,6 +35,8 @@ export async function saveGeneratedSet({
     throw new Error("Kullanıcı bulunamadı");
   }
 
+  const now = Timestamp.now();
+
   const setsRef = collection(db, "users", user.uid, "sets");
 
   const setDocRef = await addDoc(setsRef, {
@@ -43,6 +46,8 @@ export async function saveGeneratedSet({
     summary,
     keyConcepts,
     totalCards: cards.length,
+    masteredCount: 0,
+    dueCount: cards.length,
     createdAt: serverTimestamp(),
     updatedAt: serverTimestamp(),
   });
@@ -58,14 +63,19 @@ export async function saveGeneratedSet({
       question: card.question,
       answer: card.answer,
       explanation: card.explanation,
+
       status: "new",
+
       intervalDays: 0,
       reviewCount: 0,
       knewCount: 0,
       forgotCount: 0,
+
       lastReviewedAt: null,
-      nextReviewAt: null,
+      nextReviewAt: now,
+
       createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
     });
   });
 
