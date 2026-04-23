@@ -28,7 +28,6 @@ export default function HomeScreen() {
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
       <Text>Generate + Save Test</Text>
       <Button title="Generate and Save" onPress={handleGenerate} />
-      <Text>Bu alandan devam edilecek, bir sonraki adım, backend kısmını tamamlayıp ui a dönmek</Text>
     </View>
   );
 }
