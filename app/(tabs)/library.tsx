@@ -1,4 +1,4 @@
-import { getSets } from "@/src/services/setService";
+import { getSets, SetItem } from "@/src/services/setService";
 import { useFocusEffect, useRouter } from "expo-router";
 import { useCallback, useState } from "react";
 import {
@@ -9,14 +9,6 @@ import {
   View,
 } from "react-native";
 
-type SetItem = {
-  id: string;
-  title: string;
-  sourceType: "text";
-  sourceText: string;
-  totalCards?: number;
-  dueCount?: number;
-};
 
 export default function LibraryScreen() {
   const router = useRouter();
@@ -42,8 +34,8 @@ export default function LibraryScreen() {
     }, [])
   );
 
-  const handleOpenReview = (setId: string) => {
-    router.push(`/set/${setId}/review`);
+  const handleOpenSet = (setId: string) => {
+    router.push(`/set/${setId}`);
   };
 
   if (loading) {
@@ -70,7 +62,7 @@ export default function LibraryScreen() {
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
             <TouchableOpacity
-              onPress={() => handleOpenReview(item.id)}
+              onPress={() => handleOpenSet(item.id)}
               activeOpacity={0.8}
               style={{
                 borderWidth: 1,
@@ -94,18 +86,14 @@ export default function LibraryScreen() {
                 </Text>
               )}
 
-              {typeof item.dueCount === "number" && (
-                <Text style={{ marginTop: 4, color: "#666" }}>
-                  Due: {item.dueCount}
-                </Text>
-              )}
+
 
               <Text numberOfLines={3} style={{ marginTop: 8 }}>
                 {item.sourceText}
               </Text>
 
               <Text style={{ marginTop: 12, fontWeight: "600" }}>
-                Tap to review →
+                Tap to open set →
               </Text>
             </TouchableOpacity>
           )}

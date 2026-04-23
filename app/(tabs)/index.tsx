@@ -40,7 +40,7 @@ export default function HomeScreen() {
   };
 
   const handleOpenSet = (setId: string) => {
-    router.push(`/set/${setId}/review`);
+    router.push(`/set/${setId}`);
   };
 
   if (loading) {
