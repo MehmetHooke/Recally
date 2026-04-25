@@ -58,8 +58,28 @@ export async function generateCardsYoutube(youtubeUrl: string) {
   const fn = httpsCallable<
     { youtubeUrl: string },
     GenerateCardsYoutubeResponse
-  >(functions, "generateCardsYoutube");
+  >(functions, "generateCardsYoutube", {
+    timeout: 300000, // 300 saniye = 5 dakika
+  });
 
   const result = await fn({ youtubeUrl });
   return result.data;
+}
+
+function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
+  return new Promise((resolve, reject) => {
+    const timer = setTimeout(() => {
+      reject(new Error("Request timeout"));
+    }, ms);
+
+    promise
+      .then((res) => {
+        clearTimeout(timer);
+        resolve(res);
+      })
+      .catch((err) => {
+        clearTimeout(timer);
+        reject(err);
+      });
+  });
 }

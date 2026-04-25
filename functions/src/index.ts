@@ -6,8 +6,8 @@ dotenv.config();
 
 setGlobalOptions({
   region: "us-central1",
-  timeoutSeconds: 120,
-  memory: "512MiB",
+  timeoutSeconds: 300,
+  memory: "1GiB",
 });
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
