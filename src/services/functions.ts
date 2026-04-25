@@ -1,10 +1,29 @@
 import { httpsCallable } from "firebase/functions";
 import { functions } from "./firebase";
 
-export type GeneratedCard = {
+export type GeneratedSummary = {
+  overview: string;
+  sections: {
+    title: string;
+    description: string;
+    bullets: string[];
+  }[];
+  keyTakeaways: string[];
+};
+
+export type GeneratedTextCard = {
   question: string;
   answer: string;
   explanation: string;
+};
+
+export type GeneratedMcqCard = {
+  question: string;
+  options: string[];
+  correctIndex: number;
+  answer: string;
+  explanation: string;
+  wrongExplanations: string[];
 };
 
 export type GenerateCardsResponse = {
@@ -12,7 +31,16 @@ export type GenerateCardsResponse = {
   title: string;
   summary: string;
   keyConcepts: string[];
-  cards: GeneratedCard[];
+  cards: GeneratedTextCard[];
+};
+
+export type GenerateCardsYoutubeResponse = {
+  ok: boolean;
+  error?: string;
+  title: string;
+  summary: GeneratedSummary;
+  keyConcepts: string[];
+  cards: GeneratedMcqCard[];
 };
 
 export async function generateCards(text: string, title: string) {
@@ -24,12 +52,13 @@ export async function generateCards(text: string, title: string) {
   const result = await fn({ text, title });
   return result.data;
 }
-//every create method have different func to provide clearity
+
+// Every create method has a different function for clarity.
 export async function generateCardsYoutube(youtubeUrl: string) {
-  const fn = httpsCallable<{ youtubeUrl: string }, GenerateCardsResponse>(
-    functions,
-    "generateCardsYoutube",
-  );
+  const fn = httpsCallable<
+    { youtubeUrl: string },
+    GenerateCardsYoutubeResponse
+  >(functions, "generateCardsYoutube");
 
   const result = await fn({ youtubeUrl });
   return result.data;

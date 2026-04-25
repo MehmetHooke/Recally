@@ -1,4 +1,8 @@
-import { getSets, SetItem } from "@/src/services/setService";
+import {
+  getSets,
+  getSummaryPreview,
+  SetItem,
+} from "@/src/services/setService";
 import { useAppTheme } from "@/src/theme/useTheme";
 import { useFocusEffect, useRouter } from "expo-router";
 import { useCallback, useMemo, useState } from "react";
@@ -57,6 +61,12 @@ export default function LibraryScreen() {
 
   const totalCards = sets.reduce((sum, set) => sum + (set.totalCards ?? 0), 0);
   const dueCards = sets.reduce((sum, set) => sum + (set.dueCount ?? 0), 0);
+  const masteredCards = sets.reduce(
+    (sum, set) => sum + (set.masteredCount ?? 0),
+    0
+  );
+  const progress =
+    totalCards > 0 ? Math.round((masteredCards / totalCards) * 100) : 0;
 
   const handleOpenSet = (setId: string) => {
     router.push(`/set/${setId}`);
@@ -93,7 +103,7 @@ export default function LibraryScreen() {
               <Text
                 style={{
                   fontSize: 28,
-                  fontWeight: "800",
+                  fontWeight: "900",
                   color: colors.text,
                 }}
               >
@@ -108,8 +118,8 @@ export default function LibraryScreen() {
                   lineHeight: 21,
                 }}
               >
-                Öğrenmek istediğin tüm setler burada. Devam et, tekrar et,
-                eksiklerini kapat.
+                Burası sadece arşiv değil. Recallly kullandıkça öğrenme
+                durumun burada şekillenir.
               </Text>
             </View>
 
@@ -118,20 +128,51 @@ export default function LibraryScreen() {
                 backgroundColor: colors.card,
                 borderColor: colors.border,
                 borderWidth: 1,
-                borderRadius: 18,
+                borderRadius: 22,
                 padding: 16,
-                gap: 10,
+                gap: 14,
               }}
             >
-              <Text
+              <View>
+                <Text
+                  style={{
+                    color: colors.text,
+                    fontSize: 18,
+                    fontWeight: "900",
+                  }}
+                >
+                  Learning Intelligence
+                </Text>
+
+                <Text
+                  style={{
+                    color: colors.mutedText,
+                    marginTop: 5,
+                    lineHeight: 20,
+                  }}
+                >
+                  Şu an genel ilerlemen %{progress}. Tekrar bekleyen kartlar,
+                  unutma riskinin olduğu yerleri gösterir.
+                </Text>
+              </View>
+
+              <View
                 style={{
-                  color: colors.text,
-                  fontSize: 17,
-                  fontWeight: "800",
+                  height: 10,
+                  backgroundColor: colors.border,
+                  borderRadius: 999,
+                  overflow: "hidden",
                 }}
               >
-                Genel Durum
-              </Text>
+                <View
+                  style={{
+                    width: `${progress}%`,
+                    height: "100%",
+                    backgroundColor: colors.primary,
+                    borderRadius: 999,
+                  }}
+                />
+              </View>
 
               <View style={{ flexDirection: "row", gap: 10 }}>
                 <StatBox label="Set" value={sets.length} />
@@ -139,6 +180,39 @@ export default function LibraryScreen() {
                 <StatBox label="Tekrar" value={dueCards} />
               </View>
             </View>
+
+            {dueCards > 0 ? (
+              <Pressable
+                onPress={() => setFilter("due")}
+                style={{
+                  backgroundColor: colors.primary,
+                  borderRadius: 20,
+                  padding: 16,
+                  gap: 8,
+                }}
+              >
+                <Text
+                  style={{
+                    color: colors.primaryForeground,
+                    fontSize: 18,
+                    fontWeight: "900",
+                  }}
+                >
+                  {dueCards} kart unutma riskinde
+                </Text>
+
+                <Text
+                  style={{
+                    color: colors.primaryForeground,
+                    opacity: 0.9,
+                    lineHeight: 20,
+                  }}
+                >
+                  Bu kartları şimdi tekrar edersen bilgiyi daha kalıcı hale
+                  getirirsin.
+                </Text>
+              </Pressable>
+            ) : null}
 
             <View style={{ flexDirection: "row", gap: 8 }}>
               <FilterButton
@@ -175,7 +249,7 @@ export default function LibraryScreen() {
               style={{
                 color: colors.text,
                 fontSize: 18,
-                fontWeight: "800",
+                fontWeight: "900",
               }}
             >
               Henüz burada bir şey yok
@@ -188,7 +262,7 @@ export default function LibraryScreen() {
                 lineHeight: 21,
               }}
             >
-              Bir metin ekle, Recallly onu saniyeler içinde öğrenilebilir soru
+              YouTube linki ekle, Recallly onu saniyeler içinde özet ve soru
               kartlarına çevirsin.
             </Text>
 
@@ -205,10 +279,10 @@ export default function LibraryScreen() {
               <Text
                 style={{
                   color: colors.primaryForeground,
-                  fontWeight: "800",
+                  fontWeight: "900",
                 }}
               >
-                İlk setini oluştur
+                İlk videonu teste çevir
               </Text>
             </Pressable>
           </View>
@@ -217,7 +291,10 @@ export default function LibraryScreen() {
           const total = item.totalCards ?? 0;
           const due = item.dueCount ?? 0;
           const mastered = item.masteredCount ?? 0;
-          const progress = total > 0 ? Math.round((mastered / total) * 100) : 0;
+          const itemProgress =
+            total > 0 ? Math.round((mastered / total) * 100) : 0;
+
+          const summaryPreview = getSummaryPreview(item.summary) || item.sourceText;
 
           return (
             <TouchableOpacity
@@ -237,7 +314,7 @@ export default function LibraryScreen() {
                   style={{
                     color: colors.text,
                     fontSize: 18,
-                    fontWeight: "800",
+                    fontWeight: "900",
                   }}
                   numberOfLines={1}
                 >
@@ -249,9 +326,12 @@ export default function LibraryScreen() {
                     marginTop: 6,
                     color: colors.mutedText,
                     fontSize: 13,
+                    fontWeight: "700",
                   }}
                 >
-                  {item.sourceType === "text" ? "Text content" : item.sourceType}
+                  {item.sourceType === "youtube"
+                    ? "YouTube video"
+                    : "Text content"}
                 </Text>
               </View>
 
@@ -263,13 +343,13 @@ export default function LibraryScreen() {
                   lineHeight: 20,
                 }}
               >
-                {item.summary || item.sourceText}
+                {summaryPreview}
               </Text>
 
-              <View style={{ flexDirection: "row", gap: 8 }}>
+              <View style={{ flexDirection: "row", gap: 8, flexWrap: "wrap" }}>
                 <MiniBadge label={`${total} cards`} />
                 <MiniBadge label={`${due} due`} />
-                <MiniBadge label={`${progress}% mastered`} />
+                <MiniBadge label={`${itemProgress}% mastered`} />
               </View>
 
               <View
@@ -282,7 +362,7 @@ export default function LibraryScreen() {
               >
                 <View
                   style={{
-                    width: `${progress}%`,
+                    width: `${itemProgress}%`,
                     height: "100%",
                     backgroundColor: colors.primary,
                     borderRadius: 999,
@@ -293,11 +373,11 @@ export default function LibraryScreen() {
               <Text
                 style={{
                   color: colors.primary,
-                  fontWeight: "800",
+                  fontWeight: "900",
                   marginTop: 2,
                 }}
               >
-                Seti aç →
+                Özeti oku ve test et →
               </Text>
             </TouchableOpacity>
           );
@@ -325,7 +405,7 @@ function StatBox({ label, value }: { label: string; value: number }) {
         style={{
           color: colors.text,
           fontSize: 20,
-          fontWeight: "800",
+          fontWeight: "900",
         }}
       >
         {value}
@@ -336,7 +416,7 @@ function StatBox({ label, value }: { label: string; value: number }) {
           marginTop: 4,
           color: colors.mutedText,
           fontSize: 12,
-          fontWeight: "600",
+          fontWeight: "700",
         }}
       >
         {label}
@@ -372,7 +452,7 @@ function FilterButton({
       <Text
         style={{
           color: active ? colors.primaryForeground : colors.text,
-          fontWeight: "800",
+          fontWeight: "900",
           fontSize: 13,
         }}
       >

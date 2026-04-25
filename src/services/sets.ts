@@ -1,3 +1,4 @@
+import type { GeneratedSummary } from "@/src/services/functions";
 import {
   addDoc,
   collection,
@@ -14,13 +15,18 @@ type GeneratedCard = {
   question: string;
   answer: string;
   explanation: string;
+
+  // MCQ alanları — text kartlarda opsiyonel
+  options?: string[];
+  correctIndex?: number;
+  wrongExplanations?: string[];
 };
 
 type SaveGeneratedSetInput = {
   title: string;
   sourceType?: SourceType;
   sourceText: string;
-  summary: string;
+  summary: string | GeneratedSummary;
   keyConcepts: string[];
   cards: GeneratedCard[];
 };
@@ -63,11 +69,29 @@ export async function saveGeneratedSet({
       collection(db, "users", user.uid, "sets", setDocRef.id, "cards"),
     );
 
+    const isMcq =
+      Array.isArray(card.options) &&
+      card.options.length === 4 &&
+      typeof card.correctIndex === "number";
+
+    const answer =
+      isMcq && card.options && typeof card.correctIndex === "number"
+        ? card.options[card.correctIndex]
+        : card.answer;
+
     batch.set(cardRef, {
       question: card.question,
-      answer: card.answer,
+      answer,
       explanation: card.explanation,
 
+      // MCQ için gerekli alanlar
+      options: isMcq ? card.options : [],
+      correctIndex: isMcq ? card.correctIndex : null,
+      wrongExplanations: Array.isArray(card.wrongExplanations)
+        ? card.wrongExplanations
+        : [],
+
+      cardType: isMcq ? "mcq" : "basic",
       status: "new",
 
       intervalDays: 0,

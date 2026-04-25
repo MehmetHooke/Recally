@@ -1,3 +1,4 @@
+import type { GeneratedSummary } from "@/src/services/functions";
 import {
   collection,
   doc,
@@ -9,12 +10,14 @@ import {
 } from "firebase/firestore";
 import { auth, db } from "./firebase";
 
+export type SourceType = "text" | "youtube";
+
 export type SetItem = {
   id: string;
   title: string;
-  sourceType: "text";
+  sourceType: SourceType;
   sourceText: string;
-  summary?: string;
+  summary?: string | GeneratedSummary;
   keyConcepts?: string[];
   totalCards?: number;
   masteredCount?: number;
@@ -27,6 +30,16 @@ export type SetCardsStats = {
   totalCards: number;
   dueCards: number;
 };
+
+export function getSummaryPreview(summary?: string | GeneratedSummary) {
+  if (!summary) return "";
+
+  if (typeof summary === "string") {
+    return summary;
+  }
+
+  return summary.overview || "";
+}
 
 export async function getSets(): Promise<SetItem[]> {
   const user = auth.currentUser;

@@ -83,10 +83,6 @@ Return ONLY valid JSON in this format:
 export const generateCardsYoutube = onCall(async (request) => {
   const youtubeUrl = request.data?.youtubeUrl;
 
-  console.log("🔥 generateCardsYoutube CALLED");
-  console.log("YOUTUBE URL:", youtubeUrl);
-  console.log("VERSION:", "youtube-v1");
-
   if (!youtubeUrl || typeof youtubeUrl !== "string") {
     throw new HttpsError("invalid-argument", "youtubeUrl alanı gerekli");
   }
@@ -97,78 +93,107 @@ export const generateCardsYoutube = onCall(async (request) => {
     });
 
     const prompt = `
-You are an educational flashcard generator.
+You are an expert learning designer.
 
-Your task:
-Analyze ONLY the actual content of this YouTube video.
+Analyze the YouTube video provided as video input.
 
-Very important rules:
-- Do NOT guess the topic from the title, URL, thumbnail, or general knowledge.
-- Do NOT create generic educational content.
-- Do NOT invent facts if you cannot access or understand the video content.
-- If you cannot access the video, transcript, audio, or meaningful content, return ok:false.
-- If the video content is accessible, generate flashcards strictly based on what is explained in the video.
+Your goal:
+Create a learning experience where the user first reads a clear summary, then can answer quiz questions from that summary.
 
-Return ONLY valid JSON. No markdown. No extra text.
+IMPORTANT RULES:
+- The summary must teach enough information to answer the quiz cards.
+- Do not create questions that are not covered in the summary.
+- Create exactly 6 multiple-choice cards.
+- Each card must have exactly 4 options.
+- correctIndex must be a number: 0, 1, 2, or 3.
+- answer must be exactly the same text as options[correctIndex].
+- wrongExplanations must have exactly 4 strings.
+- For the correct option, wrongExplanations[correctIndex] can be an empty string.
+- Return ONLY valid JSON.
+- Do not use markdown.
+- Do not wrap the response in code fences.
 
-JSON format:
+If you cannot access or understand the actual video content, return ONLY this JSON:
+{
+  "ok": false,
+  "error": "VIDEO_NOT_ACCESSIBLE",
+  "title": "Video could not be analyzed",
+  "summary": {
+    "overview": "",
+    "sections": [],
+    "keyTakeaways": []
+  },
+  "keyConcepts": [],
+  "cards": []
+}
 
-If you can analyze the video:
+Return this exact JSON structure:
+
 {
   "ok": true,
-  "title": "A short title based on the real video content",
-  "summary": "A clear summary of the actual video content in 3-5 sentences.",
+  "title": "Short useful title",
+  "summary": {
+    "overview": "A short 3-5 sentence overview of the video.",
+    "sections": [
+      {
+        "title": "Section title",
+        "description": "Short explanation of this section.",
+        "bullets": [
+          "Important point 1",
+          "Important point 2",
+          "Important point 3"
+        ]
+      }
+    ],
+    "keyTakeaways": [
+      "Main takeaway 1",
+      "Main takeaway 2",
+      "Main takeaway 3"
+    ]
+  },
   "keyConcepts": [
-    "concept 1",
-    "concept 2",
-    "concept 3"
+    "Concept 1",
+    "Concept 2",
+    "Concept 3"
   ],
   "cards": [
     {
-      "question": "Question based only on the video",
-      "answer": "Short answer based only on the video",
-      "explanation": "Explanation based only on the video"
+      "question": "Question text?",
+      "options": [
+        "Option A",
+        "Option B",
+        "Option C",
+        "Option D"
+      ],
+      "correctIndex": 0,
+      "answer": "Option A",
+      "explanation": "Why the correct answer is correct.",
+      "wrongExplanations": [
+        "",
+        "Why option B is wrong.",
+        "Why option C is wrong.",
+        "Why option D is wrong."
+      ]
     }
   ]
 }
-
-If you cannot analyze the video:
-{
-  "ok": false,
-  "error": {
-    "code": "VIDEO_CONTENT_NOT_ACCESSIBLE",
-    "message": "I could not access or understand the actual YouTube video content."
-  }
-}
-
-Card rules:
-- Generate 8 to 12 cards.
-- Questions must test understanding, not random trivia.
-- Each card must be directly supported by the video.
-- Keep answers short but useful.
-- Explanations should help the learner remember the concept.
 `;
 
-    const result = await model.generateContent({
-      contents: [
-        {
-          role: "user",
-          parts: [
-            {
-              fileData: {
-                mimeType: "video/*",
-                fileUri: youtubeUrl,
-              },
-            },
-            {
-              text: prompt,
-            },
-          ],
+    const result = await model.generateContent([
+      {
+        fileData: {
+          fileUri: youtubeUrl,
+          mimeType: "video/*",
         },
-      ],
-    });
+      },
+      {
+        text: prompt,
+      },
+    ]);
+
     const responseText = result.response.text();
-    console.log("Raw Gemini response:", responseText);
+
+    console.log("RAW YOUTUBE GEMINI RESPONSE:", responseText);
 
     const cleanText = responseText
       .replace(/```json/g, "")
@@ -176,21 +201,72 @@ Card rules:
       .trim();
 
     const parsed = JSON.parse(cleanText);
-    console.log("Parsed Gemini response:", parsed);
+
+    console.log("PARSED YOUTUBE GEMINI RESPONSE:", parsed);
 
     if (parsed.ok === false) {
-      return parsed;
+      return {
+        ok: false,
+        error: parsed.error || "VIDEO_NOT_ACCESSIBLE",
+        title: parsed.title || "Video could not be analyzed",
+        summary: parsed.summary || {
+          overview: "",
+          sections: [],
+          keyTakeaways: [],
+        },
+        keyConcepts: parsed.keyConcepts || [],
+        cards: [],
+      };
     }
+
+    const cards = Array.isArray(parsed.cards) ? parsed.cards : [];
+
+    const normalizedCards = cards.slice(0, 6).map((card: any) => {
+      const options = Array.isArray(card.options)
+        ? card.options.slice(0, 4)
+        : [];
+
+      const correctIndex =
+        typeof card.correctIndex === "number" &&
+        card.correctIndex >= 0 &&
+        card.correctIndex <= 3
+          ? card.correctIndex
+          : 0;
+
+      const answer = options[correctIndex] || card.answer || "";
+
+      const wrongExplanations = Array.isArray(card.wrongExplanations)
+        ? card.wrongExplanations.slice(0, 4)
+        : ["", "", "", ""];
+
+      while (wrongExplanations.length < 4) {
+        wrongExplanations.push("");
+      }
+
+      return {
+        question: card.question || "",
+        options,
+        correctIndex,
+        answer,
+        explanation: card.explanation || "",
+        wrongExplanations,
+      };
+    });
 
     return {
       ok: true,
       title: parsed.title || "YouTube Study Set",
-      summary: parsed.summary,
-      keyConcepts: parsed.keyConcepts || [],
-      cards: parsed.cards || [],
+      summary: parsed.summary || {
+        overview: "",
+        sections: [],
+        keyTakeaways: [],
+      },
+      keyConcepts: Array.isArray(parsed.keyConcepts) ? parsed.keyConcepts : [],
+      cards: normalizedCards,
     };
   } catch (error: any) {
     console.error("YOUTUBE AI ERROR:", error);
+
     throw new HttpsError(
       "internal",
       "YouTube AI processing failed",
