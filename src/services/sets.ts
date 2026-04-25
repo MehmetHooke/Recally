@@ -8,6 +8,8 @@ import {
 } from "firebase/firestore";
 import { auth, db } from "./firebase";
 
+type SourceType = "text" | "youtube";
+
 type GeneratedCard = {
   question: string;
   answer: string;
@@ -16,6 +18,7 @@ type GeneratedCard = {
 
 type SaveGeneratedSetInput = {
   title: string;
+  sourceType?: SourceType;
   sourceText: string;
   summary: string;
   keyConcepts: string[];
@@ -24,6 +27,7 @@ type SaveGeneratedSetInput = {
 
 export async function saveGeneratedSet({
   title,
+  sourceType = "text",
   sourceText,
   summary,
   keyConcepts,
@@ -41,7 +45,7 @@ export async function saveGeneratedSet({
 
   const setDocRef = await addDoc(setsRef, {
     title,
-    sourceType: "text",
+    sourceType,
     sourceText,
     summary,
     keyConcepts,
