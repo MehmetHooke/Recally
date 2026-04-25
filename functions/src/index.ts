@@ -1,8 +1,13 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import * as admin from "firebase-admin";
+import { FieldValue, Timestamp } from "firebase-admin/firestore";
 import * as dotenv from "dotenv";
-import { setGlobalOptions } from "firebase-functions/v2";
+import { onDocumentCreated } from "firebase-functions/v2/firestore";
 import { HttpsError, onCall } from "firebase-functions/v2/https";
+import { setGlobalOptions } from "firebase-functions/v2";
 dotenv.config();
+
+admin.initializeApp();
 
 setGlobalOptions({
   region: "us-central1",
@@ -11,88 +16,29 @@ setGlobalOptions({
 });
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
+const firestore = admin.firestore();
 
-export const generateCards = onCall(async (request) => {
-  const text = request.data?.text;
-  const title = request.data?.title;
+type GeneratedSummary = {
+  overview: string;
+  sections: {
+    title: string;
+    description: string;
+    bullets: string[];
+  }[];
+  keyTakeaways: string[];
+};
 
-  if (!text || typeof text !== "string") {
-    throw new HttpsError("invalid-argument", "text alanı gerekli");
-  }
+type GeneratedMcqCard = {
+  question: string;
+  options: string[];
+  correctIndex: number;
+  answer: string;
+  explanation: string;
+  wrongExplanations: string[];
+};
 
-  try {
-    const model = genAI.getGenerativeModel({
-      model: "gemini-3-flash-preview",
-    });
-
-    const prompt = `
-You are an educational content processor.
-
-Given the following content:
-
-"${text}"
-
-1. Write a short summary
-2. Extract key concepts
-3. Create 6 flashcards
-
-Each flashcard must include:
-- question
-- answer
-- explanation
-
-Return ONLY valid JSON in this format:
-
-{
-  "summary": "...",
-  "keyConcepts": ["...", "..."],
-  "cards": [
-    {
-      "question": "...",
-      "answer": "...",
-      "explanation": "..."
-    }
-  ]
-}
-`;
-
-    const result = await model.generateContent(prompt);
-    const responseText = result.response.text();
-
-    let cleanText = responseText
-      .replace(/```json/g, "")
-      .replace(/```/g, "")
-      .trim();
-
-    const parsed = JSON.parse(cleanText);
-    // JSON parse etmeye çalış
-    //const parsed = JSON.parse(responseText);
-
-    return {
-      ok: true,
-      title: title || "Untitled",
-      ...parsed,
-    };
-  } catch (error: any) {
-    console.error("AI ERROR:", error);
-
-    throw new HttpsError("internal", "AI processing failed", error.message);
-  }
-});
-
-export const generateCardsYoutube = onCall(async (request) => {
-  const youtubeUrl = request.data?.youtubeUrl;
-
-  if (!youtubeUrl || typeof youtubeUrl !== "string") {
-    throw new HttpsError("invalid-argument", "youtubeUrl alanı gerekli");
-  }
-
-  try {
-    const model = genAI.getGenerativeModel({
-      model: "gemini-3-flash-preview",
-    });
-
-    const prompt = `
+function getYoutubePrompt() {
+  return `
 You are an expert learning designer.
 
 Analyze the YouTube video provided as video input.
@@ -178,23 +124,190 @@ Return this exact JSON structure:
   ]
 }
 `;
+}
 
-    const result = await model.generateContent([
-      {
-        fileData: {
-          fileUri: youtubeUrl,
-          mimeType: "video/*",
-        },
-      },
-      {
-        text: prompt,
-      },
-    ]);
+function normalizeYoutubeUrl(youtubeUrl: unknown) {
+  if (typeof youtubeUrl !== "string" || !youtubeUrl.trim()) {
+    throw new HttpsError("invalid-argument", "youtubeUrl alanı gerekli");
+  }
 
+  return youtubeUrl.trim();
+}
+
+function getSetRef(uid: string, setId: string) {
+  return firestore.collection("users").doc(uid).collection("sets").doc(setId);
+}
+
+function getReadableErrorMessage(error: unknown) {
+  if (error instanceof Error && error.message) {
+    if (error.message === "VIDEO_NOT_ACCESSIBLE") {
+      return "Video işlenemedi. Video erişimi doğrulanamadı.";
+    }
+
+    return error.message;
+  }
+
+  return "Video işlenirken hata oluştu.";
+}
+
+async function generateYoutubeContent(youtubeUrl: string) {
+  const model = genAI.getGenerativeModel({
+    model: "gemini-3-flash-preview",
+  });
+
+  const result = await model.generateContent([
+    {
+      fileData: {
+        fileUri: youtubeUrl,
+        mimeType: "video/*",
+      },
+    },
+    {
+      text: getYoutubePrompt(),
+    },
+  ]);
+
+  const responseText = result.response.text();
+  const cleanText = responseText
+    .replace(/```json/g, "")
+    .replace(/```/g, "")
+    .trim();
+
+  const parsed = JSON.parse(cleanText);
+
+  if (parsed.ok === false) {
+    throw new Error(parsed.error || "VIDEO_NOT_ACCESSIBLE");
+  }
+
+  const cards = Array.isArray(parsed.cards) ? parsed.cards : [];
+
+  const normalizedCards: GeneratedMcqCard[] = cards.slice(0, 6).map((card: any) => {
+    const options = Array.isArray(card.options) ? card.options.slice(0, 4) : [];
+
+    while (options.length < 4) {
+      options.push("");
+    }
+
+    const correctIndex =
+      typeof card.correctIndex === "number" &&
+      card.correctIndex >= 0 &&
+      card.correctIndex <= 3
+        ? card.correctIndex
+        : 0;
+
+    const answer = options[correctIndex] || card.answer || "";
+    const wrongExplanations = Array.isArray(card.wrongExplanations)
+      ? card.wrongExplanations.slice(0, 4)
+      : ["", "", "", ""];
+
+    while (wrongExplanations.length < 4) {
+      wrongExplanations.push("");
+    }
+
+    return {
+      question: card.question || "",
+      options,
+      correctIndex,
+      answer,
+      explanation: card.explanation || "",
+      wrongExplanations,
+    };
+  });
+
+  return {
+    title: parsed.title || "YouTube Study Set",
+    summary: (parsed.summary || {
+      overview: "",
+      sections: [],
+      keyTakeaways: [],
+    }) as GeneratedSummary,
+    keyConcepts: Array.isArray(parsed.keyConcepts) ? parsed.keyConcepts : [],
+    cards: normalizedCards,
+  };
+}
+
+async function writeSetCards(uid: string, setId: string, cards: GeneratedMcqCard[]) {
+  const batch = firestore.batch();
+  const cardsCollection = getSetRef(uid, setId).collection("cards");
+  const now = Timestamp.now();
+
+  cards.forEach((card, index) => {
+    const cardRef = cardsCollection.doc(`card_${index + 1}`);
+
+    batch.set(cardRef, {
+      question: card.question,
+      answer: card.answer,
+      explanation: card.explanation,
+      options: card.options,
+      correctIndex: card.correctIndex,
+      wrongExplanations: card.wrongExplanations,
+      cardType: "mcq",
+      status: "new",
+      intervalDays: 0,
+      reviewCount: 0,
+      knewCount: 0,
+      forgotCount: 0,
+      lastReviewedAt: null,
+      nextReviewAt: now,
+      createdAt: FieldValue.serverTimestamp(),
+      updatedAt: FieldValue.serverTimestamp(),
+    });
+  });
+
+  await batch.commit();
+}
+
+export const generateCards = onCall(async (request) => {
+  const text = request.data?.text;
+  const title = request.data?.title;
+
+  console.log("[generateCards] request received", {
+    hasText: typeof text === "string" && text.length > 0,
+    title,
+  });
+
+  if (!text || typeof text !== "string") {
+    throw new HttpsError("invalid-argument", "text alanı gerekli");
+  }
+
+  try {
+    const model = genAI.getGenerativeModel({
+      model: "gemini-3-flash-preview",
+    });
+
+    const prompt = `
+You are an educational content processor.
+
+Given the following content:
+
+"${text}"
+
+1. Write a short summary
+2. Extract key concepts
+3. Create 6 flashcards
+
+Each flashcard must include:
+- question
+- answer
+- explanation
+
+Return ONLY valid JSON in this format:
+
+{
+  "summary": "...",
+  "keyConcepts": ["...", "..."],
+  "cards": [
+    {
+      "question": "...",
+      "answer": "...",
+      "explanation": "..."
+    }
+  ]
+}
+`;
+
+    const result = await model.generateContent(prompt);
     const responseText = result.response.text();
-
-    console.log("RAW YOUTUBE GEMINI RESPONSE:", responseText);
-
     const cleanText = responseText
       .replace(/```json/g, "")
       .replace(/```/g, "")
@@ -202,75 +315,155 @@ Return this exact JSON structure:
 
     const parsed = JSON.parse(cleanText);
 
-    console.log("PARSED YOUTUBE GEMINI RESPONSE:", parsed);
+    return {
+      ok: true,
+      title: title || "Untitled",
+      ...parsed,
+    };
+  } catch (error: any) {
+    console.error("AI ERROR:", error);
+    throw new HttpsError("internal", "AI processing failed", error.message);
+  }
+});
 
-    if (parsed.ok === false) {
-      return {
-        ok: false,
-        error: parsed.error || "VIDEO_NOT_ACCESSIBLE",
-        title: parsed.title || "Video could not be analyzed",
-        summary: parsed.summary || {
-          overview: "",
-          sections: [],
-          keyTakeaways: [],
-        },
-        keyConcepts: parsed.keyConcepts || [],
-        cards: [],
-      };
+export const generateCardsYoutube = onCall(async (request) => {
+  const youtubeUrl = normalizeYoutubeUrl(request.data?.youtubeUrl);
+
+  console.log("[generateCardsYoutube] request received", {
+    youtubeUrl,
+  });
+
+  try {
+    const parsed = await generateYoutubeContent(youtubeUrl);
+
+    return {
+      ok: true,
+      title: parsed.title,
+      summary: parsed.summary,
+      keyConcepts: parsed.keyConcepts,
+      cards: parsed.cards,
+    };
+  } catch (error: any) {
+    console.error("YOUTUBE AI ERROR:", error);
+    throw new HttpsError(
+      "internal",
+      "YouTube AI processing failed",
+      error.message
+    );
+  }
+});
+
+export const createYoutubeSetJob = onCall(
+  {
+    region: "us-central1",
+    timeoutSeconds: 300,
+    memory: "1GiB",
+  },
+  async (request) => {
+    const uid = request.auth?.uid;
+
+    console.log("[createYoutubeSetJob] request received", {
+      uid,
+      youtubeUrl: request.data?.youtubeUrl,
+    });
+
+    if (!uid) {
+      throw new HttpsError("unauthenticated", "Kullanıcı bulunamadı");
     }
 
-    const cards = Array.isArray(parsed.cards) ? parsed.cards : [];
+    const youtubeUrl = normalizeYoutubeUrl(request.data?.youtubeUrl);
+    const setRef = firestore.collection("users").doc(uid).collection("sets").doc();
 
-    const normalizedCards = cards.slice(0, 6).map((card: any) => {
-      const options = Array.isArray(card.options)
-        ? card.options.slice(0, 4)
-        : [];
-
-      const correctIndex =
-        typeof card.correctIndex === "number" &&
-        card.correctIndex >= 0 &&
-        card.correctIndex <= 3
-          ? card.correctIndex
-          : 0;
-
-      const answer = options[correctIndex] || card.answer || "";
-
-      const wrongExplanations = Array.isArray(card.wrongExplanations)
-        ? card.wrongExplanations.slice(0, 4)
-        : ["", "", "", ""];
-
-      while (wrongExplanations.length < 4) {
-        wrongExplanations.push("");
-      }
-
-      return {
-        question: card.question || "",
-        options,
-        correctIndex,
-        answer,
-        explanation: card.explanation || "",
-        wrongExplanations,
-      };
+    await setRef.set({
+      title: "Video hazırlanıyor...",
+      sourceType: "youtube",
+      sourceText: youtubeUrl,
+      status: "processing",
+      summary: null,
+      keyConcepts: [],
+      cards: [],
+      cardCount: 0,
+      totalCards: 0,
+      masteredCount: 0,
+      dueCount: 0,
+      errorMessage: null,
+      createdAt: FieldValue.serverTimestamp(),
+      updatedAt: FieldValue.serverTimestamp(),
     });
 
     return {
       ok: true,
-      title: parsed.title || "YouTube Study Set",
-      summary: parsed.summary || {
-        overview: "",
-        sections: [],
-        keyTakeaways: [],
-      },
-      keyConcepts: Array.isArray(parsed.keyConcepts) ? parsed.keyConcepts : [],
-      cards: normalizedCards,
+      setId: setRef.id,
     };
-  } catch (error: any) {
-    console.error("YOUTUBE AI ERROR:", error);
-
-    throw new HttpsError(
-      "internal",
-      "YouTube AI processing failed",
-      error.message,
-    );
   }
-});
+);
+
+export const processYoutubeSetJob = onDocumentCreated(
+  {
+    document: "users/{uid}/sets/{setId}",
+    region: "us-central1",
+    timeoutSeconds: 300,
+    memory: "1GiB",
+  },
+  async (event) => {
+    const snapshot = event.data;
+
+    if (!snapshot) {
+      console.warn("[processYoutubeSetJob] no snapshot in event");
+      return;
+    }
+
+    const uid = event.params.uid;
+    const setId = event.params.setId;
+    const data = snapshot.data();
+
+    console.log("[processYoutubeSetJob] triggered", {
+      uid,
+      setId,
+      sourceType: data?.sourceType,
+      status: data?.status,
+    });
+
+    if (data?.sourceType !== "youtube" || data?.status !== "processing") {
+      return;
+    }
+
+    const setRef = getSetRef(uid, setId);
+
+    try {
+      const parsed = await generateYoutubeContent(data.sourceText);
+
+      await writeSetCards(uid, setId, parsed.cards);
+
+      await setRef.update({
+        status: "completed",
+        title: parsed.title || "YouTube Study Set",
+        summary: parsed.summary,
+        keyConcepts: parsed.keyConcepts,
+        cards: parsed.cards,
+        cardCount: parsed.cards.length,
+        totalCards: parsed.cards.length,
+        dueCount: parsed.cards.length,
+        masteredCount: 0,
+        errorMessage: null,
+        updatedAt: FieldValue.serverTimestamp(),
+        completedAt: FieldValue.serverTimestamp(),
+      });
+
+      console.log("[processYoutubeSetJob] completed", {
+        uid,
+        setId,
+        cardCount: parsed.cards.length,
+      });
+    } catch (error) {
+      console.error("PROCESS YOUTUBE SET JOB ERROR:", error);
+
+      await setRef.update({
+        status: "failed",
+        errorMessage: getReadableErrorMessage(error),
+        updatedAt: FieldValue.serverTimestamp(),
+        failedAt: FieldValue.serverTimestamp(),
+      });
+    }
+  }
+);

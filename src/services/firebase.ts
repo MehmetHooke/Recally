@@ -1,8 +1,9 @@
 import { getApp, getApps, initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
+import { connectFirestoreEmulator, getFirestore } from "firebase/firestore";
 import { connectFunctionsEmulator, getFunctions } from "firebase/functions";
 import { getStorage } from "firebase/storage";
+import { Platform } from "react-native";
 
 const firebaseConfig = {
   apiKey: process.env.EXPO_PUBLIC_FIREBASE_API_KEY,
@@ -17,13 +18,44 @@ const firebaseConfig = {
 const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
 
 export const functions = getFunctions(app, "us-central1");
+export const db = getFirestore(app);
+const globalFlags = globalThis as typeof globalThis & {
+  __recalllyFunctionsEmulatorConnected?: boolean;
+  __recalllyFirestoreEmulatorConnected?: boolean;
+};
 
 if (__DEV__) {
-  connectFunctionsEmulator(functions, "10.0.2.2", 5001);
+  const emulatorHost =
+    Platform.OS === "android"
+      ? "10.0.2.2"
+      : Platform.OS === "web"
+        ? "127.0.0.1"
+        : "localhost";
+
+  console.log("[firebase] Connecting Functions emulator", {
+    platform: Platform.OS,
+    host: emulatorHost,
+    port: 5001,
+  });
+
+  if (!globalFlags.__recalllyFunctionsEmulatorConnected) {
+    connectFunctionsEmulator(functions, emulatorHost, 5001);
+    globalFlags.__recalllyFunctionsEmulatorConnected = true;
+  }
+
+  console.log("[firebase] Connecting Firestore emulator", {
+    platform: Platform.OS,
+    host: emulatorHost,
+    port: 8080,
+  });
+
+  if (!globalFlags.__recalllyFirestoreEmulatorConnected) {
+    connectFirestoreEmulator(db, emulatorHost, 8080);
+    globalFlags.__recalllyFirestoreEmulatorConnected = true;
+  }
 }
 
 export const auth = getAuth(app);
-export const db = getFirestore(app);
 export const storage = getStorage(app);
 
 export default app;

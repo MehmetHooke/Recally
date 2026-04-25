@@ -1,4 +1,5 @@
 import type { GeneratedSummary } from "@/src/services/functions";
+import type { StudySet } from "@/src/types/study-set";
 import {
   collection,
   doc,
@@ -10,28 +11,49 @@ import {
 } from "firebase/firestore";
 import { auth, db } from "./firebase";
 
-export type SourceType = "text" | "youtube";
-
-export type SetItem = {
-  id: string;
-  title: string;
-  sourceType: SourceType;
-  sourceText: string;
-  summary?: string | GeneratedSummary;
-  keyConcepts?: string[];
-  totalCards?: number;
-  masteredCount?: number;
-  dueCount?: number;
-  createdAt?: any;
-  updatedAt?: any;
-};
+export type SetItem = StudySet;
 
 export type SetCardsStats = {
   totalCards: number;
   dueCards: number;
 };
 
-export function getSummaryPreview(summary?: string | GeneratedSummary) {
+export function normalizeSetItem(
+  id: string,
+  data: Partial<Omit<SetItem, "id">>
+): SetItem {
+  const cards = Array.isArray(data.cards) ? data.cards : [];
+  const keyConcepts = Array.isArray(data.keyConcepts) ? data.keyConcepts : [];
+  const cardCount =
+    typeof data.cardCount === "number"
+      ? data.cardCount
+      : typeof data.totalCards === "number"
+        ? data.totalCards
+        : cards.length;
+
+  return {
+    id,
+    title: data.title || "Untitled",
+    sourceType: data.sourceType || "text",
+    sourceText: data.sourceText || "",
+    status: data.status || "completed",
+    summary: data.summary ?? null,
+    keyConcepts,
+    cards,
+    cardCount,
+    totalCards:
+      typeof data.totalCards === "number" ? data.totalCards : cardCount,
+    masteredCount: data.masteredCount ?? 0,
+    dueCount: data.dueCount ?? 0,
+    errorMessage: data.errorMessage ?? null,
+    createdAt: data.createdAt,
+    updatedAt: data.updatedAt,
+    completedAt: data.completedAt,
+    failedAt: data.failedAt,
+  };
+}
+
+export function getSummaryPreview(summary?: string | GeneratedSummary | null) {
   if (!summary) return "";
 
   if (typeof summary === "string") {
@@ -52,10 +74,9 @@ export async function getSets(): Promise<SetItem[]> {
   const q = query(setsRef, orderBy("createdAt", "desc"));
   const snapshot = await getDocs(q);
 
-  return snapshot.docs.map((docSnap) => ({
-    id: docSnap.id,
-    ...(docSnap.data() as Omit<SetItem, "id">),
-  }));
+  return snapshot.docs.map((docSnap) =>
+    normalizeSetItem(docSnap.id, docSnap.data() as Omit<SetItem, "id">)
+  );
 }
 
 export async function getSetById(setId: string): Promise<SetItem | null> {
@@ -72,10 +93,7 @@ export async function getSetById(setId: string): Promise<SetItem | null> {
     return null;
   }
 
-  return {
-    id: snapshot.id,
-    ...(snapshot.data() as Omit<SetItem, "id">),
-  };
+  return normalizeSetItem(snapshot.id, snapshot.data() as Omit<SetItem, "id">);
 }
 
 export async function getSetCardsStats(setId: string): Promise<SetCardsStats> {
