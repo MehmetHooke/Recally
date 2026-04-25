@@ -1,26 +1,19 @@
+import { ReviewCompleteState } from "@/src/components/review/ReviewCompleteState";
+import { ReviewEmptyState } from "@/src/components/review/ReviewEmptyState";
+import { ReviewFeedbackCard } from "@/src/components/review/ReviewFeedbackCard";
+import { ReviewLoadingState } from "@/src/components/review/ReviewLoadingState";
+import { ReviewProgress } from "@/src/components/review/ReviewProgress";
+import { ReviewQuestionCard } from "@/src/components/review/ReviewQuestionCard";
+import type { McqReviewCard } from "@/src/components/review/types";
 import {
   getDueCards,
   markCardForgot,
   markCardKnew,
-  type ReviewCard,
 } from "@/src/services/cards";
 import { useAppTheme } from "@/src/theme/useTheme";
-import { router, useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams } from "expo-router";
 import { useEffect, useMemo, useState } from "react";
-import {
-  ActivityIndicator,
-  Pressable,
-  ScrollView,
-  Text,
-  View,
-} from "react-native";
-
-type McqReviewCard = ReviewCard & {
-  options?: string[];
-  correctIndex?: number | null;
-  wrongExplanations?: string[];
-  cardType?: "basic" | "mcq";
-};
+import { Pressable, ScrollView, Text } from "react-native";
 
 export default function ReviewScreen() {
   const { setId } = useLocalSearchParams<{ setId: string }>();
@@ -75,14 +68,8 @@ export default function ReviewScreen() {
   const feedbackText = useMemo(() => {
     if (!currentCard || !answered) return "";
 
-    if (!isMcq) {
-      return currentCard.explanation;
-    }
-
-    if (isCorrect) {
-      return currentCard.explanation;
-    }
-
+    if (!isMcq) return currentCard.explanation;
+    if (isCorrect) return currentCard.explanation;
     if (selectedIndex === null) return "";
 
     return (
@@ -133,148 +120,36 @@ export default function ReviewScreen() {
 
   const handleSelectOption = (index: number) => {
     if (answered || submitting) return;
-
     setSelectedIndex(index);
     setAnswered(true);
   };
 
-  if (loading) {
-    return (
-      <View
-        style={{
-          flex: 1,
-          backgroundColor: colors.background,
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <ActivityIndicator color={colors.primary} />
-        <Text style={{ marginTop: 12, color: colors.mutedText }}>
-          Review yükleniyor...
-        </Text>
-      </View>
-    );
-  }
+  const handleShowBasicAnswer = () => {
+    setSelectedIndex(0);
+    setAnswered(true);
+  };
 
-  if (!cards.length) {
-    return (
-      <View
-        style={{
-          flex: 1,
-          backgroundColor: colors.background,
-          justifyContent: "center",
-          alignItems: "center",
-          padding: 24,
-          gap: 12,
-        }}
-      >
-        <Text style={{ color: colors.text, fontSize: 20, fontWeight: "900" }}>
-          Şu an tekrar bekleyen kart yok.
-        </Text>
-
-        <Pressable
-          onPress={() => router.replace("/(tabs)")}
-          style={{
-            backgroundColor: colors.primary,
-            paddingVertical: 14,
-            paddingHorizontal: 18,
-            borderRadius: 14,
-          }}
-        >
-          <Text style={{ color: colors.primaryForeground, fontWeight: "900" }}>
-            Ana sayfaya dön
-          </Text>
-        </Pressable>
-      </View>
-    );
-  }
+  if (loading) return <ReviewLoadingState />;
+  if (!cards.length) return <ReviewEmptyState />;
 
   if (done) {
-    const accuracy = Math.round((stats.knew / cards.length) * 100);
-
     return (
-      <View
-        style={{
-          flex: 1,
-          backgroundColor: colors.background,
-          justifyContent: "center",
-          padding: 24,
-          gap: 16,
-        }}
-      >
-        <Text style={{ color: colors.text, fontSize: 30, fontWeight: "900" }}>
-          Tüm soruları çözdün!
-        </Text>
-
-        <Text style={{ color: colors.mutedText, fontSize: 16 }}>
-          Başarın
-        </Text>
-
-        <View
-          style={{
-            backgroundColor: colors.card,
-            borderColor: colors.border,
-            borderWidth: 1,
-            borderRadius: 22,
-            padding: 18,
-            gap: 12,
-          }}
-        >
-          <Text style={{ color: colors.text, fontSize: 42, fontWeight: "900" }}>
-            %{accuracy}
-          </Text>
-
-          <Text style={{ color: colors.mutedText }}>
-            {cards.length} kart çözdün · {stats.knew} doğru · {stats.forgot} yanlış
-          </Text>
-        </View>
-
-        <Pressable
-          onPress={() => router.replace("/(tabs)")}
-          style={{
-            backgroundColor: colors.primary,
-            paddingVertical: 15,
-            borderRadius: 15,
-            alignItems: "center",
-          }}
-        >
-          <Text style={{ color: colors.primaryForeground, fontWeight: "900" }}>
-            Ana sayfaya dön
-          </Text>
-        </Pressable>
-
-        <Pressable
-          onPress={() => router.replace("/(tabs)/library")}
-          style={{
-            backgroundColor: colors.card,
-            borderColor: colors.border,
-            borderWidth: 1,
-            paddingVertical: 15,
-            borderRadius: 15,
-            alignItems: "center",
-          }}
-        >
-          <Text style={{ color: colors.text, fontWeight: "900" }}>
-            Library’ye git
-          </Text>
-        </Pressable>
-      </View>
+      <ReviewCompleteState
+        totalCards={cards.length}
+        knew={stats.knew}
+        forgot={stats.forgot}
+      />
     );
   }
 
   if (!currentCard) {
     return (
-      <View
-        style={{
-          flex: 1,
-          backgroundColor: colors.background,
-          justifyContent: "center",
-          alignItems: "center",
-          padding: 24,
-        }}
+      <ScrollView
+        style={{ flex: 1, backgroundColor: colors.background }}
+        contentContainerStyle={{ padding: 24 }}
       >
         <Text style={{ color: colors.text }}>Card not found.</Text>
-      </View>
+      </ScrollView>
     );
   }
 
@@ -287,194 +162,28 @@ export default function ReviewScreen() {
         gap: 16,
       }}
     >
-      <View>
-        <Text style={{ color: colors.mutedText, fontWeight: "800" }}>
-          Card {currentIndex + 1} / {cards.length}
-        </Text>
+      <ReviewProgress currentIndex={currentIndex} totalCards={cards.length} />
 
-        <View
-          style={{
-            marginTop: 10,
-            height: 9,
-            backgroundColor: colors.border,
-            borderRadius: 999,
-            overflow: "hidden",
-          }}
-        >
-          <View
-            style={{
-              width: `${((currentIndex + 1) / cards.length) * 100}%`,
-              height: "100%",
-              backgroundColor: colors.primary,
-            }}
-          />
-        </View>
-      </View>
+      <ReviewQuestionCard
+        card={currentCard}
+        selectedIndex={selectedIndex}
+        answered={answered}
+        submitting={submitting}
+        isMcq={!!isMcq}
+        onSelectOption={handleSelectOption}
+        onShowBasicAnswer={handleShowBasicAnswer}
+      />
 
-      <View
-        style={{
-          backgroundColor: colors.card,
-          borderColor: colors.border,
-          borderWidth: 1,
-          borderRadius: 24,
-          padding: 20,
-          gap: 18,
-        }}
-      >
-        <Text
-          style={{
-            color: colors.text,
-            fontSize: 24,
-            fontWeight: "900",
-            lineHeight: 31,
-          }}
-        >
-          {currentCard.question}
-        </Text>
+      {answered ? (
+        <ReviewFeedbackCard
+          card={currentCard}
+          isCorrect={!!isCorrect}
+          isMcq={!!isMcq}
+          feedbackText={feedbackText}
+        />
+      ) : null}
 
-        {isMcq ? (
-          <View style={{ gap: 10 }}>
-            {currentCard.options!.map((option, index) => {
-              const isSelected = selectedIndex === index;
-              const optionIsCorrect = currentCard.correctIndex === index;
-
-              let bg = colors.background;
-              let border = colors.border;
-              let textColor = colors.text;
-
-              if (answered) {
-                if (optionIsCorrect) {
-                  bg = "#DCFCE7";
-                  border = "#22C55E";
-                  textColor = "#166534";
-                } else if (isSelected) {
-                  bg = "#FEE2E2";
-                  border = "#EF4444";
-                  textColor = "#991B1B";
-                }
-              } else if (isSelected) {
-                bg = colors.primary;
-                border = colors.primary;
-                textColor = colors.primaryForeground;
-              }
-
-              return (
-                <Pressable
-                  key={`${option}-${index}`}
-                  onPress={() => handleSelectOption(index)}
-                  disabled={answered || submitting}
-                  style={{
-                    backgroundColor: bg,
-                    borderColor: border,
-                    borderWidth: 1,
-                    borderRadius: 16,
-                    padding: 15,
-                  }}
-                >
-                  <Text
-                    style={{
-                      color: textColor,
-                      fontSize: 15,
-                      fontWeight: "800",
-                      lineHeight: 21,
-                    }}
-                  >
-                    {String.fromCharCode(65 + index)}. {option}
-                  </Text>
-                </Pressable>
-              );
-            })}
-          </View>
-        ) : (
-          <View style={{ gap: 12 }}>
-            <Text style={{ color: colors.mutedText }}>
-              Bu eski formatta bir kart. Cevabı kontrol edip devam edebilirsin.
-            </Text>
-
-            <Pressable
-              onPress={() => {
-                setSelectedIndex(0);
-                setAnswered(true);
-              }}
-              disabled={answered}
-              style={{
-                backgroundColor: colors.primary,
-                paddingVertical: 14,
-                borderRadius: 14,
-                alignItems: "center",
-                opacity: answered ? 0.6 : 1,
-              }}
-            >
-              <Text
-                style={{
-                  color: colors.primaryForeground,
-                  fontWeight: "900",
-                }}
-              >
-                Cevabı göster
-              </Text>
-            </Pressable>
-
-            {answered ? (
-              <Text
-                style={{
-                  color: colors.text,
-                  fontSize: 17,
-                  fontWeight: "800",
-                }}
-              >
-                {currentCard.answer}
-              </Text>
-            ) : null}
-          </View>
-        )}
-      </View>
-
-      {answered && (
-        <View
-          style={{
-            backgroundColor: colors.card,
-            borderColor: isCorrect ? "#22C55E" : "#EF4444",
-            borderWidth: 1,
-            borderRadius: 20,
-            padding: 16,
-            gap: 10,
-          }}
-        >
-          <Text
-            style={{
-              color: isCorrect ? "#16A34A" : "#DC2626",
-              fontSize: 18,
-              fontWeight: "900",
-            }}
-          >
-            {isCorrect ? "Bravo!" : "Oops!"}
-          </Text>
-
-          <Text
-            style={{
-              color: colors.text,
-              fontSize: 15,
-              lineHeight: 22,
-            }}
-          >
-            {feedbackText}
-          </Text>
-
-          {!isCorrect && isMcq ? (
-            <Text
-              style={{
-                color: colors.mutedText,
-                lineHeight: 21,
-              }}
-            >
-              Doğru cevap: {currentCard.options?.[currentCard.correctIndex ?? 0]}
-            </Text>
-          ) : null}
-        </View>
-      )}
-
-      {answered && (
+      {answered ? (
         <Pressable
           onPress={submitResult}
           disabled={submitting}
@@ -496,7 +205,7 @@ export default function ReviewScreen() {
             {submitting ? "Kaydediliyor..." : "Devam et"}
           </Text>
         </Pressable>
-      )}
+      ) : null}
     </ScrollView>
   );
 }
