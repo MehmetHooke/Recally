@@ -1,21 +1,23 @@
-import { Ionicons } from "@expo/vector-icons";
 import { useAppTheme } from "@/src/theme/useTheme";
 import type { StudySet } from "@/src/types/study-set";
+import { Ionicons } from "@expo/vector-icons";
 import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import type { DimensionValue } from "react-native";
 import { Image, Text, View } from "react-native";
 
-function getProcessingMessage(seconds: number) {
-  if (seconds < 10) return "Video baglantisi kontrol ediliyor...";
-  if (seconds < 25) return "Videodaki ana fikirler cikariliyor...";
-  if (seconds < 45) return "Ozet ogrenilebilir parcalara ayriliyor...";
-  if (seconds < 65) return "Quiz sorulari hazirlaniyor...";
-  if (seconds < 85) return "Cevaplar ve aciklamalar kontrol ediliyor...";
-  return "Video uzun oldugu icin biraz daha suruyor. Setin hazirlaniyor...";
+function getProcessingMessage(seconds: number, t: (key: string) => string) {
+  if (seconds < 10) return t("detail.processing.steps.checkingConnection");
+  if (seconds < 25) return t("detail.processing.steps.extractingIdeas");
+  if (seconds < 45) return t("detail.processing.steps.splittingSummary");
+  if (seconds < 65) return t("detail.processing.steps.creatingQuiz");
+  if (seconds < 85) return t("detail.processing.steps.checkingAnswers");
+  return t("detail.processing.steps.takingLonger");
 }
 
 export function ProcessingSetDetail({ set }: { set: StudySet }) {
   const { colors } = useAppTheme();
+  const { t } = useTranslation("set");
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
 
   useEffect(() => {
@@ -25,7 +27,9 @@ export function ProcessingSetDetail({ set }: { set: StudySet }) {
         : Date.now();
 
     const updateElapsed = () => {
-      setElapsedSeconds(Math.max(0, Math.floor((Date.now() - startedAt) / 1000)));
+      setElapsedSeconds(
+        Math.max(0, Math.floor((Date.now() - startedAt) / 1000))
+      );
     };
 
     updateElapsed();
@@ -35,8 +39,8 @@ export function ProcessingSetDetail({ set }: { set: StudySet }) {
   }, [set.createdAt]);
 
   const statusMessage = useMemo(
-    () => getProcessingMessage(elapsedSeconds),
-    [elapsedSeconds]
+    () => getProcessingMessage(elapsedSeconds, t),
+    [elapsedSeconds, t]
   );
 
   return (
@@ -75,23 +79,12 @@ export function ProcessingSetDetail({ set }: { set: StudySet }) {
         </View>
 
         <View style={{ gap: 8 }}>
-          <Text
-            style={{
-              color: colors.text,
-              fontSize: 25,
-              fontWeight: "900",
-            }}
-          >
-            Video ogrenme setine donusturuluyor
+          <Text style={{ color: colors.text, fontSize: 25, fontWeight: "900" }}>
+            {t("detail.processing.title")}
           </Text>
 
-          <Text
-            style={{
-              color: colors.mutedText,
-              lineHeight: 21,
-            }}
-          >
-            Uzun videolarda bu islem 1-2 dakika surebilir.
+          <Text style={{ color: colors.mutedText, lineHeight: 21 }}>
+            {t("detail.processing.description")}
           </Text>
         </View>
 
@@ -111,17 +104,30 @@ export function ProcessingSetDetail({ set }: { set: StudySet }) {
               {statusMessage}
             </Text>
           </View>
-          <Text style={{ color: colors.mutedText }}>{elapsedSeconds} sn</Text>
+
+          <Text style={{ color: colors.mutedText }}>
+            {t("detail.processing.elapsedSeconds", {
+              seconds: elapsedSeconds,
+            })}
+          </Text>
         </View>
 
         <View style={{ gap: 10 }}>
           <TrustRow
-            icon={<Ionicons name="sparkles-outline" color={colors.primary} size={16} />}
-            text="1 saatlik videoyu birkac dakikalik ogrenme setine sikistiriyoruz."
+            icon={
+              <Ionicons
+                name="sparkles-outline"
+                color={colors.primary}
+                size={16}
+              />
+            }
+            text={t("detail.processing.trustRows.compress")}
           />
           <TrustRow
-            icon={<Ionicons name="bulb-outline" color={colors.primary} size={16} />}
-            text="Sorular sadece ozetten degil, videodaki ana fikirlerden hazirlaniyor."
+            icon={
+              <Ionicons name="bulb-outline" color={colors.primary} size={16} />
+            }
+            text={t("detail.processing.trustRows.mainIdeas")}
           />
           <TrustRow
             icon={
@@ -131,13 +137,13 @@ export function ProcessingSetDetail({ set }: { set: StudySet }) {
                 size={16}
               />
             }
-            text="Yanlis secenekler bile ogretici olacak sekilde kontrol ediliyor."
+            text={t("detail.processing.trustRows.answers")}
           />
         </View>
       </View>
 
       <SkeletonCard
-        title="Ozet hazirlaniyor"
+        title={t("detail.processing.skeleton.summaryTitle")}
         icon={
           <Ionicons
             name="document-text-outline"
@@ -152,7 +158,7 @@ export function ProcessingSetDetail({ set }: { set: StudySet }) {
       </SkeletonCard>
 
       <SkeletonCard
-        title="Ana kavramlar seciliyor"
+        title={t("detail.processing.skeleton.conceptsTitle")}
         icon={<Ionicons name="bulb-outline" color={colors.primary} size={18} />}
       >
         <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8 }}>
@@ -173,11 +179,11 @@ export function ProcessingSetDetail({ set }: { set: StudySet }) {
             )
           )}
         </View>
-        <OverlayLabel label="AI hazirliyor" />
+        <OverlayLabel label={t("detail.processing.aiPreparing")} />
       </SkeletonCard>
 
       <SkeletonCard
-        title="Quiz on izlemesi"
+        title={t("detail.processing.skeleton.quizPreviewTitle")}
         icon={
           <Ionicons
             name="checkmark-done-outline"
@@ -193,24 +199,22 @@ export function ProcessingSetDetail({ set }: { set: StudySet }) {
             fontWeight: "800",
           }}
         >
-          Question loading...
+          {t("detail.processing.skeleton.questionLoading")}
         </Text>
+
         <View style={{ gap: 10 }}>
           {["A", "B", "C", "D"].map((option) => (
             <View
               key={option}
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                gap: 10,
-              }}
+              style={{ flexDirection: "row", alignItems: "center", gap: 10 }}
             >
               <Text style={{ color: colors.mutedText }}>{option})</Text>
               <SkeletonLine width="78%" />
             </View>
           ))}
         </View>
-        <OverlayLabel label="AI hazirliyor" />
+
+        <OverlayLabel label={t("detail.processing.aiPreparing")} />
       </SkeletonCard>
     </View>
   );
@@ -222,13 +226,7 @@ function TrustRow({ icon, text }: { icon: React.ReactNode; text: string }) {
   return (
     <View style={{ flexDirection: "row", alignItems: "flex-start", gap: 10 }}>
       <View style={{ marginTop: 2 }}>{icon}</View>
-      <Text
-        style={{
-          flex: 1,
-          color: colors.mutedText,
-          lineHeight: 20,
-        }}
-      >
+      <Text style={{ flex: 1, color: colors.mutedText, lineHeight: 20 }}>
         {text}
       </Text>
     </View>
@@ -261,16 +259,11 @@ function SkeletonCard({
     >
       <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
         {icon}
-        <Text
-          style={{
-            color: colors.text,
-            fontSize: 17,
-            fontWeight: "900",
-          }}
-        >
+        <Text style={{ color: colors.text, fontSize: 17, fontWeight: "900" }}>
           {title}
         </Text>
       </View>
+
       {children}
     </View>
   );
