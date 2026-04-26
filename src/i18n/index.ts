@@ -3,12 +3,20 @@ import * as Localization from "expo-localization";
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 
-import en from "./resources/en/common.json";
-import tr from "./resources/tr/common.json";
+import enAuth from "./resources/en/auth.json";
+import enCommon from "./resources/en/common.json";
+import trAuth from "./resources/tr/auth.json";
+import trCommon from "./resources/tr/common.json";
 
 const resources = {
-  en: { translation: en },
-  tr: { translation: tr },
+  en: {
+    common: enCommon,
+    auth: enAuth,
+  },
+  tr: {
+    common: trCommon,
+    auth: trAuth,
+  },
 };
 
 const LANGUAGE_KEY = "user-language";
@@ -33,6 +41,8 @@ export const initI18n = async () => {
     resources,
     lng: lang,
     fallbackLng: "en",
+    ns: ["common", "auth"],
+    defaultNS: "common",
     interpolation: {
       escapeValue: false,
     },

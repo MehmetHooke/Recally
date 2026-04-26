@@ -1,43 +1,59 @@
 import "@/global.css";
+import { AuthProvider, useAuth } from "@/src/context/AuthContext";
+import { initI18n } from "@/src/i18n";
 import { ThemeProvider } from "@/src/theme/ThemeProvider";
 import { Stack } from "expo-router";
+import { useEffect, useState } from "react";
 import { ActivityIndicator, View } from "react-native";
-import { AuthProvider, useAuth } from "../src/context/AuthContext";
+
+function AppLoading() {
+  return (
+    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      <ActivityIndicator size="large" />
+    </View>
+  );
+}
 
 function RootLayoutInner() {
   const { user, loading } = useAuth();
 
-
-
   if (loading) {
-    return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <ActivityIndicator size="large" />
-      </View>
-    );
+    return <AppLoading />;
   }
 
   return (
     <Stack screenOptions={{ headerShown: false }}>
       {!user ? (
-        <Stack.Screen options={{headerShown:false}} name="(auth)" />
+        <Stack.Screen name="(auth)" options={{ headerShown: false }} />
       ) : (
-        <Stack.Screen options={{headerShown:false}} name="(tabs)" />
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       )}
     </Stack>
   );
 }
 
 export default function RootLayout() {
+  const [i18nReady, setI18nReady] = useState(false);
+
+  useEffect(() => {
+    initI18n()
+      .catch((error) => {
+        console.log("i18n init error:", error);
+      })
+      .finally(() => {
+        setI18nReady(true);
+      });
+  }, []);
+
+  if (!i18nReady) {
+    return <AppLoading />;
+  }
+
   return (
     <ThemeProvider>
-
       <AuthProvider>
-      
-        <RootLayoutInner  />
-      
+        <RootLayoutInner />
       </AuthProvider>
-    
     </ThemeProvider>
   );
 }

@@ -1,5 +1,6 @@
 import { router } from "expo-router";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   ActivityIndicator,
   KeyboardAvoidingView,
@@ -14,6 +15,7 @@ import { useAppTheme } from "../../src/theme/useTheme";
 
 export default function RegisterScreen() {
   const { colors } = useAppTheme();
+  const { t } = useTranslation("auth");
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -23,17 +25,17 @@ export default function RegisterScreen() {
 
   const handleRegister = async () => {
     if (!email.trim() || !password.trim() || !passwordAgain.trim()) {
-      setErrorMessage("Tüm alanları doldurmalısın.");
+      setErrorMessage(t("register.errors.requiredFields"));
       return;
     }
 
     if (password !== passwordAgain) {
-      setErrorMessage("Şifreler aynı olmak zorunda.");
+      setErrorMessage(t("register.errors.passwordsDoNotMatch"));
       return;
     }
 
     if (password.length < 6) {
-      setErrorMessage("Şifre en az 6 karakter olmalı.");
+      setErrorMessage(t("register.errors.passwordTooShort"));
       return;
     }
 
@@ -44,7 +46,7 @@ export default function RegisterScreen() {
       router.replace("/(tabs)");
     } catch (error) {
       console.log("Register error:", error);
-      setErrorMessage("Kayıt oluşturulamadı. Bilgilerini kontrol et.");
+      setErrorMessage(t("register.errors.createFailed"));
     } finally {
       setLoading(false);
     }
@@ -85,7 +87,7 @@ export default function RegisterScreen() {
               lineHeight: 40,
             }}
           >
-            Kendi içeriklerinden akıllı kartlar oluştur
+            {t("register.heroTitle")}
           </Text>
 
           <Text
@@ -95,8 +97,7 @@ export default function RegisterScreen() {
               lineHeight: 22,
             }}
           >
-            Notlarını, metinlerini ve çalışma içeriklerini tekrar edilebilir
-            öğrenme kartlarına dönüştür.
+            {t("register.heroSubtitle")}
           </Text>
         </View>
 
@@ -117,11 +118,11 @@ export default function RegisterScreen() {
               fontWeight: "900",
             }}
           >
-            Hesap oluştur
+            {t("register.title")}
           </Text>
 
           <TextInput
-            placeholder="Email"
+            placeholder={t("register.emailPlaceholder")}
             placeholderTextColor={colors.mutedText}
             value={email}
             onChangeText={setEmail}
@@ -140,7 +141,7 @@ export default function RegisterScreen() {
           />
 
           <TextInput
-            placeholder="Şifre"
+            placeholder={t("register.passwordPlaceholder")}
             placeholderTextColor={colors.mutedText}
             value={password}
             onChangeText={setPassword}
@@ -158,7 +159,7 @@ export default function RegisterScreen() {
           />
 
           <TextInput
-            placeholder="Şifre tekrar"
+            placeholder={t("register.passwordAgainPlaceholder")}
             placeholderTextColor={colors.mutedText}
             value={passwordAgain}
             onChangeText={setPasswordAgain}
@@ -208,7 +209,7 @@ export default function RegisterScreen() {
                   fontSize: 15,
                 }}
               >
-                Kayıt ol
+                {t("register.submit")}
               </Text>
             )}
           </Pressable>
@@ -226,9 +227,9 @@ export default function RegisterScreen() {
                 fontWeight: "700",
               }}
             >
-              Zaten hesabın var mı?{" "}
+              {t("register.hasAccount")}{" "}
               <Text style={{ color: colors.primary, fontWeight: "900" }}>
-                Giriş yap
+                {t("register.login")}
               </Text>
             </Text>
           </Pressable>

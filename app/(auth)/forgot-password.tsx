@@ -1,5 +1,6 @@
 import { router } from "expo-router";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
     ActivityIndicator,
     KeyboardAvoidingView,
@@ -14,6 +15,7 @@ import { useAppTheme } from "../../src/theme/useTheme";
 
 export default function ForgotPasswordScreen() {
   const { colors } = useAppTheme();
+  const { t } = useTranslation("auth");
 
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
@@ -22,7 +24,7 @@ export default function ForgotPasswordScreen() {
 
   const handleResetPassword = async () => {
     if (!email.trim()) {
-      setErrorMessage("Email adresini yazmalısın.");
+      setErrorMessage(t("forgotPassword.errors.emailRequired"));
       return;
     }
 
@@ -31,14 +33,12 @@ export default function ForgotPasswordScreen() {
       setMessage("");
       setErrorMessage("");
 
-      await sendResetPasswordEmail(email);
+      await sendResetPasswordEmail(email.trim());
 
-      setMessage(
-        "Eğer bu email ile kayıtlı bir hesap varsa, şifre sıfırlama bağlantısı gönderildi."
-      );
+      setMessage(t("forgotPassword.successMessage"));
     } catch (error) {
       console.log("Password reset error:", error);
-      setErrorMessage("Şu anda sıfırlama maili gönderilemedi.");
+      setErrorMessage(t("forgotPassword.errors.sendFailed"));
     } finally {
       setLoading(false);
     }
@@ -79,7 +79,7 @@ export default function ForgotPasswordScreen() {
               lineHeight: 40,
             }}
           >
-            Şifreni mi unuttun?
+            {t("forgotPassword.heroTitle")}
           </Text>
 
           <Text
@@ -89,8 +89,7 @@ export default function ForgotPasswordScreen() {
               lineHeight: 22,
             }}
           >
-            Email adresini yaz. Kayıtlı hesabın varsa sana şifre sıfırlama
-            bağlantısı gönderelim.
+            {t("forgotPassword.heroSubtitle")}
           </Text>
         </View>
 
@@ -111,11 +110,11 @@ export default function ForgotPasswordScreen() {
               fontWeight: "900",
             }}
           >
-            Şifre sıfırla
+            {t("forgotPassword.title")}
           </Text>
 
           <TextInput
-            placeholder="Email"
+            placeholder={t("forgotPassword.emailPlaceholder")}
             placeholderTextColor={colors.mutedText}
             value={email}
             onChangeText={setEmail}
@@ -179,7 +178,7 @@ export default function ForgotPasswordScreen() {
                   fontSize: 15,
                 }}
               >
-                Sıfırlama maili gönder
+                {t("forgotPassword.submit")}
               </Text>
             )}
           </Pressable>
@@ -197,7 +196,7 @@ export default function ForgotPasswordScreen() {
                 fontWeight: "900",
               }}
             >
-              Giriş ekranına dön
+              {t("forgotPassword.backToLogin")}
             </Text>
           </Pressable>
         </View>

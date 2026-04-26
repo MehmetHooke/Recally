@@ -1,5 +1,6 @@
 import { router } from "expo-router";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   ActivityIndicator,
   KeyboardAvoidingView,
@@ -14,6 +15,7 @@ import { useAppTheme } from "../../src/theme/useTheme";
 
 export default function LoginScreen() {
   const { colors } = useAppTheme();
+  const { t } = useTranslation("auth");
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -22,7 +24,7 @@ export default function LoginScreen() {
 
   const handleLogin = async () => {
     if (!email.trim() || !password.trim()) {
-      setErrorMessage("Email ve şifre gerekli.");
+      setErrorMessage(t("login.errors.requiredFields"));
       return;
     }
 
@@ -33,7 +35,7 @@ export default function LoginScreen() {
       router.replace("/(tabs)");
     } catch (error) {
       console.log("Login error:", error);
-      setErrorMessage("Giriş yapılamadı. Bilgilerini kontrol et.");
+      setErrorMessage(t("login.errors.invalidCredentials"));
     } finally {
       setLoading(false);
     }
@@ -74,7 +76,7 @@ export default function LoginScreen() {
               lineHeight: 40,
             }}
           >
-            Öğrenmeye kaldığın yerden devam et
+            {t("login.heroTitle")}
           </Text>
 
           <Text
@@ -84,8 +86,7 @@ export default function LoginScreen() {
               lineHeight: 22,
             }}
           >
-            Kartlarını tekrar et, zayıf noktalarını güçlendir ve öğrendiklerini
-            unutma.
+            {t("login.heroSubtitle")}
           </Text>
         </View>
 
@@ -106,11 +107,11 @@ export default function LoginScreen() {
               fontWeight: "900",
             }}
           >
-            Giriş yap
+            {t("login.title")}
           </Text>
 
           <TextInput
-            placeholder="Email"
+            placeholder={t("login.emailPlaceholder")}
             placeholderTextColor={colors.mutedText}
             value={email}
             onChangeText={setEmail}
@@ -129,7 +130,7 @@ export default function LoginScreen() {
           />
 
           <TextInput
-            placeholder="Şifre"
+            placeholder={t("login.passwordPlaceholder")}
             placeholderTextColor={colors.mutedText}
             value={password}
             onChangeText={setPassword}
@@ -145,6 +146,7 @@ export default function LoginScreen() {
               fontWeight: "600",
             }}
           />
+
           <Pressable
             onPress={() => router.push("/(auth)/forgot-password")}
             style={{
@@ -158,7 +160,7 @@ export default function LoginScreen() {
                 fontSize: 13,
               }}
             >
-              Şifremi unuttum
+              {t("login.forgotPassword")}
             </Text>
           </Pressable>
 
@@ -195,7 +197,7 @@ export default function LoginScreen() {
                   fontSize: 15,
                 }}
               >
-                Giriş yap
+                {t("login.submit")}
               </Text>
             )}
           </Pressable>
@@ -213,9 +215,9 @@ export default function LoginScreen() {
                 fontWeight: "700",
               }}
             >
-              Hesabın yok mu?{" "}
+              {t("login.noAccount")}{" "}
               <Text style={{ color: colors.primary, fontWeight: "900" }}>
-                Kayıt ol
+                {t("login.register")}
               </Text>
             </Text>
           </Pressable>
