@@ -1,0 +1,59 @@
+{
+    "add": {
+        "title": "Oluştur",
+        "subtitle": "Öğrendiğin içeriği saniyeler içinde özet ve soru kartlarına çevir.",
+        "youtubeCard": {
+            "title": "YouTube videosunu teste çevir",
+            "description": "Linki yapıştır. Recallly videoyu öğrenilebilir özet, ana kavramlar ve quiz kartlarına dönüştürsün.",
+            "placeholder": "https://youtube.com/watch?v=...",
+            "submitButton": "Videoyu öğrenme setine çevir",
+            "loadingButton": "Set hazırlanıyor..."
+        },
+        "otherSources": {
+            "title": "Diğer kaynaklar",
+            "pasteText": "Metin yapıştır",
+            "pdfUpload": "PDF yükle · yakında",
+            "textModeComingSoonMessage": "Metin modu önceki akışta çalışıyor. Ana deneyimi YouTube üzerine kuruyoruz.",
+            "pdfComingSoonMessage": "PDF desteği sonra eklenecek."
+        },
+        "alerts": {
+            "errorTitle": "Hata",
+            "comingSoonTitle": "Yakında",
+            "emptyYoutubeUrl": "Lütfen bir YouTube linki gir.",
+            "invalidYoutubeUrl": "Geçerli bir YouTube linki gir."
+        },
+        "errors": {
+            "setCreateFailed": "Set oluşturulamadı.",
+            "videoProcessingFailed": "Video işlenirken bir hata oluştu."
+        }
+    },
+    "navbar": {
+        "home": "Ana sayfa",
+        "create": "Oluştur",
+        "library": "Kütüphane",
+        "settings": "Ayarlar"
+    },
+    "settings": {
+        "title": "Ayarlar",
+        "theme": {
+            "title": "Tema",
+            "light": "Açık tema",
+            "dark": "Koyu tema"
+        },
+        "language": {
+            "title": "Dil",
+            "turkish": "Türkçe",
+            "english": "İngilizce"
+        },
+        "notifications": {
+            "title": "Bildirimler",
+            "description": "Günlük hatırlatıcı yakında eklenecek."
+        },
+        "premium": {
+            "title": "Premium",
+            "description": "Sınırsız set ve AI üretimi yakında.",
+            "button": "Yükselt · yakında"
+        },
+        "logout": "Çıkış yap"
+    }
+}

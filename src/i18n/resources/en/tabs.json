@@ -1,0 +1,59 @@
+{
+    "add": {
+        "title": "Create",
+        "subtitle": "Turn what you are learning into summaries and question cards in seconds.",
+        "youtubeCard": {
+            "title": "Turn a YouTube video into a quiz",
+            "description": "Paste the link. Let Recallly turn the video into a learnable summary, key concepts, and quiz cards.",
+            "placeholder": "https://youtube.com/watch?v=...",
+            "submitButton": "Turn video into a learning set",
+            "loadingButton": "Preparing set..."
+        },
+        "otherSources": {
+            "title": "Other sources",
+            "pasteText": "Paste text",
+            "pdfUpload": "Upload PDF · coming soon",
+            "textModeComingSoonMessage": "Text mode works in the previous flow. We are building the main experience around YouTube.",
+            "pdfComingSoonMessage": "PDF support will be added later."
+        },
+        "alerts": {
+            "errorTitle": "Error",
+            "comingSoonTitle": "Coming soon",
+            "emptyYoutubeUrl": "Please enter a YouTube link.",
+            "invalidYoutubeUrl": "Please enter a valid YouTube link."
+        },
+        "errors": {
+            "setCreateFailed": "Could not create the set.",
+            "videoProcessingFailed": "Something went wrong while processing the video."
+        }
+    },
+    "navbar": {
+        "home": "Home",
+        "create": "Create",
+        "library": "Library",
+        "settings": "Settings"
+    },
+    "settings": {
+        "title": "Settings",
+        "theme": {
+            "title": "Theme",
+            "light": "Light mode",
+            "dark": "Dark mode"
+        },
+        "language": {
+            "title": "Language",
+            "turkish": "Turkish",
+            "english": "English"
+        },
+        "notifications": {
+            "title": "Notifications",
+            "description": "Daily reminders will be added soon."
+        },
+        "premium": {
+            "title": "Premium",
+            "description": "Unlimited sets and AI generation coming soon.",
+            "button": "Upgrade · coming soon"
+        },
+        "logout": "Log out"
+    }
+}

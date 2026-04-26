@@ -1,11 +1,101 @@
+import { changeAppLanguage } from "@/src/i18n";
 import { logout } from "@/src/services/auth";
 import { useAppTheme } from "@/src/theme/useTheme";
 import { useRouter } from "expo-router";
-import { Pressable, Switch, Text, View } from "react-native";
+import { useState } from "react";
+import { useTranslation } from "react-i18next";
+import {
+  Image,
+  KeyboardAvoidingView,
+  LayoutAnimation,
+  Platform,
+  Pressable,
+  ScrollView,
+  Text,
+  UIManager,
+  View
+} from "react-native";
+
+const trFlag = require("@/src/assets/images/tr-flag.png");
+const enFlag = require("@/src/assets/images/en-flag.png");
+
+function Accordion({
+  title,
+  children,
+}: {
+  title: string;
+  children: React.ReactNode;
+}) {
+  const { colors } = useAppTheme();
+  const [open, setOpen] = useState(false);
+
+
+  const toggle = () => {
+    LayoutAnimation.configureNext({
+      duration: 420,
+      create: {
+        type: LayoutAnimation.Types.easeInEaseOut,
+        property: LayoutAnimation.Properties.opacity,
+      },
+      update: {
+        type: LayoutAnimation.Types.easeInEaseOut,
+      },
+      delete: {
+        type: LayoutAnimation.Types.easeInEaseOut,
+        property: LayoutAnimation.Properties.opacity,
+      },
+    });
+
+    setOpen((prev) => !prev);
+  };
+
+  return (
+    <View
+      style={{
+        backgroundColor: colors.card,
+        borderColor: colors.border,
+        borderWidth: 1,
+        borderRadius: 16,
+        padding: 16,
+        overflow: "hidden",
+      }}
+    >
+      <Pressable
+        onPress={toggle}
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <Text style={{ color: colors.text, fontWeight: "800", fontSize: 16 }}>
+          {title}
+        </Text>
+
+        <Text style={{ color: colors.mutedText, fontWeight: "900" }}>
+          {open ? "−" : "+"}
+        </Text>
+      </Pressable>
+
+      {open ? <View style={{ marginTop: 14 }}>{children}</View> : null}
+    </View>
+  );
+}
 
 export default function SettingsScreen() {
   const { colors, mode, toggleTheme } = useAppTheme();
+
+  if (Platform.OS === "android") {
+    UIManager.setLayoutAnimationEnabledExperimental?.(true);
+  }
   const router = useRouter();
+  const { t, i18n } = useTranslation("tabs");
+
+  const currentLanguage = i18n.language === "tr" ? "tr" : "en";
+
+  const handleLanguageChange = async (lang: "tr" | "en") => {
+    await changeAppLanguage(lang);
+  };
 
   const handleLogout = async () => {
     try {
@@ -17,152 +107,199 @@ export default function SettingsScreen() {
   };
 
   return (
-    <View
-      style={{
-        flex: 1,
-        backgroundColor: colors.background,
-        padding: 20,
-        gap: 20,
-      }}
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
+      style={{ flex: 1, backgroundColor: colors.background }}
     >
-      {/* Header */}
-      <Text
-        style={{
-          fontSize: 28,
-          fontWeight: "800",
-          color: colors.text,
-        }}
-      >
-        Settings
-      </Text>
-
-      {/* Theme */}
-      <View
-        style={{
-          backgroundColor: colors.card,
-          borderColor: colors.border,
-          borderWidth: 1,
-          borderRadius: 16,
-          padding: 16,
+      <ScrollView
+        style={{ flex: 1 }}
+        contentContainerStyle={{
+          padding: 20,
+          paddingBottom: 120,
+          gap: 20,
         }}
       >
         <Text
           style={{
+            fontSize: 28,
+            fontWeight: "900",
             color: colors.text,
-            fontWeight: "700",
-            marginBottom: 10,
           }}
         >
-          Theme
+          {t("settings.title")}
         </Text>
+
+        <Accordion title={t("settings.theme.title")}>
+          <View style={{ gap: 10 }}>
+            <Pressable
+              onPress={() => {
+                if (mode !== "light") toggleTheme();
+              }}
+              style={{
+                padding: 12,
+                borderRadius: 14,
+                borderWidth: 1,
+                borderColor: mode === "light" ? colors.primary : colors.border,
+                backgroundColor: colors.background,
+              }}
+            >
+              <Text style={{ color: colors.text, fontWeight: "800" }}>
+                {t("settings.theme.light")}
+              </Text>
+            </Pressable>
+
+            <Pressable
+              onPress={() => {
+                if (mode !== "dark") toggleTheme();
+              }}
+              style={{
+                padding: 12,
+                borderRadius: 14,
+                borderWidth: 1,
+                borderColor: mode === "dark" ? colors.primary : colors.border,
+                backgroundColor: colors.background,
+              }}
+            >
+              <Text style={{ color: colors.text, fontWeight: "800" }}>
+                {t("settings.theme.dark")}
+              </Text>
+            </Pressable>
+          </View>
+        </Accordion>
+
+        <Accordion title={t("settings.language.title")}>
+          <View style={{ gap: 10 }}>
+            <Pressable
+              onPress={() => handleLanguageChange("tr")}
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                gap: 10,
+                padding: 12,
+                borderRadius: 14,
+                borderWidth: 1,
+                borderColor:
+                  currentLanguage === "tr" ? colors.primary : colors.border,
+                backgroundColor: colors.background,
+              }}
+            >
+              <Image source={trFlag} style={{ width: 26, height: 26 }} />
+              <Text style={{ color: colors.text, fontWeight: "800" }}>
+                {t("settings.language.turkish")}
+              </Text>
+            </Pressable>
+
+            <Pressable
+              onPress={() => handleLanguageChange("en")}
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                gap: 10,
+                padding: 12,
+                borderRadius: 14,
+                borderWidth: 1,
+                borderColor:
+                  currentLanguage === "en" ? colors.primary : colors.border,
+                backgroundColor: colors.background,
+              }}
+            >
+              <Image source={enFlag} style={{ width: 26, height: 26 }} />
+              <Text style={{ color: colors.text, fontWeight: "800" }}>
+                {t("settings.language.english")}
+              </Text>
+            </Pressable>
+          </View>
+        </Accordion>
 
         <View
           style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
+            backgroundColor: colors.card,
+            borderColor: colors.border,
+            borderWidth: 1,
+            borderRadius: 16,
+            padding: 16,
           }}
         >
-          <Text style={{ color: colors.text }}>
-            {mode === "light" ? "Light Mode" : "Dark Mode"}
+          <Text
+            style={{
+              color: colors.text,
+              fontWeight: "800",
+              marginBottom: 10,
+              fontSize: 16,
+            }}
+          >
+            {t("settings.notifications.title")}
           </Text>
 
-          <Switch
-            value={mode === "dark"}
-            onValueChange={toggleTheme}
-          />
+          <Text style={{ color: colors.mutedText }}>
+            {t("settings.notifications.description")}
+          </Text>
         </View>
-      </View>
 
-      {/* Notifications (placeholder) */}
-      <View
-        style={{
-          backgroundColor: colors.card,
-          borderColor: colors.border,
-          borderWidth: 1,
-          borderRadius: 16,
-          padding: 16,
-        }}
-      >
-        <Text
+        <View
           style={{
-            color: colors.text,
-            fontWeight: "700",
-            marginBottom: 10,
+            backgroundColor: colors.card,
+            borderColor: colors.border,
+            borderWidth: 1,
+            borderRadius: 16,
+            padding: 16,
           }}
         >
-          Notifications
-        </Text>
+          <Text
+            style={{
+              color: colors.text,
+              fontWeight: "800",
+              marginBottom: 10,
+              fontSize: 16,
+            }}
+          >
+            {t("settings.premium.title")}
+          </Text>
 
-        <Text style={{ color: colors.mutedText }}>
-          Daily reminder yakında eklenecek.
-        </Text>
-      </View>
+          <Text style={{ color: colors.mutedText }}>
+            {t("settings.premium.description")}
+          </Text>
 
-      {/* Premium (placeholder) */}
-      <View
-        style={{
-          backgroundColor: colors.card,
-          borderColor: colors.border,
-          borderWidth: 1,
-          borderRadius: 16,
-          padding: 16,
-        }}
-      >
-        <Text
-          style={{
-            color: colors.text,
-            fontWeight: "700",
-            marginBottom: 10,
-          }}
-        >
-          Premium
-        </Text>
-
-        <Text style={{ color: colors.mutedText }}>
-          Sınırsız set ve AI üretimi yakında.
-        </Text>
+          <Pressable
+            style={{
+              marginTop: 10,
+              backgroundColor: colors.primary,
+              padding: 12,
+              borderRadius: 12,
+              alignItems: "center",
+            }}
+          >
+            <Text
+              style={{
+                color: colors.primaryForeground,
+                fontWeight: "800",
+              }}
+            >
+              {t("settings.premium.button")}
+            </Text>
+          </Pressable>
+        </View>
 
         <Pressable
+          onPress={handleLogout}
           style={{
-            marginTop: 10,
+            marginTop: 20,
             backgroundColor: colors.primary,
-            padding: 12,
-            borderRadius: 12,
+            padding: 14,
+            borderRadius: 14,
             alignItems: "center",
           }}
         >
           <Text
             style={{
               color: colors.primaryForeground,
-              fontWeight: "700",
+              fontWeight: "900",
             }}
           >
-            Upgrade (yakında)
+            {t("settings.logout")}
           </Text>
         </Pressable>
-      </View>
-
-      {/* Logout */}
-      <Pressable
-        onPress={handleLogout}
-        style={{
-          marginTop: "auto",
-          backgroundColor: colors.primary,
-          padding: 14,
-          borderRadius: 14,
-          alignItems: "center",
-        }}
-      >
-        <Text
-          style={{
-            color: colors.primaryForeground,
-            fontWeight: "800",
-          }}
-        >
-          Çıkış Yap
-        </Text>
-      </Pressable>
-    </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
