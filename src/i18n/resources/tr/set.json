@@ -25,6 +25,13 @@
                 "summary": "Özet",
                 "keyConcepts": "Ana kavramlar",
                 "source": "Kaynak"
+            },
+            "failed": {
+                "title": "Video işlenemedi",
+                "description": "Bu bazen video erişimi, uzunluk veya AI yoğunluğundan olabilir.",
+                "savedLink": "Kaydedilen link",
+                "retryButton": "Tekrar dene",
+                "newLinkButton": "Yeni link ekle"
             }
         }
     }

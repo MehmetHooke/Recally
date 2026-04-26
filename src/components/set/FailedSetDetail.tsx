@@ -1,11 +1,13 @@
-import { Ionicons } from "@expo/vector-icons";
-import type { StudySet } from "@/src/types/study-set";
 import { useAppTheme } from "@/src/theme/useTheme";
+import type { StudySet } from "@/src/types/study-set";
+import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
+import { useTranslation } from "react-i18next";
 import { Pressable, Text, View } from "react-native";
 
 export function FailedSetDetail({ set }: { set: StudySet }) {
   const { colors } = useAppTheme();
+  const { t } = useTranslation("set");
 
   return (
     <View
@@ -47,7 +49,7 @@ export function FailedSetDetail({ set }: { set: StudySet }) {
               fontWeight: "900",
             }}
           >
-            Video islenemedi
+            {t("detail.failed.title")}
           </Text>
 
           <Text
@@ -56,7 +58,7 @@ export function FailedSetDetail({ set }: { set: StudySet }) {
               lineHeight: 21,
             }}
           >
-            Bu bazen video erisimi, uzunluk veya AI yogunlugundan olabilir.
+            {t("detail.failed.description")}
           </Text>
 
           {set.errorMessage ? (
@@ -82,8 +84,9 @@ export function FailedSetDetail({ set }: { set: StudySet }) {
           }}
         >
           <Text style={{ color: colors.text, fontWeight: "800" }}>
-            Kaydedilen link
+            {t("detail.failed.savedLink")}
           </Text>
+
           <Text style={{ color: colors.mutedText, lineHeight: 20 }}>
             {set.sourceText}
           </Text>
@@ -101,14 +104,18 @@ export function FailedSetDetail({ set }: { set: StudySet }) {
             gap: 8,
           }}
         >
-          <Ionicons name="refresh-outline" color={colors.primaryForeground} size={18} />
+          <Ionicons
+            name="refresh-outline"
+            color={colors.primaryForeground}
+            size={18}
+          />
           <Text
             style={{
               color: colors.primaryForeground,
               fontWeight: "900",
             }}
           >
-            Tekrar dene
+            {t("detail.failed.retryButton")}
           </Text>
         </Pressable>
 
@@ -124,7 +131,7 @@ export function FailedSetDetail({ set }: { set: StudySet }) {
           }}
         >
           <Text style={{ color: colors.text, fontWeight: "900" }}>
-            Yeni link ekle
+            {t("detail.failed.newLinkButton")}
           </Text>
         </Pressable>
       </View>
