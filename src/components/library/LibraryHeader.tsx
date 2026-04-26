@@ -1,8 +1,10 @@
 import { useAppTheme } from "@/src/theme/useTheme";
+import { useTranslation } from "react-i18next";
 import { Text, View } from "react-native";
 
 export function LibraryHeader() {
   const { colors } = useAppTheme();
+  const { t } = useTranslation("tabs");
 
   return (
     <View>
@@ -13,7 +15,7 @@ export function LibraryHeader() {
           color: colors.text,
         }}
       >
-        Library
+        {t("library.header.title")}
       </Text>
 
       <Text
@@ -24,8 +26,7 @@ export function LibraryHeader() {
           lineHeight: 21,
         }}
       >
-        Burası sadece arşiv değil. Recallly kullandıkça öğrenme durumun burada
-        şekillenir.
+        {t("library.header.description")}
       </Text>
     </View>
   );

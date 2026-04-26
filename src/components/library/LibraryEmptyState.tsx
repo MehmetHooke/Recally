@@ -1,4 +1,5 @@
 import { useAppTheme } from "@/src/theme/useTheme";
+import { useTranslation } from "react-i18next";
 import { Pressable, Text, View } from "react-native";
 
 type Props = {
@@ -7,6 +8,7 @@ type Props = {
 
 export function LibraryEmptyState({ onCreatePress }: Props) {
   const { colors } = useAppTheme();
+  const { t } = useTranslation("tabs");
 
   return (
     <View
@@ -21,12 +23,11 @@ export function LibraryEmptyState({ onCreatePress }: Props) {
       }}
     >
       <Text style={{ color: colors.text, fontSize: 18, fontWeight: "900" }}>
-        Henüz burada bir şey yok
+        {t("library.empty.title")}
       </Text>
 
       <Text style={{ color: colors.mutedText, fontSize: 15, lineHeight: 21 }}>
-        YouTube linki ekle, Recallly onu saniyeler içinde özet ve soru
-        kartlarına çevirsin.
+        {t("library.empty.description")}
       </Text>
 
       <Pressable
@@ -40,7 +41,7 @@ export function LibraryEmptyState({ onCreatePress }: Props) {
         }}
       >
         <Text style={{ color: colors.primaryForeground, fontWeight: "900" }}>
-          İlk videonu teste çevir
+          {t("library.empty.button")}
         </Text>
       </Pressable>
     </View>

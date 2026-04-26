@@ -93,5 +93,42 @@
             "description": "Add your first piece of content. Recallly will turn it into question cards in seconds.",
             "button": "Create your first set"
         }
+    },
+    "library": {
+        "dueReminder": {
+            "title": "{{count}} cards at risk of being forgotten",
+            "description": "Reviewing these cards now will help make the knowledge stick."
+        },
+        "learning": {
+            "title": "Learning Intelligence",
+            "description": "Your overall progress is {{progress}}%. Due cards highlight where you're at risk of forgetting."
+        },
+        "stats": {
+            "sets": "Sets",
+            "cards": "Cards",
+            "review": "Review"
+        },
+        "empty": {
+            "title": "Nothing here yet",
+            "description": "Add a YouTube link and let Recallly turn it into summaries and question cards in seconds.",
+            "button": "Turn your first video into a quiz"
+        },
+        "filters": {
+            "all": "All",
+            "due": "Due",
+            "mastered": "Mastered"
+        },
+        "header": {
+            "title": "Library",
+            "description": "This is not just an archive. As you use Recallly, your learning state evolves here."
+        },
+        "setCard": {
+            "youtubeSource": "YouTube Video",
+            "textSource": "Text content",
+            "cardsBadge": "{{count}} cards",
+            "dueBadge": "{{count}} due",
+            "masteredBadge": "{{progress}}% mastered",
+            "cta": "Read summary and test yourself →"
+        }
     }
 }

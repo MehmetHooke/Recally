@@ -1,4 +1,5 @@
 import { useAppTheme } from "@/src/theme/useTheme";
+import { useTranslation } from "react-i18next";
 import { Pressable, Text, View } from "react-native";
 
 export type FilterType = "all" | "due" | "mastered";
@@ -9,12 +10,22 @@ type Props = {
 };
 
 export function LibraryFilters({ filter, onChange }: Props) {
+  const { t } = useTranslation("tabs");
+
   return (
     <View style={{ flexDirection: "row", gap: 8 }}>
-      <FilterButton label="All" active={filter === "all"} onPress={() => onChange("all")} />
-      <FilterButton label="Due" active={filter === "due"} onPress={() => onChange("due")} />
       <FilterButton
-        label="Mastered"
+        label={t("library.filters.all")}
+        active={filter === "all"}
+        onPress={() => onChange("all")}
+      />
+      <FilterButton
+        label={t("library.filters.due")}
+        active={filter === "due"}
+        onPress={() => onChange("due")}
+      />
+      <FilterButton
+        label={t("library.filters.mastered")}
         active={filter === "mastered"}
         onPress={() => onChange("mastered")}
       />

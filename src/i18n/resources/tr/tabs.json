@@ -57,41 +57,78 @@
         "logout": "Çıkış yap"
     },
     "home": {
-    "fallbackUserName": "Mehmet",
-    "welcome": "Hoş geldin, {{name}}",
-    "title": "Bugün neyi hatırlayalım?",
-    "review": {
-      "title": "Bugünkü tekrar",
-      "hasDueDescription": "Bugün tekrar etmen gereken kartlar var. Şimdi çözersen unutma riskini azaltırsın.",
-      "noDueDescription": "Bugün bekleyen tekrar yok. Yeni bir içerik ekleyip kendini test edebilirsin.",
-      "startButton": "Tekrara başla",
-      "createButton": "Yeni kartlar oluştur"
+        "fallbackUserName": "Mehmet",
+        "welcome": "Hoş geldin, {{name}}",
+        "title": "Bugün neyi hatırlayalım?",
+        "review": {
+            "title": "Bugünkü tekrar",
+            "hasDueDescription": "Bugün tekrar etmen gereken kartlar var. Şimdi çözersen unutma riskini azaltırsın.",
+            "noDueDescription": "Bugün bekleyen tekrar yok. Yeni bir içerik ekleyip kendini test edebilirsin.",
+            "startButton": "Tekrara başla",
+            "createButton": "Yeni kartlar oluştur"
+        },
+        "progress": {
+            "title": "Öğrenme ilerlemesi",
+            "description": "Bu konuların yaklaşık %{{progress}} kadarını güçlü seviyeye taşıdın."
+        },
+        "stats": {
+            "sets": "Set",
+            "cards": "Kart",
+            "due": "Bekleyen"
+        },
+        "weakSpot": {
+            "title": "Zayıf nokta",
+            "subtitle": "Bu kartları 2 gün içinde unutabilirsin",
+            "description": "Şimdilik mock gösteriyoruz. Sonraki adımda yanlış yaptığın kartlardan gerçek zayıf alanlarını çıkaracağız.",
+            "button": "Eksiklerimi düzelt"
+        },
+        "recent": {
+            "title": "Son setler",
+            "viewAll": "Tümünü gör",
+            "cardMeta": "{{cards}} kart · {{due}} bekleyen",
+            "continue": "Devam et →"
+        },
+        "empty": {
+            "title": "Henüz set yok",
+            "description": "İlk içeriğini ekle. Recallly onu saniyeler içinde soru kartlarına çevirsin.",
+            "button": "İlk setini oluştur"
+        }
     },
-    "progress": {
-      "title": "Öğrenme ilerlemesi",
-      "description": "Bu konuların yaklaşık %{{progress}} kadarını güçlü seviyeye taşıdın."
-    },
-    "stats": {
-      "sets": "Set",
-      "cards": "Kart",
-      "due": "Bekleyen"
-    },
-    "weakSpot": {
-      "title": "Zayıf nokta",
-      "subtitle": "Bu kartları 2 gün içinde unutabilirsin",
-      "description": "Şimdilik mock gösteriyoruz. Sonraki adımda yanlış yaptığın kartlardan gerçek zayıf alanlarını çıkaracağız.",
-      "button": "Eksiklerimi düzelt"
-    },
-    "recent": {
-      "title": "Son setler",
-      "viewAll": "Tümünü gör",
-      "cardMeta": "{{cards}} kart · {{due}} bekleyen",
-      "continue": "Devam et →"
-    },
-    "empty": {
-      "title": "Henüz set yok",
-      "description": "İlk içeriğini ekle. Recallly onu saniyeler içinde soru kartlarına çevirsin.",
-      "button": "İlk setini oluştur"
+    "library": {
+        "dueReminder": {
+            "title": "{{count}} kart unutma riskinde",
+            "description": "Bu kartları şimdi tekrar edersen bilgiyi daha kalıcı hale getirirsin."
+        },
+        "learning": {
+            "title": "Öğrenme zekası",
+            "description": "Şu an genel ilerlemen %{{progress}}. Tekrar bekleyen kartlar, unutma riskinin olduğu yerleri gösterir."
+        },
+        "stats": {
+            "sets": "Set",
+            "cards": "Kart",
+            "review": "Tekrar"
+        },
+        "empty": {
+            "title": "Henüz burada bir şey yok",
+            "description": "YouTube linki ekle, Recallly onu saniyeler içinde özet ve soru kartlarına çevirsin.",
+            "button": "İlk videonu teste çevir"
+        },
+        "filters": {
+            "all": "Tümü",
+            "due": "Bekleyen",
+            "mastered": "Tamamlanan"
+        },
+        "header": {
+            "title": "Kütüphane",
+            "description": "Burası sadece arşiv değil. Recallly kullandıkça öğrenme durumun burada şekillenir."
+        },
+        "setCard": {
+            "youtubeSource": "YouTube videosu",
+            "textSource": "Metin içeriği",
+            "cardsBadge": "{{count}} kart",
+            "dueBadge": "{{count}} bekleyen",
+            "masteredBadge": "%{{progress}} tamamlandı",
+            "cta": "Özeti oku ve test et →"
+        }
     }
-  }
 }

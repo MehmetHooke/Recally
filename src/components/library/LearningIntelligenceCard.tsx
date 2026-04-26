@@ -1,4 +1,5 @@
 import { useAppTheme } from "@/src/theme/useTheme";
+import { useTranslation } from "react-i18next";
 import { Text, View } from "react-native";
 import { StatBox } from "./StatBox";
 
@@ -16,6 +17,7 @@ export function LearningIntelligenceCard({
   dueCards,
 }: Props) {
   const { colors } = useAppTheme();
+  const { t } = useTranslation("tabs");
 
   return (
     <View
@@ -30,12 +32,11 @@ export function LearningIntelligenceCard({
     >
       <View>
         <Text style={{ color: colors.text, fontSize: 18, fontWeight: "900" }}>
-          Learning Intelligence
+          {t("library.learning.title")}
         </Text>
 
         <Text style={{ color: colors.mutedText, marginTop: 5, lineHeight: 20 }}>
-          Şu an genel ilerlemen %{progress}. Tekrar bekleyen kartlar, unutma
-          riskinin olduğu yerleri gösterir.
+          {t("library.learning.description", { progress })}
         </Text>
       </View>
 
@@ -58,9 +59,9 @@ export function LearningIntelligenceCard({
       </View>
 
       <View style={{ flexDirection: "row", gap: 10 }}>
-        <StatBox label="Set" value={totalSets} />
-        <StatBox label="Kart" value={totalCards} />
-        <StatBox label="Tekrar" value={dueCards} />
+        <StatBox label={t("library.stats.sets")} value={totalSets} />
+        <StatBox label={t("library.stats.cards")} value={totalCards} />
+        <StatBox label={t("library.stats.review")} value={dueCards} />
       </View>
     </View>
   );

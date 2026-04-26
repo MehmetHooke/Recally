@@ -1,4 +1,5 @@
 import { useAppTheme } from "@/src/theme/useTheme";
+import { useTranslation } from "react-i18next";
 import { Pressable, Text } from "react-native";
 
 type Props = {
@@ -8,6 +9,7 @@ type Props = {
 
 export function DueReminderCard({ dueCards, onPress }: Props) {
   const { colors } = useAppTheme();
+  const { t } = useTranslation("tabs");
 
   if (dueCards <= 0) return null;
 
@@ -28,7 +30,7 @@ export function DueReminderCard({ dueCards, onPress }: Props) {
           fontWeight: "900",
         }}
       >
-        {dueCards} kart unutma riskinde
+        {t("library.dueReminder.title", { count: dueCards })}
       </Text>
 
       <Text
@@ -38,7 +40,7 @@ export function DueReminderCard({ dueCards, onPress }: Props) {
           lineHeight: 20,
         }}
       >
-        Bu kartları şimdi tekrar edersen bilgiyi daha kalıcı hale getirirsin.
+        {t("library.dueReminder.description")}
       </Text>
     </Pressable>
   );
