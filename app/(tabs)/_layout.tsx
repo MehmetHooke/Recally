@@ -1,15 +1,16 @@
 import { useAppTheme } from "@/src/theme/useTheme";
 import { Ionicons } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
+import { useTranslation } from "react-i18next";
 
 export default function TabLayout() {
   const { colors } = useAppTheme();
+  const { t } = useTranslation("tabs");
 
   return (
     <Tabs
       screenOptions={{
         headerShown: false,
-
         tabBarStyle: {
           backgroundColor: colors.card,
           borderTopColor: colors.border,
@@ -17,10 +18,8 @@ export default function TabLayout() {
           paddingBottom: 15,
           paddingTop: 6,
         },
-
         tabBarActiveTintColor: colors.primary,
         tabBarInactiveTintColor: colors.mutedText,
-
         tabBarLabelStyle: {
           fontSize: 11,
           fontWeight: "700",
@@ -30,7 +29,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: "Home",
+          title: t("navbar.home"),
           tabBarIcon: ({ color, size, focused }) => (
             <Ionicons
               name={focused ? "home" : "home-outline"}
@@ -44,7 +43,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="add"
         options={{
-          title: "Create",
+          title: t("navbar.create"),
           tabBarIcon: ({ color, size, focused }) => (
             <Ionicons
               name={focused ? "add-circle" : "add-circle-outline"}
@@ -58,7 +57,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="library"
         options={{
-          title: "Library",
+          title: t("navbar.library"),
           tabBarIcon: ({ color, size, focused }) => (
             <Ionicons
               name={focused ? "book" : "book-outline"}
@@ -72,7 +71,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="settings"
         options={{
-          title: "Settings",
+          title: t("navbar.settings"),
           tabBarIcon: ({ color, size, focused }) => (
             <Ionicons
               name={focused ? "settings" : "settings-outline"}
