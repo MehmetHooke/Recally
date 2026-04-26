@@ -2,11 +2,20 @@ import { createYoutubeSetJob } from "@/src/services/functions";
 import { useAppTheme } from "@/src/theme/useTheme";
 import { useRouter } from "expo-router";
 import { useState } from "react";
-import { Alert, Pressable, ScrollView, Text, TextInput, View } from "react-native";
+import { useTranslation } from "react-i18next";
+import {
+  Alert,
+  Pressable,
+  ScrollView,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
 
 export default function AddContentScreen() {
   const router = useRouter();
   const { colors } = useAppTheme();
+  const { t } = useTranslation("tabs");
 
   const [youtubeUrl, setYoutubeUrl] = useState("");
   const [loading, setLoading] = useState(false);
@@ -19,12 +28,12 @@ export default function AddContentScreen() {
     const trimmedUrl = youtubeUrl.trim();
 
     if (!trimmedUrl) {
-      Alert.alert("Hata", "Lütfen bir YouTube linki gir.");
+      Alert.alert(t("add.alerts.errorTitle"), t("add.alerts.emptyYoutubeUrl"));
       return;
     }
 
     if (!isValidYoutubeUrl(trimmedUrl)) {
-      Alert.alert("Hata", "Geçerli bir YouTube linki gir.");
+      Alert.alert(t("add.alerts.errorTitle"), t("add.alerts.invalidYoutubeUrl"));
       return;
     }
 
@@ -34,7 +43,7 @@ export default function AddContentScreen() {
       const result = await createYoutubeSetJob(trimmedUrl);
 
       if (!result.ok || !result.setId) {
-        throw new Error("Set oluşturulamadı.");
+        throw new Error(t("add.errors.setCreateFailed"));
       }
 
       router.push(`/set/${result.setId}`);
@@ -42,10 +51,10 @@ export default function AddContentScreen() {
       console.error("YouTube create job error:", error);
 
       Alert.alert(
-        "Hata",
+        t("add.alerts.errorTitle"),
         error instanceof Error
           ? error.message
-          : "Video işlenirken bir hata oluştu."
+          : t("add.errors.videoProcessingFailed")
       );
     } finally {
       setLoading(false);
@@ -69,7 +78,7 @@ export default function AddContentScreen() {
             fontWeight: "900",
           }}
         >
-          Create
+          {t("add.title")}
         </Text>
 
         <Text
@@ -80,7 +89,7 @@ export default function AddContentScreen() {
             lineHeight: 21,
           }}
         >
-          Öğrendiğin içeriği saniyeler içinde özet ve soru kartlarına çevir.
+          {t("add.subtitle")}
         </Text>
       </View>
 
@@ -100,7 +109,7 @@ export default function AddContentScreen() {
             lineHeight: 31,
           }}
         >
-          YouTube videosunu teste çevir
+          {t("add.youtubeCard.title")}
         </Text>
 
         <Text
@@ -111,8 +120,7 @@ export default function AddContentScreen() {
             lineHeight: 22,
           }}
         >
-          Linki yapıştır. Recallly videoyu öğrenilebilir özet, ana kavramlar ve
-          quiz kartlarına dönüştürsün.
+          {t("add.youtubeCard.description")}
         </Text>
 
         <View
@@ -126,7 +134,7 @@ export default function AddContentScreen() {
           <TextInput
             value={youtubeUrl}
             onChangeText={setYoutubeUrl}
-            placeholder="https://youtube.com/watch?v=..."
+            placeholder={t("add.youtubeCard.placeholder")}
             placeholderTextColor={colors.mutedText}
             autoCapitalize="none"
             autoCorrect={false}
@@ -158,7 +166,9 @@ export default function AddContentScreen() {
                 fontSize: 15,
               }}
             >
-              {loading ? "Set hazırlanıyor..." : "Videoyu öğrenme setine çevir"}
+              {loading
+                ? t("add.youtubeCard.loadingButton")
+                : t("add.youtubeCard.submitButton")}
             </Text>
           </Pressable>
         </View>
@@ -181,14 +191,14 @@ export default function AddContentScreen() {
             fontWeight: "900",
           }}
         >
-          Diğer kaynaklar
+          {t("add.otherSources.title")}
         </Text>
 
         <Pressable
           onPress={() =>
             Alert.alert(
-              "Yakında",
-              "Metin modu önceki akışta çalışıyor. Ana deneyimi YouTube üzerine kuruyoruz."
+              t("add.alerts.comingSoonTitle"),
+              t("add.otherSources.textModeComingSoonMessage")
             )
           }
           style={{
@@ -200,12 +210,17 @@ export default function AddContentScreen() {
           }}
         >
           <Text style={{ color: colors.text, fontWeight: "800" }}>
-            Metin yapıştır
+            {t("add.otherSources.pasteText")}
           </Text>
         </Pressable>
 
         <Pressable
-          onPress={() => Alert.alert("Yakında", "PDF desteği sonra eklenecek.")}
+          onPress={() =>
+            Alert.alert(
+              t("add.alerts.comingSoonTitle"),
+              t("add.otherSources.pdfComingSoonMessage")
+            )
+          }
           style={{
             backgroundColor: colors.background,
             borderColor: colors.border,
@@ -215,7 +230,7 @@ export default function AddContentScreen() {
           }}
         >
           <Text style={{ color: colors.mutedText, fontWeight: "800" }}>
-            PDF yükle · yakında
+            {t("add.otherSources.pdfUpload")}
           </Text>
         </Pressable>
       </View>
