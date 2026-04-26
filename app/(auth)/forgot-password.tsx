@@ -1,39 +1,44 @@
 import { router } from "expo-router";
 import { useState } from "react";
 import {
-  ActivityIndicator,
-  KeyboardAvoidingView,
-  Platform,
-  Pressable,
-  Text,
-  TextInput,
-  View,
+    ActivityIndicator,
+    KeyboardAvoidingView,
+    Platform,
+    Pressable,
+    Text,
+    TextInput,
+    View,
 } from "react-native";
-import { login } from "../../src/services/auth";
+import { sendResetPasswordEmail } from "../../src/services/passwordReset";
 import { useAppTheme } from "../../src/theme/useTheme";
 
-export default function LoginScreen() {
+export default function ForgotPasswordScreen() {
   const { colors } = useAppTheme();
 
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
-  const handleLogin = async () => {
-    if (!email.trim() || !password.trim()) {
-      setErrorMessage("Email ve şifre gerekli.");
+  const handleResetPassword = async () => {
+    if (!email.trim()) {
+      setErrorMessage("Email adresini yazmalısın.");
       return;
     }
 
     try {
       setLoading(true);
+      setMessage("");
       setErrorMessage("");
-      await login(email.trim(), password);
-      router.replace("/(tabs)");
+
+      await sendResetPasswordEmail(email);
+
+      setMessage(
+        "Eğer bu email ile kayıtlı bir hesap varsa, şifre sıfırlama bağlantısı gönderildi."
+      );
     } catch (error) {
-      console.log("Login error:", error);
-      setErrorMessage("Giriş yapılamadı. Bilgilerini kontrol et.");
+      console.log("Password reset error:", error);
+      setErrorMessage("Şu anda sıfırlama maili gönderilemedi.");
     } finally {
       setLoading(false);
     }
@@ -74,7 +79,7 @@ export default function LoginScreen() {
               lineHeight: 40,
             }}
           >
-            Öğrenmeye kaldığın yerden devam et
+            Şifreni mi unuttun?
           </Text>
 
           <Text
@@ -84,8 +89,8 @@ export default function LoginScreen() {
               lineHeight: 22,
             }}
           >
-            Kartlarını tekrar et, zayıf noktalarını güçlendir ve öğrendiklerini
-            unutma.
+            Email adresini yaz. Kayıtlı hesabın varsa sana şifre sıfırlama
+            bağlantısı gönderelim.
           </Text>
         </View>
 
@@ -106,7 +111,7 @@ export default function LoginScreen() {
               fontWeight: "900",
             }}
           >
-            Giriş yap
+            Şifre sıfırla
           </Text>
 
           <TextInput
@@ -128,40 +133,6 @@ export default function LoginScreen() {
             }}
           />
 
-          <TextInput
-            placeholder="Şifre"
-            placeholderTextColor={colors.mutedText}
-            value={password}
-            onChangeText={setPassword}
-            secureTextEntry
-            style={{
-              backgroundColor: colors.background,
-              borderColor: colors.border,
-              borderWidth: 1,
-              borderRadius: 16,
-              padding: 15,
-              color: colors.text,
-              fontSize: 15,
-              fontWeight: "600",
-            }}
-          />
-          <Pressable
-            onPress={() => router.push("/(auth)/forgot-password")}
-            style={{
-              alignSelf: "flex-end",
-            }}
-          >
-            <Text
-              style={{
-                color: colors.primary,
-                fontWeight: "800",
-                fontSize: 13,
-              }}
-            >
-              Şifremi unuttum
-            </Text>
-          </Pressable>
-
           {errorMessage ? (
             <Text
               style={{
@@ -174,8 +145,21 @@ export default function LoginScreen() {
             </Text>
           ) : null}
 
+          {message ? (
+            <Text
+              style={{
+                color: "#22C55E",
+                fontSize: 13,
+                fontWeight: "700",
+                lineHeight: 18,
+              }}
+            >
+              {message}
+            </Text>
+          ) : null}
+
           <Pressable
-            onPress={handleLogin}
+            onPress={handleResetPassword}
             disabled={loading}
             style={{
               backgroundColor: colors.primary,
@@ -195,13 +179,13 @@ export default function LoginScreen() {
                   fontSize: 15,
                 }}
               >
-                Giriş yap
+                Sıfırlama maili gönder
               </Text>
             )}
           </Pressable>
 
           <Pressable
-            onPress={() => router.push("/(auth)/register")}
+            onPress={() => router.push("/(auth)/login")}
             style={{
               paddingVertical: 12,
               alignItems: "center",
@@ -209,14 +193,11 @@ export default function LoginScreen() {
           >
             <Text
               style={{
-                color: colors.mutedText,
-                fontWeight: "700",
+                color: colors.primary,
+                fontWeight: "900",
               }}
             >
-              Hesabın yok mu?{" "}
-              <Text style={{ color: colors.primary, fontWeight: "900" }}>
-                Kayıt ol
-              </Text>
+              Giriş ekranına dön
             </Text>
           </Pressable>
         </View>
