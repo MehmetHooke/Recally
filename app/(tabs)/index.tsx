@@ -3,6 +3,7 @@ import { getSets, SetItem } from "@/src/services/setService";
 import { useAppTheme } from "@/src/theme/useTheme";
 import { useFocusEffect, useRouter } from "expo-router";
 import { useCallback, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   ActivityIndicator,
   Pressable,
@@ -14,6 +15,7 @@ import {
 export default function HomeScreen() {
   const router = useRouter();
   const { colors } = useAppTheme();
+  const { t } = useTranslation("tabs");
 
   const [sets, setSets] = useState<SetItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -21,7 +23,7 @@ export default function HomeScreen() {
   const userName =
     auth.currentUser?.displayName ||
     auth.currentUser?.email?.split("@")[0] ||
-    "Mehmet";
+    t("home.fallbackUserName");
 
   const loadHome = async () => {
     try {
@@ -99,14 +101,8 @@ export default function HomeScreen() {
       }}
     >
       <View>
-        <Text
-          style={{
-            color: colors.mutedText,
-            fontSize: 15,
-            fontWeight: "600",
-          }}
-        >
-          Hoş geldin, {userName}
+        <Text style={{ color: colors.mutedText, fontSize: 15, fontWeight: "600" }}>
+          {t("home.welcome", { name: userName })}
         </Text>
 
         <Text
@@ -117,11 +113,10 @@ export default function HomeScreen() {
             marginTop: 4,
           }}
         >
-          Bugün neyi hatırlayalım?
+          {t("home.title")}
         </Text>
       </View>
 
-      {/* Main Review Card */}
       <View
         style={{
           backgroundColor: colors.primary,
@@ -130,23 +125,11 @@ export default function HomeScreen() {
           gap: 14,
         }}
       >
-        <Text
-          style={{
-            color: colors.primaryForeground,
-            fontSize: 20,
-            fontWeight: "900",
-          }}
-        >
-          Today’s Review
+        <Text style={{ color: colors.primaryForeground, fontSize: 20, fontWeight: "900" }}>
+          {t("home.review.title")}
         </Text>
 
-        <Text
-          style={{
-            color: colors.primaryForeground,
-            fontSize: 38,
-            fontWeight: "900",
-          }}
-        >
+        <Text style={{ color: colors.primaryForeground, fontSize: 38, fontWeight: "900" }}>
           {stats.dueCards}
         </Text>
 
@@ -159,8 +142,8 @@ export default function HomeScreen() {
           }}
         >
           {stats.dueCards > 0
-            ? "Bugün tekrar etmen gereken kartlar var. Şimdi çözersen unutma riskini azaltırsın."
-            : "Bugün bekleyen tekrar yok. Yeni bir içerik ekleyip kendini test edebilirsin."}
+            ? t("home.review.hasDueDescription")
+            : t("home.review.noDueDescription")}
         </Text>
 
         <Pressable
@@ -173,19 +156,14 @@ export default function HomeScreen() {
             marginTop: 4,
           }}
         >
-          <Text
-            style={{
-              color: colors.primary,
-              fontWeight: "900",
-              fontSize: 15,
-            }}
-          >
-            {stats.dueCards > 0 ? "Start Review" : "Create New Cards"}
+          <Text style={{ color: colors.primary, fontWeight: "900", fontSize: 15 }}>
+            {stats.dueCards > 0
+              ? t("home.review.startButton")
+              : t("home.review.createButton")}
           </Text>
         </Pressable>
       </View>
 
-      {/* Progress */}
       <View
         style={{
           backgroundColor: colors.card,
@@ -197,25 +175,12 @@ export default function HomeScreen() {
         }}
       >
         <View>
-          <Text
-            style={{
-              color: colors.text,
-              fontSize: 18,
-              fontWeight: "900",
-            }}
-          >
-            Learning Progress
+          <Text style={{ color: colors.text, fontSize: 18, fontWeight: "900" }}>
+            {t("home.progress.title")}
           </Text>
 
-          <Text
-            style={{
-              color: colors.mutedText,
-              marginTop: 4,
-              lineHeight: 20,
-            }}
-          >
-            Bu konuların yaklaşık %{stats.progress} kadarını güçlü seviyeye
-            taşıdın.
+          <Text style={{ color: colors.mutedText, marginTop: 4, lineHeight: 20 }}>
+            {t("home.progress.description", { progress: stats.progress })}
           </Text>
         </View>
 
@@ -238,13 +203,12 @@ export default function HomeScreen() {
         </View>
 
         <View style={{ flexDirection: "row", gap: 10 }}>
-          <StatBox label="Set" value={stats.totalSets} />
-          <StatBox label="Cards" value={stats.totalCards} />
-          <StatBox label="Due" value={stats.dueCards} />
+          <StatBox label={t("home.stats.sets")} value={stats.totalSets} />
+          <StatBox label={t("home.stats.cards")} value={stats.totalCards} />
+          <StatBox label={t("home.stats.due")} value={stats.dueCards} />
         </View>
       </View>
 
-      {/* Weak Area / Hook */}
       <View
         style={{
           backgroundColor: colors.card,
@@ -255,34 +219,16 @@ export default function HomeScreen() {
           gap: 12,
         }}
       >
-        <Text
-          style={{
-            color: colors.text,
-            fontSize: 18,
-            fontWeight: "900",
-          }}
-        >
-          Weak Spot
+        <Text style={{ color: colors.text, fontSize: 18, fontWeight: "900" }}>
+          {t("home.weakSpot.title")}
         </Text>
 
-        <Text
-          style={{
-            color: colors.text,
-            fontSize: 16,
-            fontWeight: "700",
-          }}
-        >
-          Bu kartları 2 gün içinde unutabilirsin
+        <Text style={{ color: colors.text, fontSize: 16, fontWeight: "700" }}>
+          {t("home.weakSpot.subtitle")}
         </Text>
 
-        <Text
-          style={{
-            color: colors.mutedText,
-            lineHeight: 20,
-          }}
-        >
-          Şimdilik mock gösteriyoruz. Sonraki adımda yanlış yaptığın kartlardan
-          gerçek zayıf alanlarını çıkaracağız.
+        <Text style={{ color: colors.mutedText, lineHeight: 20 }}>
+          {t("home.weakSpot.description")}
         </Text>
 
         <Pressable
@@ -296,18 +242,12 @@ export default function HomeScreen() {
             alignItems: "center",
           }}
         >
-          <Text
-            style={{
-              color: colors.text,
-              fontWeight: "900",
-            }}
-          >
-            Fix My Gaps
+          <Text style={{ color: colors.text, fontWeight: "900" }}>
+            {t("home.weakSpot.button")}
           </Text>
         </Pressable>
       </View>
 
-      {/* Recent Sets */}
       <View style={{ gap: 12 }}>
         <View
           style={{
@@ -316,24 +256,13 @@ export default function HomeScreen() {
             alignItems: "center",
           }}
         >
-          <Text
-            style={{
-              color: colors.text,
-              fontSize: 20,
-              fontWeight: "900",
-            }}
-          >
-            Recent Sets
+          <Text style={{ color: colors.text, fontSize: 20, fontWeight: "900" }}>
+            {t("home.recent.title")}
           </Text>
 
           <Pressable onPress={() => router.push("/(tabs)/library")}>
-            <Text
-              style={{
-                color: colors.primary,
-                fontWeight: "800",
-              }}
-            >
-              View all
+            <Text style={{ color: colors.primary, fontWeight: "800" }}>
+              {t("home.recent.viewAll")}
             </Text>
           </Pressable>
         </View>
@@ -349,24 +278,12 @@ export default function HomeScreen() {
               gap: 10,
             }}
           >
-            <Text
-              style={{
-                color: colors.text,
-                fontSize: 17,
-                fontWeight: "900",
-              }}
-            >
-              Henüz set yok
+            <Text style={{ color: colors.text, fontSize: 17, fontWeight: "900" }}>
+              {t("home.empty.title")}
             </Text>
 
-            <Text
-              style={{
-                color: colors.mutedText,
-                lineHeight: 20,
-              }}
-            >
-              İlk içeriğini ekle. Recallly onu saniyeler içinde soru kartlarına
-              çevirsin.
+            <Text style={{ color: colors.mutedText, lineHeight: 20 }}>
+              {t("home.empty.description")}
             </Text>
 
             <Pressable
@@ -378,13 +295,8 @@ export default function HomeScreen() {
                 alignItems: "center",
               }}
             >
-              <Text
-                style={{
-                  color: colors.primaryForeground,
-                  fontWeight: "900",
-                }}
-              >
-                İlk setini oluştur
+              <Text style={{ color: colors.primaryForeground, fontWeight: "900" }}>
+                {t("home.empty.button")}
               </Text>
             </Pressable>
           </View>
@@ -403,33 +315,21 @@ export default function HomeScreen() {
               }}
             >
               <Text
-                style={{
-                  color: colors.text,
-                  fontSize: 17,
-                  fontWeight: "900",
-                }}
+                style={{ color: colors.text, fontSize: 17, fontWeight: "900" }}
                 numberOfLines={1}
               >
                 {set.title}
               </Text>
 
-              <Text
-                style={{
-                  color: colors.mutedText,
-                  fontSize: 14,
-                }}
-              >
-                {(set.totalCards ?? 0)} cards · {(set.dueCount ?? 0)} due
+              <Text style={{ color: colors.mutedText, fontSize: 14 }}>
+                {t("home.recent.cardMeta", {
+                  cards: set.totalCards ?? 0,
+                  due: set.dueCount ?? 0,
+                })}
               </Text>
 
-              <Text
-                style={{
-                  color: colors.primary,
-                  fontWeight: "800",
-                  marginTop: 4,
-                }}
-              >
-                Continue →
+              <Text style={{ color: colors.primary, fontWeight: "800", marginTop: 4 }}>
+                {t("home.recent.continue")}
               </Text>
             </Pressable>
           ))
@@ -453,13 +353,7 @@ function StatBox({ label, value }: { label: string; value: number }) {
         padding: 12,
       }}
     >
-      <Text
-        style={{
-          color: colors.text,
-          fontSize: 20,
-          fontWeight: "900",
-        }}
-      >
+      <Text style={{ color: colors.text, fontSize: 20, fontWeight: "900" }}>
         {value}
       </Text>
 

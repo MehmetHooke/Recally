@@ -55,5 +55,43 @@
             "button": "Upgrade · coming soon"
         },
         "logout": "Log out"
+    },
+    "home": {
+        "fallbackUserName": "Mehmet",
+        "welcome": "Welcome, {{name}}",
+        "title": "What should we recall today?",
+        "review": {
+            "title": "Today’s Review",
+            "hasDueDescription": "You have cards to review today. Doing them now lowers the risk of forgetting.",
+            "noDueDescription": "No reviews due today. Add new content and test yourself.",
+            "startButton": "Start Review",
+            "createButton": "Create New Cards"
+        },
+        "progress": {
+            "title": "Learning Progress",
+            "description": "You have strengthened about {{progress}}% of these topics."
+        },
+        "stats": {
+            "sets": "Sets",
+            "cards": "Cards",
+            "due": "Due"
+        },
+        "weakSpot": {
+            "title": "Weak Spot",
+            "subtitle": "You may forget these cards within 2 days",
+            "description": "This is a mock preview for now. Next, we will detect your real weak areas from the cards you miss.",
+            "button": "Fix My Gaps"
+        },
+        "recent": {
+            "title": "Recent Sets",
+            "viewAll": "View all",
+            "cardMeta": "{{cards}} cards · {{due}} due",
+            "continue": "Continue →"
+        },
+        "empty": {
+            "title": "No sets yet",
+            "description": "Add your first piece of content. Recallly will turn it into question cards in seconds.",
+            "button": "Create your first set"
+        }
     }
 }
