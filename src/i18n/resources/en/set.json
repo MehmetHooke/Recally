@@ -1,0 +1,32 @@
+{
+  "detail": {
+    "backButton": "Go back",
+    "errors": {
+      "setNotFound": "Set not found",
+      "userNotFound": "User not found",
+      "loadFailed": "Could not load the set"
+    },
+    "completed": {
+      "source": {
+        "youtube": "YouTube Study Set",
+        "text": "Text Study Set"
+      },
+      "subtitle": "Read the summary, understand the main ideas, then reinforce the knowledge with a quiz.",
+      "readyTitle": "Set ready",
+      "readyDescription": "The summary and questions were prepared around the same learning flow. Read quickly first, then move to the quiz.",
+      "stats": {
+        "cards": "Cards",
+        "concepts": "Concepts"
+      },
+      "startQuiz": "Start quiz",
+      "sections": {
+        "overview": "Overview",
+        "takeaways": "Key takeaways",
+        "summary": "Summary",
+        "keyConcepts": "Key concepts",
+        "source": "Source"
+      }
+    }
+  }
+  
+}

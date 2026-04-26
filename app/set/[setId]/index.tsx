@@ -3,16 +3,18 @@ import { FailedSetDetail } from "@/src/components/set/FailedSetDetail";
 import { ProcessingSetDetail } from "@/src/components/set/ProcessingSetDetail";
 import { auth, db } from "@/src/services/firebase";
 import { normalizeSetItem } from "@/src/services/setService";
-import type { StudySet } from "@/src/types/study-set";
 import { useAppTheme } from "@/src/theme/useTheme";
-import { doc, onSnapshot } from "firebase/firestore";
+import type { StudySet } from "@/src/types/study-set";
 import { router, useLocalSearchParams } from "expo-router";
+import { doc, onSnapshot } from "firebase/firestore";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { ActivityIndicator, Pressable, Text, View } from "react-native";
 
 export default function SetDetailScreen() {
   const { setId } = useLocalSearchParams<{ setId: string }>();
   const { colors } = useAppTheme();
+  const { t } = useTranslation("set");
 
   const [setData, setSetData] = useState<StudySet | null>(null);
   const [loading, setLoading] = useState(true);
@@ -20,7 +22,7 @@ export default function SetDetailScreen() {
 
   useEffect(() => {
     if (!setId || typeof setId !== "string") {
-      setError("Set bulunamadı");
+      setError(t("detail.errors.setNotFound"));
       setLoading(false);
       return;
     }
@@ -28,7 +30,7 @@ export default function SetDetailScreen() {
     const user = auth.currentUser;
 
     if (!user) {
-      setError("Kullanıcı bulunamadı");
+      setError(t("detail.errors.userNotFound"));
       setLoading(false);
       return;
     }
@@ -39,7 +41,7 @@ export default function SetDetailScreen() {
       setDocRef,
       (snap) => {
         if (!snap.exists()) {
-          setError("Set bulunamadı");
+          setError(t("detail.errors.setNotFound"));
           setLoading(false);
           return;
         }
@@ -52,13 +54,13 @@ export default function SetDetailScreen() {
       },
       (snapshotError) => {
         console.error("SET DETAIL SNAPSHOT ERROR:", snapshotError);
-        setError("Set yüklenemedi");
+        setError(t("detail.errors.loadFailed"));
         setLoading(false);
       }
     );
 
     return unsub;
-  }, [setId]);
+  }, [setId, t]);
 
   const handleStartReview = () => {
     if (!setId || typeof setId !== "string") return;
@@ -93,7 +95,7 @@ export default function SetDetailScreen() {
         }}
       >
         <Text style={{ color: colors.text, fontWeight: "800" }}>
-          {error || "Set bulunamadı"}
+          {error || t("detail.errors.setNotFound")}
         </Text>
 
         <Pressable
@@ -111,7 +113,7 @@ export default function SetDetailScreen() {
               fontWeight: "800",
             }}
           >
-            Geri dön
+            {t("detail.backButton")}
           </Text>
         </Pressable>
       </View>

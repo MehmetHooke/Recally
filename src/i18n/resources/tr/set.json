@@ -1,0 +1,31 @@
+{
+    "detail": {
+        "backButton": "Geri dön",
+        "errors": {
+            "setNotFound": "Set bulunamadı",
+            "userNotFound": "Kullanıcı bulunamadı",
+            "loadFailed": "Set yüklenemedi"
+        },
+        "completed": {
+            "source": {
+                "youtube": "YouTube çalışma seti",
+                "text": "Metin çalışma seti"
+            },
+            "subtitle": "Özeti okuyup ana fikirleri kavra, sonra quiz ile bilgiyi pekiştir.",
+            "readyTitle": "Set hazır",
+            "readyDescription": "Özet ve sorular aynı öğrenme akışına göre hazırlandı. Önce hızlıca oku, sonra test tarafına geç.",
+            "stats": {
+                "cards": "Kart",
+                "concepts": "Kavram"
+            },
+            "startQuiz": "Quizi başlat",
+            "sections": {
+                "overview": "Genel bakış",
+                "takeaways": "Akılda kalacaklar",
+                "summary": "Özet",
+                "keyConcepts": "Ana kavramlar",
+                "source": "Kaynak"
+            }
+        }
+    }
+}

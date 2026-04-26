@@ -1,7 +1,8 @@
-import { Ionicons } from "@expo/vector-icons";
 import type { GeneratedSummary } from "@/src/services/functions";
-import type { StudySet } from "@/src/types/study-set";
 import { useAppTheme } from "@/src/theme/useTheme";
+import type { StudySet } from "@/src/types/study-set";
+import { Ionicons } from "@expo/vector-icons";
+import { useTranslation } from "react-i18next";
 import { Image, Pressable, ScrollView, Text, View } from "react-native";
 
 function isStructuredSummary(
@@ -18,11 +19,16 @@ export function CompletedSetDetail({
   onOpenReview: () => void;
 }) {
   const { colors } = useAppTheme();
+  const { t } = useTranslation("set");
 
   const summary = set.summary;
   const structuredSummary = isStructuredSummary(summary) ? summary : null;
   const plainSummary = typeof summary === "string" ? summary : null;
   const cardCount = set.cardCount || set.totalCards || set.cards.length || 0;
+  const isYoutubeSource = set.sourceType === "youtube";
+  const sourceLabel = isYoutubeSource
+    ? t("detail.completed.source.youtube")
+    : t("detail.completed.source.text");
 
   return (
     <ScrollView
@@ -48,14 +54,19 @@ export function CompletedSetDetail({
             paddingVertical: 8,
           }}
         >
-          {set.sourceType === "youtube" ? (
+          {isYoutubeSource ? (
             <Image
               source={require("@/src/assets/images/youtube.png")}
               style={{ width: 16, height: 16, resizeMode: "contain" }}
             />
           ) : (
-            <Ionicons name="document-text-outline" color={colors.primary} size={16} />
+            <Ionicons
+              name="document-text-outline"
+              color={colors.primary}
+              size={16}
+            />
           )}
+
           <Text
             style={{
               color: colors.text,
@@ -63,7 +74,7 @@ export function CompletedSetDetail({
               fontWeight: "800",
             }}
           >
-            {set.sourceType === "youtube" ? "YouTube Study Set" : "Text Study Set"}
+            {sourceLabel}
           </Text>
         </View>
 
@@ -85,7 +96,7 @@ export function CompletedSetDetail({
             lineHeight: 22,
           }}
         >
-          Ozeti okuyup ana fikirleri kavra, sonra quiz ile bilgiyi pekistir.
+          {t("detail.completed.subtitle")}
         </Text>
       </View>
 
@@ -110,7 +121,7 @@ export function CompletedSetDetail({
               fontWeight: "900",
             }}
           >
-            Set hazir
+            {t("detail.completed.readyTitle")}
           </Text>
         </View>
 
@@ -121,13 +132,15 @@ export function CompletedSetDetail({
             lineHeight: 21,
           }}
         >
-          Ozet ve sorular ayni ogrenme akisina gore hazirlandi. Once hizlica
-          oku, sonra test tarafina gec.
+          {t("detail.completed.readyDescription")}
         </Text>
 
         <View style={{ flexDirection: "row", gap: 10 }}>
-          <StatPill label="Kart" value={cardCount} />
-          <StatPill label="Kavram" value={set.keyConcepts.length} />
+          <StatPill label={t("detail.completed.stats.cards")} value={cardCount} />
+          <StatPill
+            label={t("detail.completed.stats.concepts")}
+            value={set.keyConcepts.length}
+          />
         </View>
 
         <Pressable
@@ -144,14 +157,18 @@ export function CompletedSetDetail({
             opacity: cardCount === 0 ? 0.55 : 1,
           }}
         >
-          <Ionicons name="play-circle-outline" color={colors.primary} size={18} />
+          <Ionicons
+            name="play-circle-outline"
+            color={colors.primary}
+            size={18}
+          />
           <Text
             style={{
               color: colors.primary,
               fontWeight: "900",
             }}
           >
-            Quizi baslat
+            {t("detail.completed.startQuiz")}
           </Text>
         </Pressable>
       </View>
@@ -159,7 +176,7 @@ export function CompletedSetDetail({
       {structuredSummary ? (
         <View style={{ gap: 14 }}>
           <SectionCard
-            title="Genel Bakis"
+            title={t("detail.completed.sections.overview")}
             icon={
               <Ionicons
                 name="document-text-outline"
@@ -183,7 +200,13 @@ export function CompletedSetDetail({
             <SectionCard
               key={`${section.title}-${index}`}
               title={section.title}
-              icon={<Ionicons name="list-outline" color={colors.primary} size={18} />}
+              icon={
+                <Ionicons
+                  name="list-outline"
+                  color={colors.primary}
+                  size={18}
+                />
+              }
             >
               <Text
                 style={{
@@ -206,7 +229,7 @@ export function CompletedSetDetail({
                       lineHeight: 21,
                     }}
                   >
-                    • {bullet}
+                    - {bullet}
                   </Text>
                 ))}
               </View>
@@ -215,7 +238,7 @@ export function CompletedSetDetail({
 
           {structuredSummary.keyTakeaways.length > 0 ? (
             <SectionCard
-              title="Akilda Kalacaklar"
+              title={t("detail.completed.sections.takeaways")}
               icon={
                 <Ionicons
                   name="sparkles-outline"
@@ -253,7 +276,7 @@ export function CompletedSetDetail({
         </View>
       ) : plainSummary ? (
         <SectionCard
-          title="Ozet"
+          title={t("detail.completed.sections.summary")}
           icon={
             <Ionicons
               name="document-text-outline"
@@ -276,8 +299,10 @@ export function CompletedSetDetail({
 
       {set.keyConcepts.length > 0 ? (
         <SectionCard
-          title="Ana Kavramlar"
-          icon={<Ionicons name="list-outline" color={colors.primary} size={18} />}
+          title={t("detail.completed.sections.keyConcepts")}
+          icon={
+            <Ionicons name="list-outline" color={colors.primary} size={18} />
+          }
         >
           <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8 }}>
             {set.keyConcepts.map((item, index) => (
@@ -308,12 +333,20 @@ export function CompletedSetDetail({
       ) : null}
 
       <SectionCard
-        title="Kaynak"
+        title={t("detail.completed.sections.source")}
         icon={
-          <Image
-            source={require("@/src/assets/images/youtube.png")}
-            style={{ width: 18, height: 18, resizeMode: "contain" }}
-          />
+          isYoutubeSource ? (
+            <Image
+              source={require("@/src/assets/images/youtube.png")}
+              style={{ width: 18, height: 18, resizeMode: "contain" }}
+            />
+          ) : (
+            <Ionicons
+              name="document-text-outline"
+              color={colors.primary}
+              size={18}
+            />
+          )
         }
       >
         <Text
