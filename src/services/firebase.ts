@@ -24,7 +24,10 @@ const globalFlags = globalThis as typeof globalThis & {
   __recalllyFirestoreEmulatorConnected?: boolean;
 };
 
-if (__DEV__) {
+const useEmulator =
+  __DEV__ && process.env.EXPO_PUBLIC_USE_FIREBASE_EMULATOR === "true";
+
+if (useEmulator) {
   const emulatorHost =
     Platform.OS === "android"
       ? "10.0.2.2"
