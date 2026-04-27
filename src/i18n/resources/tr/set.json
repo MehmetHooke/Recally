@@ -32,31 +32,31 @@
                 "savedLink": "Kaydedilen link",
                 "retryButton": "Tekrar dene",
                 "newLinkButton": "Yeni link ekle"
+            }
+        },
+        "processing": {
+            "title": "Video öğrenme setine dönüştürülüyor",
+            "description": "Uzun videolarda bu işlem 1-2 dakika sürebilir.",
+            "elapsedSeconds": "{{seconds}} sn",
+            "aiPreparing": "AI hazırlıyor",
+            "steps": {
+                "checkingConnection": "Video bağlantısı kontrol ediliyor...",
+                "extractingIdeas": "Videodaki ana fikirler çıkarılıyor...",
+                "splittingSummary": "Özet öğrenilebilir parçalara ayrılıyor...",
+                "creatingQuiz": "Quiz soruları hazırlanıyor...",
+                "checkingAnswers": "Cevaplar ve açıklamalar kontrol ediliyor...",
+                "takingLonger": "Video uzun olduğu için biraz daha sürüyor. Setin hazırlanıyor..."
             },
-            "processing": {
-                "title": "Video öğrenme setine dönüştürülüyor",
-                "description": "Uzun videolarda bu işlem 1-2 dakika sürebilir.",
-                "elapsedSeconds": "{{seconds}} sn",
-                "aiPreparing": "AI hazırlıyor",
-                "steps": {
-                    "checkingConnection": "Video bağlantısı kontrol ediliyor...",
-                    "extractingIdeas": "Videodaki ana fikirler çıkarılıyor...",
-                    "splittingSummary": "Özet öğrenilebilir parçalara ayrılıyor...",
-                    "creatingQuiz": "Quiz soruları hazırlanıyor...",
-                    "checkingAnswers": "Cevaplar ve açıklamalar kontrol ediliyor...",
-                    "takingLonger": "Video uzun olduğu için biraz daha sürüyor. Setin hazırlanıyor..."
-                },
-                "trustRows": {
-                    "compress": "1 saatlik videoyu birkaç dakikalık öğrenme setine sıkıştırıyoruz.",
-                    "mainIdeas": "Sorular sadece özetten değil, videodaki ana fikirlerden hazırlanıyor.",
-                    "answers": "Yanlış seçenekler bile öğretici olacak şekilde kontrol ediliyor."
-                },
-                "skeleton": {
-                    "summaryTitle": "Özet hazırlanıyor",
-                    "conceptsTitle": "Ana kavramlar seçiliyor",
-                    "quizPreviewTitle": "Quiz ön izlemesi",
-                    "questionLoading": "Soru yükleniyor..."
-                }
+            "trustRows": {
+                "compress": "1 saatlik videoyu birkaç dakikalık öğrenme setine sıkıştırıyoruz.",
+                "mainIdeas": "Sorular sadece özetten değil, videodaki ana fikirlerden hazırlanıyor.",
+                "answers": "Yanlış seçenekler bile öğretici olacak şekilde kontrol ediliyor."
+            },
+            "skeleton": {
+                "summaryTitle": "Özet hazırlanıyor",
+                "conceptsTitle": "Ana kavramlar seçiliyor",
+                "quizPreviewTitle": "Quiz ön izlemesi",
+                "questionLoading": "Soru yükleniyor..."
             }
         }
     },

@@ -1,10 +1,10 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import * as dotenv from "dotenv";
 import * as admin from "firebase-admin";
 import { FieldValue, Timestamp } from "firebase-admin/firestore";
-import * as dotenv from "dotenv";
+import { setGlobalOptions } from "firebase-functions/v2";
 import { onDocumentCreated } from "firebase-functions/v2/firestore";
 import { HttpsError, onCall } from "firebase-functions/v2/https";
-import { setGlobalOptions } from "firebase-functions/v2";
 dotenv.config();
 
 admin.initializeApp();
@@ -17,6 +17,18 @@ setGlobalOptions({
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 const firestore = admin.firestore();
+
+type AppLanguage = "tr" | "en";
+
+function normalizeLanguage(language: unknown): AppLanguage {
+  return language === "tr" ? "tr" : "en";
+}
+
+function getLanguageInstruction(language: AppLanguage) {
+  return language === "tr"
+    ? "Return ONLY entirely in Turkish. All user-facing fields must be Turkish."
+    : "Return ONLY entirely in English. All user-facing fields must be English.";
+}
 
 type GeneratedSummary = {
   overview: string;
@@ -37,9 +49,10 @@ type GeneratedMcqCard = {
   wrongExplanations: string[];
 };
 
-function getYoutubePrompt() {
+function getYoutubePrompt(language: AppLanguage) {
   return `
 You are an expert learning designer.
+
 
 Analyze the YouTube video provided as video input.
 
@@ -58,6 +71,7 @@ IMPORTANT RULES:
 - Return ONLY valid JSON.
 - Do not use markdown.
 - Do not wrap the response in code fences.
+-${getLanguageInstruction(language)}
 
 If you cannot access or understand the actual video content, return ONLY this JSON:
 {
@@ -74,6 +88,7 @@ If you cannot access or understand the actual video content, return ONLY this JS
 }
 
 Return this exact JSON structure:
+${getLanguageInstruction(language)}
 
 {
   "ok": true,
@@ -150,7 +165,10 @@ function getReadableErrorMessage(error: unknown) {
   return "Video işlenirken hata oluştu.";
 }
 
-async function generateYoutubeContent(youtubeUrl: string) {
+async function generateYoutubeContent(
+  youtubeUrl: string,
+  language: AppLanguage,
+) {
   const model = genAI.getGenerativeModel({
     model: "gemini-3-flash-preview",
   });
@@ -163,7 +181,7 @@ async function generateYoutubeContent(youtubeUrl: string) {
       },
     },
     {
-      text: getYoutubePrompt(),
+      text: getYoutubePrompt(language),
     },
   ]);
 
@@ -181,38 +199,42 @@ async function generateYoutubeContent(youtubeUrl: string) {
 
   const cards = Array.isArray(parsed.cards) ? parsed.cards : [];
 
-  const normalizedCards: GeneratedMcqCard[] = cards.slice(0, 6).map((card: any) => {
-    const options = Array.isArray(card.options) ? card.options.slice(0, 4) : [];
+  const normalizedCards: GeneratedMcqCard[] = cards
+    .slice(0, 6)
+    .map((card: any) => {
+      const options = Array.isArray(card.options)
+        ? card.options.slice(0, 4)
+        : [];
 
-    while (options.length < 4) {
-      options.push("");
-    }
+      while (options.length < 4) {
+        options.push("");
+      }
 
-    const correctIndex =
-      typeof card.correctIndex === "number" &&
-      card.correctIndex >= 0 &&
-      card.correctIndex <= 3
-        ? card.correctIndex
-        : 0;
+      const correctIndex =
+        typeof card.correctIndex === "number" &&
+        card.correctIndex >= 0 &&
+        card.correctIndex <= 3
+          ? card.correctIndex
+          : 0;
 
-    const answer = options[correctIndex] || card.answer || "";
-    const wrongExplanations = Array.isArray(card.wrongExplanations)
-      ? card.wrongExplanations.slice(0, 4)
-      : ["", "", "", ""];
+      const answer = options[correctIndex] || card.answer || "";
+      const wrongExplanations = Array.isArray(card.wrongExplanations)
+        ? card.wrongExplanations.slice(0, 4)
+        : ["", "", "", ""];
 
-    while (wrongExplanations.length < 4) {
-      wrongExplanations.push("");
-    }
+      while (wrongExplanations.length < 4) {
+        wrongExplanations.push("");
+      }
 
-    return {
-      question: card.question || "",
-      options,
-      correctIndex,
-      answer,
-      explanation: card.explanation || "",
-      wrongExplanations,
-    };
-  });
+      return {
+        question: card.question || "",
+        options,
+        correctIndex,
+        answer,
+        explanation: card.explanation || "",
+        wrongExplanations,
+      };
+    });
 
   return {
     title: parsed.title || "YouTube Study Set",
@@ -226,7 +248,11 @@ async function generateYoutubeContent(youtubeUrl: string) {
   };
 }
 
-async function writeSetCards(uid: string, setId: string, cards: GeneratedMcqCard[]) {
+async function writeSetCards(
+  uid: string,
+  setId: string,
+  cards: GeneratedMcqCard[],
+) {
   const batch = firestore.batch();
   const cardsCollection = getSetRef(uid, setId).collection("cards");
   const now = Timestamp.now();
@@ -260,10 +286,16 @@ async function writeSetCards(uid: string, setId: string, cards: GeneratedMcqCard
 export const generateCards = onCall(async (request) => {
   const text = request.data?.text;
   const title = request.data?.title;
+  const language = normalizeLanguage(request.data?.language);
 
   console.log("[generateCards] request received", {
     hasText: typeof text === "string" && text.length > 0,
     title,
+  });
+
+  console.log("[generateCards] language", {
+    raw: request.data?.language,
+    normalized: language,
   });
 
   if (!text || typeof text !== "string") {
@@ -277,6 +309,8 @@ export const generateCards = onCall(async (request) => {
 
     const prompt = `
 You are an educational content processor.
+
+
 
 Given the following content:
 
@@ -292,7 +326,7 @@ Each flashcard must include:
 - explanation
 
 Return ONLY valid JSON in this format:
-
+${getLanguageInstruction(language)}
 {
   "summary": "...",
   "keyConcepts": ["...", "..."],
@@ -328,13 +362,18 @@ Return ONLY valid JSON in this format:
 
 export const generateCardsYoutube = onCall(async (request) => {
   const youtubeUrl = normalizeYoutubeUrl(request.data?.youtubeUrl);
-
+  const language = normalizeLanguage(request.data?.language);
   console.log("[generateCardsYoutube] request received", {
     youtubeUrl,
   });
 
+  console.log("[generateCardsYoutube] language", {
+    raw: request.data?.language,
+    normalized: language,
+  });
+
   try {
-    const parsed = await generateYoutubeContent(youtubeUrl);
+    const parsed = await generateYoutubeContent(youtubeUrl, language);
 
     return {
       ok: true,
@@ -348,7 +387,7 @@ export const generateCardsYoutube = onCall(async (request) => {
     throw new HttpsError(
       "internal",
       "YouTube AI processing failed",
-      error.message
+      error.message,
     );
   }
 });
@@ -370,14 +409,23 @@ export const createYoutubeSetJob = onCall(
     if (!uid) {
       throw new HttpsError("unauthenticated", "Kullanıcı bulunamadı");
     }
-
+    const language = normalizeLanguage(request.data?.language);
     const youtubeUrl = normalizeYoutubeUrl(request.data?.youtubeUrl);
-    const setRef = firestore.collection("users").doc(uid).collection("sets").doc();
+    const setRef = firestore
+      .collection("users")
+      .doc(uid)
+      .collection("sets")
+      .doc();
 
+    console.log("[createYoutubeSetJob] language", {
+      raw: request.data?.language,
+      normalized: language,
+    });
     await setRef.set({
-      title: "Video hazırlanıyor...",
+      title: language === "tr" ? "Video hazırlanıyor..." : "Preparing video...",
       sourceType: "youtube",
       sourceText: youtubeUrl,
+      language,
       status: "processing",
       summary: null,
       keyConcepts: [],
@@ -395,7 +443,7 @@ export const createYoutubeSetJob = onCall(
       ok: true,
       setId: setRef.id,
     };
-  }
+  },
 );
 
 export const processYoutubeSetJob = onDocumentCreated(
@@ -417,6 +465,12 @@ export const processYoutubeSetJob = onDocumentCreated(
     const setId = event.params.setId;
     const data = snapshot.data();
 
+    const language = normalizeLanguage(data.language);
+
+    console.log("[processYoutubeSetJob] language", {
+      raw: data.language,
+      normalized: language,
+    });
     console.log("[processYoutubeSetJob] triggered", {
       uid,
       setId,
@@ -431,13 +485,16 @@ export const processYoutubeSetJob = onDocumentCreated(
     const setRef = getSetRef(uid, setId);
 
     try {
-      const parsed = await generateYoutubeContent(data.sourceText);
-
+      const language = normalizeLanguage(data.language);
+      const parsed = await generateYoutubeContent(data.sourceText, language);
       await writeSetCards(uid, setId, parsed.cards);
 
       await setRef.update({
         status: "completed",
-        title: parsed.title || "YouTube Study Set",
+        title:
+          parsed.title || language === "tr"
+            ? "Youtube Çalışma Seti"
+            : "Youtube Study Set",
         summary: parsed.summary,
         keyConcepts: parsed.keyConcepts,
         cards: parsed.cards,
@@ -465,5 +522,5 @@ export const processYoutubeSetJob = onDocumentCreated(
         failedAt: FieldValue.serverTimestamp(),
       });
     }
-  }
+  },
 );

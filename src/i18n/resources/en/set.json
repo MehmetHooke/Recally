@@ -32,34 +32,35 @@
                 "savedLink": "Saved link",
                 "retryButton": "Try again",
                 "newLinkButton": "Add a new link"
+            }
+        },
+
+        "processing": {
+            "title": "Turning video into a learning set",
+            "description": "For longer videos, this can take 1–2 minutes.",
+            "elapsedSeconds": "{{seconds}} sec",
+            "aiPreparing": "AI preparing",
+            "steps": {
+                "checkingConnection": "Checking video connection...",
+                "extractingIdeas": "Extracting the main ideas from the video...",
+                "splittingSummary": "Breaking the summary into learnable pieces...",
+                "creatingQuiz": "Preparing quiz questions...",
+                "checkingAnswers": "Checking answers and explanations...",
+                "takingLonger": "This video is long, so it is taking a bit more time. Your set is being prepared..."
             },
-            "processing": {
-                "title": "Turning video into a learning set",
-                "description": "For longer videos, this can take 1–2 minutes.",
-                "elapsedSeconds": "{{seconds}} sec",
-                "aiPreparing": "AI preparing",
-                "steps": {
-                    "checkingConnection": "Checking video connection...",
-                    "extractingIdeas": "Extracting the main ideas from the video...",
-                    "splittingSummary": "Breaking the summary into learnable pieces...",
-                    "creatingQuiz": "Preparing quiz questions...",
-                    "checkingAnswers": "Checking answers and explanations...",
-                    "takingLonger": "This video is long, so it is taking a bit more time. Your set is being prepared..."
-                },
-                "trustRows": {
-                    "compress": "We are compressing a 1-hour video into a learning set you can review in minutes.",
-                    "mainIdeas": "Questions are prepared from the main ideas in the video, not just the summary.",
-                    "answers": "Even the wrong options are checked to make them educational."
-                },
-                "skeleton": {
-                    "summaryTitle": "Preparing summary",
-                    "conceptsTitle": "Selecting key concepts",
-                    "quizPreviewTitle": "Quiz preview",
-                    "questionLoading": "Question loading..."
-                },
-                "reviewLoading": {
-                    "loading": "Loading..."
-                }
+            "trustRows": {
+                "compress": "We are compressing a 1-hour video into a learning set you can review in minutes.",
+                "mainIdeas": "Questions are prepared from the main ideas in the video, not just the summary.",
+                "answers": "Even the wrong options are checked to make them educational."
+            },
+            "skeleton": {
+                "summaryTitle": "Preparing summary",
+                "conceptsTitle": "Selecting key concepts",
+                "quizPreviewTitle": "Quiz preview",
+                "questionLoading": "Question loading..."
+            },
+            "reviewLoading": {
+                "loading": "Loading..."
             }
         }
     },

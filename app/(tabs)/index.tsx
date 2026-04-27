@@ -9,7 +9,7 @@ import {
   Pressable,
   ScrollView,
   Text,
-  View,
+  View
 } from "react-native";
 
 export default function HomeScreen() {
@@ -266,7 +266,7 @@ export default function HomeScreen() {
             </Text>
           </Pressable>
         </View>
-
+        
         {recentSets.length === 0 ? (
           <View
             style={{

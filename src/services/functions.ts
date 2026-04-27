@@ -1,4 +1,5 @@
 import { httpsCallable } from "firebase/functions";
+import i18n from "../i18n";
 import { functions } from "./firebase";
 
 export type GeneratedSummary = {
@@ -48,7 +49,17 @@ export type CreateYoutubeSetJobResponse = {
   setId: string;
 };
 
-function logCallableError(functionName: string, error: unknown, payload?: unknown) {
+type AppLanguage = "tr" | "en";
+
+function getCurrentAppLanguage(): AppLanguage {
+  return i18n.language === "tr" ? "tr" : "en";
+}
+
+function logCallableError(
+  functionName: string,
+  error: unknown,
+  payload?: unknown,
+) {
   console.error(`[functions] ${functionName} failed`, {
     payload,
     error,
@@ -65,52 +76,63 @@ function logCallableError(functionName: string, error: unknown, payload?: unknow
 }
 
 export async function generateCards(text: string, title: string) {
+  const language = getCurrentAppLanguage();
+
   const fn = httpsCallable<
-    { text: string; title: string },
+    { text: string; title: string; language: AppLanguage },
     GenerateCardsResponse
   >(functions, "generateCards");
 
   try {
-    const result = await fn({ text, title });
+    const result = await fn({ text, title, language });
     return result.data;
   } catch (error) {
-    logCallableError("generateCards", error, { title });
+    logCallableError("generateCards", error, { title, language });
     throw error;
   }
 }
 
 export async function generateCardsYoutube(youtubeUrl: string) {
+  const language = getCurrentAppLanguage();
+
   const fn = httpsCallable<
-    { youtubeUrl: string },
+    { youtubeUrl: string; language: AppLanguage },
     GenerateCardsYoutubeResponse
   >(functions, "generateCardsYoutube", {
     timeout: 300000,
   });
 
   try {
-    const result = await fn({ youtubeUrl });
+    const result = await fn({ youtubeUrl, language });
     return result.data;
   } catch (error) {
-    logCallableError("generateCardsYoutube", error, { youtubeUrl });
+    logCallableError("generateCardsYoutube", error, { youtubeUrl, language });
     throw error;
   }
 }
 
 export async function createYoutubeSetJob(youtubeUrl: string) {
+  const language = getCurrentAppLanguage();
+
   const fn = httpsCallable<
-    { youtubeUrl: string },
+    { youtubeUrl: string; language: AppLanguage },
     CreateYoutubeSetJobResponse
   >(functions, "createYoutubeSetJob", {
     timeout: 300000,
   });
 
   try {
-    console.log("[functions] createYoutubeSetJob start", { youtubeUrl });
-    const result = await fn({ youtubeUrl });
+    console.log("[functions] createYoutubeSetJob start", {
+      youtubeUrl,
+      language,
+    });
+
+    const result = await fn({ youtubeUrl, language });
+
     console.log("[functions] createYoutubeSetJob success", result.data);
     return result.data;
   } catch (error) {
-    logCallableError("createYoutubeSetJob", error, { youtubeUrl });
+    logCallableError("createYoutubeSetJob", error, { youtubeUrl, language });
     throw error;
   }
 }

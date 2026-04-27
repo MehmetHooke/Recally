@@ -1,10 +1,10 @@
 import { useAppTheme } from "@/src/theme/useTheme";
 import type { StudySet } from "@/src/types/study-set";
 import { Ionicons } from "@expo/vector-icons";
-import { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import type { DimensionValue } from "react-native";
-import { Image, Text, View } from "react-native";
+import { Animated, Easing, Image, ScrollView, Text, View } from "react-native";
 
 function getProcessingMessage(seconds: number, t: (key: string) => string) {
   if (seconds < 10) return t("detail.processing.steps.checkingConnection");
@@ -19,6 +19,18 @@ export function ProcessingSetDetail({ set }: { set: StudySet }) {
   const { colors } = useAppTheme();
   const { t } = useTranslation("set");
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
+
+  const progressPercent = useMemo(() => {
+    if (elapsedSeconds <= 30) {
+      return 8 + (elapsedSeconds / 30) * 62; // 8 -> 70
+    }
+
+    if (elapsedSeconds <= 90) {
+      return 70 + ((elapsedSeconds - 30) / 60) * 25; // 70 -> 95
+    }
+
+    return 95;
+  }, [elapsedSeconds]);
 
   useEffect(() => {
     const startedAt =
@@ -43,14 +55,19 @@ export function ProcessingSetDetail({ set }: { set: StudySet }) {
     [elapsedSeconds, t]
   );
 
+
   return (
-    <View
+    <ScrollView
       style={{
         flex: 1,
         backgroundColor: colors.background,
+      }}
+      contentContainerStyle={{
         padding: 20,
         gap: 16,
+        paddingBottom: 32,
       }}
+      showsVerticalScrollIndicator={false}
     >
       <View
         style={{
@@ -95,21 +112,33 @@ export function ProcessingSetDetail({ set }: { set: StudySet }) {
             borderWidth: 1,
             borderRadius: 18,
             padding: 14,
-            gap: 10,
+            gap: 12,
           }}
         >
           <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
             <Ionicons name="time-outline" color={colors.primary} size={18} />
-            <Text style={{ color: colors.text, fontWeight: "800" }}>
+            <Text style={{ color: colors.text, fontWeight: "800", flex: 1 }}>
               {statusMessage}
             </Text>
           </View>
 
-          <Text style={{ color: colors.mutedText }}>
-            {t("detail.processing.elapsedSeconds", {
-              seconds: elapsedSeconds,
-            })}
-          </Text>
+          <View
+            style={{
+              height: 10,
+              borderRadius: 999,
+              backgroundColor: "rgba(148,163,184,0.18)",
+              overflow: "hidden",
+            }}
+          >
+            <View
+              style={{
+                width: `${progressPercent}%`,
+                height: "100%",
+                borderRadius: 999,
+                backgroundColor: colors.primary,
+              }}
+            />
+          </View>
         </View>
 
         <View style={{ gap: 10 }}>
@@ -164,21 +193,11 @@ export function ProcessingSetDetail({ set }: { set: StudySet }) {
         <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8 }}>
           {["Type Coercion", "Scope", "Promises", "Event Loop", "Closures"].map(
             (item) => (
-              <View
-                key={item}
-                style={{
-                  backgroundColor: "rgba(148,163,184,0.18)",
-                  borderRadius: 999,
-                  paddingHorizontal: 12,
-                  paddingVertical: 8,
-                  opacity: 0.45,
-                }}
-              >
-                <Text style={{ color: colors.text }}>{item}</Text>
-              </View>
+              <SkeletonChip key={item} text={item} />
             )
           )}
         </View>
+
         <OverlayLabel label={t("detail.processing.aiPreparing")} />
       </SkeletonCard>
 
@@ -192,15 +211,7 @@ export function ProcessingSetDetail({ set }: { set: StudySet }) {
           />
         }
       >
-        <Text
-          style={{
-            color: colors.text,
-            opacity: 0.5,
-            fontWeight: "800",
-          }}
-        >
-          {t("detail.processing.skeleton.questionLoading")}
-        </Text>
+        <SkeletonLine width="70%" height={16} />
 
         <View style={{ gap: 10 }}>
           {["A", "B", "C", "D"].map((option) => (
@@ -216,7 +227,7 @@ export function ProcessingSetDetail({ set }: { set: StudySet }) {
 
         <OverlayLabel label={t("detail.processing.aiPreparing")} />
       </SkeletonCard>
-    </View>
+    </ScrollView>
   );
 }
 
@@ -269,17 +280,133 @@ function SkeletonCard({
   );
 }
 
-function SkeletonLine({ width }: { width: DimensionValue }) {
+function SkeletonLine({
+  width,
+  height = 12,
+}: {
+  width: DimensionValue;
+  height?: number;
+}) {
+  return (
+    <ShimmerBox
+      width={width}
+      height={height}
+      borderRadius={999}
+    />
+  );
+}
+
+function SkeletonChip({ text }: { text: string }) {
+  const { colors } = useAppTheme();
+
+  return (
+    <View
+      style={{
+        borderRadius: 999,
+        overflow: "hidden",
+      }}
+    >
+      <ShimmerBox width={110} height={34} borderRadius={999}>
+        <Text
+          style={{
+            color: colors.text,
+            opacity: 0.35,
+            paddingHorizontal: 12,
+            paddingVertical: 8,
+          }}
+        >
+          {text}
+        </Text>
+      </ShimmerBox>
+    </View>
+  );
+}
+
+function ShimmerBox({
+  width,
+  height,
+  borderRadius,
+  children,
+}: {
+  width: DimensionValue;
+  height: number;
+  borderRadius: number;
+  children?: React.ReactNode;
+}) {
+  const shimmerAnim = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    Animated.loop(
+      Animated.timing(shimmerAnim, {
+        toValue: 1,
+        duration: 1800,
+        easing: Easing.inOut(Easing.ease),
+        useNativeDriver: true,
+      })
+    ).start();
+  }, [shimmerAnim]);
+
+  const translateX = shimmerAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: [-260, 320],
+  });
+
   return (
     <View
       style={{
         width,
-        height: 12,
-        borderRadius: 999,
-        backgroundColor: "rgba(148,163,184,0.22)",
-        opacity: 0.9,
+        height,
+        borderRadius,
+        backgroundColor: "rgba(148,163,184,0.16)",
+        overflow: "hidden",
+        justifyContent: "center",
       }}
-    />
+    >
+      {children}
+
+      <Animated.View
+        pointerEvents="none"
+        style={{
+          position: "absolute",
+          top: -height,
+          bottom: -height,
+          width: 180,
+          transform: [{ translateX }, { rotate: "12deg" }],
+          opacity: 0.55,
+        }}
+      >
+        <View
+          style={{
+            flex: 1,
+            backgroundColor: "rgba(255,255,255,0.10)",
+          }}
+        />
+
+        <View
+          style={{
+            position: "absolute",
+            left: 45,
+            top: 0,
+            bottom: 0,
+            width: 90,
+            backgroundColor: "rgba(255,255,255,0.22)",
+            borderRadius: 999,
+          }}
+        />
+
+        <View
+          style={{
+            position: "absolute",
+            left: 72,
+            top: 0,
+            bottom: 0,
+            width: 36,
+            backgroundColor: "rgba(255,255,255,0.32)",
+            borderRadius: 999,
+          }}
+        />
+      </Animated.View>
+    </View>
   );
 }
 
