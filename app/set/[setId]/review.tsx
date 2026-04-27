@@ -94,7 +94,7 @@ export default function ReviewScreen() {
     setCurrentIndex((prev) => prev + 1);
   };
 
-  const submitResult = async () => {
+  const submitResult = async (result: "knew" | "forgot") => {
     if (!setId || typeof setId !== "string" || !currentCard || submitting) {
       return;
     }
@@ -102,7 +102,7 @@ export default function ReviewScreen() {
     try {
       setSubmitting(true);
 
-      if (isCorrect) {
+      if (result === "knew") {
         await markCardKnew(setId, currentCard);
         setStats((prev) => ({ ...prev, knew: prev.knew + 1 }));
       } else {
@@ -183,9 +183,9 @@ export default function ReviewScreen() {
         />
       ) : null}
 
-      {answered ? (
+      {answered && isMcq ? (
         <Pressable
-          onPress={submitResult}
+          onPress={() => submitResult(isCorrect ? "knew" : "forgot")}
           disabled={submitting}
           style={{
             backgroundColor: colors.primary,
@@ -205,6 +205,56 @@ export default function ReviewScreen() {
             {submitting ? "Kaydediliyor..." : "Devam et"}
           </Text>
         </Pressable>
+      ) : null}
+
+      {answered && !isMcq ? (
+        <>
+          <Pressable
+            onPress={() => submitResult("knew")}
+            disabled={submitting}
+            style={{
+              backgroundColor: colors.primary,
+              paddingVertical: 16,
+              borderRadius: 16,
+              alignItems: "center",
+              opacity: submitting ? 0.6 : 1,
+            }}
+          >
+            <Text
+              style={{
+                color: colors.primaryForeground,
+                fontWeight: "900",
+                fontSize: 15,
+              }}
+            >
+              {submitting ? "Kaydediliyor..." : "Biliyordum"}
+            </Text>
+          </Pressable>
+
+          <Pressable
+            onPress={() => submitResult("forgot")}
+            disabled={submitting}
+            style={{
+              backgroundColor: colors.card,
+              borderColor: colors.border,
+              borderWidth: 1,
+              paddingVertical: 16,
+              borderRadius: 16,
+              alignItems: "center",
+              opacity: submitting ? 0.6 : 1,
+            }}
+          >
+            <Text
+              style={{
+                color: colors.text,
+                fontWeight: "900",
+                fontSize: 15,
+              }}
+            >
+              Unuttum
+            </Text>
+          </Pressable>
+        </>
       ) : null}
     </ScrollView>
   );

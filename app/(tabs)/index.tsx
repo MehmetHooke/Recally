@@ -52,8 +52,13 @@ export default function HomeScreen() {
       0
     );
 
+    const reviewedCards = sets.reduce(
+      (sum, set) => sum + (set.reviewedCount ?? 0),
+      0
+    );
+
     const progress =
-      totalCards > 0 ? Math.round((masteredCards / totalCards) * 100) : 0;
+      totalCards > 0 ? Math.round((reviewedCards / totalCards) * 100) : 0;
 
     return {
       totalSets,
@@ -266,7 +271,7 @@ export default function HomeScreen() {
             </Text>
           </Pressable>
         </View>
-        
+
         {recentSets.length === 0 ? (
           <View
             style={{

@@ -128,7 +128,12 @@
             "cardsBadge": "{{count}} kart",
             "dueBadge": "{{count}} bekleyen",
             "masteredBadge": "%{{progress}} tamamlandı",
-            "cta": "Özeti oku ve test et →"
+            "cta": "Özeti oku ve test et →",
+            "status": {
+                "due": "Tekrar zamanı",
+                "mastered": "Tam öğrenildi",
+                "inProgress": "Devam ediyor"
+            }
         }
     }
 }

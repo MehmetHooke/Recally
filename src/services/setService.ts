@@ -20,7 +20,7 @@ export type SetCardsStats = {
 
 export function normalizeSetItem(
   id: string,
-  data: Partial<Omit<SetItem, "id">>
+  data: Partial<Omit<SetItem, "id">>,
 ): SetItem {
   const cards = Array.isArray(data.cards) ? data.cards : [];
   const keyConcepts = Array.isArray(data.keyConcepts) ? data.keyConcepts : [];
@@ -45,6 +45,11 @@ export function normalizeSetItem(
       typeof data.totalCards === "number" ? data.totalCards : cardCount,
     masteredCount: data.masteredCount ?? 0,
     dueCount: data.dueCount ?? 0,
+    learningCount: data.learningCount ?? 0,
+    newCount: data.newCount ?? 0,
+    progress: data.progress ?? 0,
+    reviewedCount: data.reviewedCount ?? 0,
+    reviewProgress: data.reviewProgress ?? 0,
     errorMessage: data.errorMessage ?? null,
     createdAt: data.createdAt,
     updatedAt: data.updatedAt,
@@ -75,7 +80,7 @@ export async function getSets(): Promise<SetItem[]> {
   const snapshot = await getDocs(q);
 
   return snapshot.docs.map((docSnap) =>
-    normalizeSetItem(docSnap.id, docSnap.data() as Omit<SetItem, "id">)
+    normalizeSetItem(docSnap.id, docSnap.data() as Omit<SetItem, "id">),
   );
 }
 

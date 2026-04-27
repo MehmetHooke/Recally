@@ -62,8 +62,13 @@ export default function LibraryScreen() {
     0
   );
 
+  const reviewedCards = sets.reduce(
+    (sum, set) => sum + (set.reviewedCount ?? 0),
+    0
+  );
+
   const progress =
-    totalCards > 0 ? Math.round((masteredCards / totalCards) * 100) : 0;
+    totalCards > 0 ? Math.round((reviewedCards / totalCards) * 100) : 0;
 
   const handleOpenSet = (setId: string) => {
     router.push(`/set/${setId}`);
@@ -85,7 +90,7 @@ export default function LibraryScreen() {
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: colors.background, paddingTop: 40}}>
+    <View style={{ flex: 1, backgroundColor: colors.background, paddingTop: 40 }}>
       <FlatList
         data={filteredSets}
         keyExtractor={(item) => item.id}

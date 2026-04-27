@@ -26,13 +26,17 @@ export function CompletedSetDetail({
   const plainSummary = typeof summary === "string" ? summary : null;
   const cardCount = set.cardCount || set.totalCards || set.cards.length || 0;
   const isYoutubeSource = set.sourceType === "youtube";
+
+  const dueCount = set.dueCount ?? 0;
+  const masteredCount = set.masteredCount ?? 0;
+  const progress = set.reviewProgress ?? 0;
   const sourceLabel = isYoutubeSource
     ? t("detail.completed.source.youtube")
     : t("detail.completed.source.text");
 
   return (
     <ScrollView
-      style={{ flex: 1, backgroundColor: colors.background ,paddingTop:40}}
+      style={{ flex: 1, backgroundColor: colors.background, paddingTop: 40 }}
       contentContainerStyle={{
         padding: 20,
         paddingBottom: 120,
@@ -137,11 +141,37 @@ export function CompletedSetDetail({
 
         <View style={{ flexDirection: "row", gap: 10 }}>
           <StatPill label={t("detail.completed.stats.cards")} value={cardCount} />
-          <StatPill
-            label={t("detail.completed.stats.concepts")}
-            value={set.keyConcepts.length}
+          <StatPill label={t("detail.completed.stats.due")} value={dueCount} />
+          <StatPill label={t("detail.completed.stats.mastered")} value={masteredCount} />
+        </View>
+
+        <View
+          style={{
+            height: 9,
+            backgroundColor: "rgba(255,255,255,0.22)",
+            borderRadius: 999,
+            overflow: "hidden",
+          }}
+        >
+          <View
+            style={{
+              width: `${progress}%`,
+              height: "100%",
+              backgroundColor: colors.primaryForeground,
+              borderRadius: 999,
+            }}
           />
         </View>
+
+        <Text
+          style={{
+            color: colors.primaryForeground,
+            opacity: 0.92,
+            fontWeight: "800",
+          }}
+        >
+          %{progress} tamamlandı
+        </Text>
 
         <Pressable
           onPress={onOpenReview}

@@ -16,7 +16,9 @@
             "readyDescription": "Özet ve sorular aynı öğrenme akışına göre hazırlandı. Önce hızlıca oku, sonra test tarafına geç.",
             "stats": {
                 "cards": "Kart",
-                "concepts": "Kavram"
+                "concepts": "Kavram",
+                "due": "Tekrar",
+                "mastered": "Öğrenildi"
             },
             "startQuiz": "Quizi başlat",
             "sections": {

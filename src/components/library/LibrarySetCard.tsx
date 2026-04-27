@@ -17,6 +17,19 @@ export function LibrarySetCard({ item, onPress }: Props) {
   const due = item.dueCount ?? 0;
   const mastered = item.masteredCount ?? 0;
   const itemProgress = total > 0 ? Math.round((mastered / total) * 100) : 0;
+  const statusLabel =
+    due > 0
+      ? t("library.setCard.status.due")
+      : itemProgress >= 100
+        ? t("library.setCard.status.mastered")
+        : t("library.setCard.status.inProgress");
+
+  const statusColor =
+    due > 0
+      ? colors.primary
+      : itemProgress >= 100
+        ? "#16A34A"
+        : colors.mutedText;
   const summaryPreview = getSummaryPreview(item.summary) || item.sourceText;
 
   const iconSource =
@@ -47,6 +60,16 @@ export function LibrarySetCard({ item, onPress }: Props) {
           numberOfLines={1}
         >
           {item.title}
+        </Text>
+        <Text
+          style={{
+            color: statusColor,
+            fontSize: 12,
+            fontWeight: "900",
+            marginTop: 5,
+          }}
+        >
+          {statusLabel}
         </Text>
 
         <View style={{ flexDirection: "row", alignItems: "center", marginTop: 6 }}>

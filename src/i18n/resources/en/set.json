@@ -16,7 +16,9 @@
             "readyDescription": "The summary and questions were prepared around the same learning flow. Read quickly first, then move to the quiz.",
             "stats": {
                 "cards": "Cards",
-                "concepts": "Concepts"
+                "concepts": "Concepts",
+                "due": "Due",
+                "mastered": "Mastered"
             },
             "startQuiz": "Start quiz",
             "sections": {
@@ -34,7 +36,6 @@
                 "newLinkButton": "Add a new link"
             }
         },
-
         "processing": {
             "title": "Turning video into a learning set",
             "description": "For longer videos, this can take 1–2 minutes.",

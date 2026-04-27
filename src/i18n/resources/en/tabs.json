@@ -128,7 +128,12 @@
             "cardsBadge": "{{count}} cards",
             "dueBadge": "{{count}} due",
             "masteredBadge": "{{progress}}% mastered",
-            "cta": "Read summary and test yourself →"
+            "cta": "Read summary and test yourself →",
+            "status": {
+                "due": "Review due",
+                "mastered": "Mastered",
+                "inProgress": "In progress"
+            }
         }
     }
 }

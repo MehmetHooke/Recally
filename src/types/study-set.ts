@@ -20,6 +20,13 @@ export type StudySet = {
   totalCards?: number;
   masteredCount?: number;
   dueCount?: number;
+
+  learningCount?: number;
+  newCount?: number;
+  reviewedCount?: number;
+  progress?: number;
+  reviewProgress?: number;
+
   errorMessage?: string | null;
   createdAt?: any;
   updatedAt?: any;

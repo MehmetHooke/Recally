@@ -1,15 +1,16 @@
 import {
-    Timestamp,
-    collection,
-    doc,
-    getDocs,
-    orderBy,
-    query,
-    updateDoc,
-    where,
+  Timestamp,
+  collection,
+  doc,
+  getDocs,
+  orderBy,
+  query,
+  updateDoc,
+  where,
 } from "firebase/firestore";
 import { addDays, getNextIntervalAfterKnew } from "../utils/review";
 import { auth, db } from "./firebase";
+import { recomputeSetStats } from "./statsService";
 
 export type ReviewCard = {
   id: string;
@@ -75,8 +76,11 @@ export async function markCardKnew(setId: string, card: ReviewCard) {
   const intervalDays = getNextIntervalAfterKnew(newReviewCount);
   const nextReviewDate = addDays(now, intervalDays);
 
+  const nextStatus =
+    intervalDays >= 7 && newKnewCount >= 3 ? "mastered" : "learning";
+
   await updateDoc(cardRef, {
-    status: "learning",
+    status: nextStatus,
     reviewCount: newReviewCount,
     knewCount: newKnewCount,
     intervalDays,
@@ -84,6 +88,8 @@ export async function markCardKnew(setId: string, card: ReviewCard) {
     nextReviewAt: Timestamp.fromDate(nextReviewDate),
     updatedAt: Timestamp.fromDate(now),
   });
+
+  await recomputeSetStats(setId);
 }
 
 export async function markCardForgot(setId: string, card: ReviewCard) {
@@ -104,4 +110,6 @@ export async function markCardForgot(setId: string, card: ReviewCard) {
     nextReviewAt: Timestamp.fromDate(nextReviewDate),
     updatedAt: Timestamp.fromDate(now),
   });
+
+  await recomputeSetStats(setId);
 }
