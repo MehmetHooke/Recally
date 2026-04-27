@@ -1,4 +1,5 @@
 import { useAppTheme } from "@/src/theme/useTheme";
+import { useTranslation } from "react-i18next";
 import { Text, View } from "react-native";
 
 type Props = {
@@ -8,12 +9,18 @@ type Props = {
 
 export function ReviewProgress({ currentIndex, totalCards }: Props) {
   const { colors } = useAppTheme();
-  const progress = totalCards > 0 ? ((currentIndex + 1) / totalCards) * 100 : 0;
+  const { t } = useTranslation("set");
+
+  const progress =
+    totalCards > 0 ? ((currentIndex + 1) / totalCards) * 100 : 0;
 
   return (
     <View>
       <Text style={{ color: colors.mutedText, fontWeight: "800" }}>
-        Card {currentIndex + 1} / {totalCards}
+        {t("review.progress.label", {
+          current: currentIndex + 1,
+          total: totalCards,
+        })}
       </Text>
 
       <View

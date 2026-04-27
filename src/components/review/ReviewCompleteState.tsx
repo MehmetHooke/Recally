@@ -1,5 +1,6 @@
 import { useAppTheme } from "@/src/theme/useTheme";
 import { router } from "expo-router";
+import { useTranslation } from "react-i18next";
 import { Pressable, Text, View } from "react-native";
 
 type Props = {
@@ -10,6 +11,8 @@ type Props = {
 
 export function ReviewCompleteState({ totalCards, knew, forgot }: Props) {
   const { colors } = useAppTheme();
+  const { t } = useTranslation("set");
+
   const accuracy = totalCards > 0 ? Math.round((knew / totalCards) * 100) : 0;
 
   return (
@@ -23,10 +26,12 @@ export function ReviewCompleteState({ totalCards, knew, forgot }: Props) {
       }}
     >
       <Text style={{ color: colors.text, fontSize: 30, fontWeight: "900" }}>
-        Tüm soruları çözdün!
+        {t("review.complete.title")}
       </Text>
 
-      <Text style={{ color: colors.mutedText, fontSize: 16 }}>Başarın</Text>
+      <Text style={{ color: colors.mutedText, fontSize: 16 }}>
+        {t("review.complete.scoreLabel")}
+      </Text>
 
       <View
         style={{
@@ -43,7 +48,11 @@ export function ReviewCompleteState({ totalCards, knew, forgot }: Props) {
         </Text>
 
         <Text style={{ color: colors.mutedText }}>
-          {totalCards} kart çözdün · {knew} doğru · {forgot} yanlış
+          {t("review.complete.summary", {
+            total: totalCards,
+            knew,
+            forgot,
+          })}
         </Text>
       </View>
 
@@ -57,7 +66,7 @@ export function ReviewCompleteState({ totalCards, knew, forgot }: Props) {
         }}
       >
         <Text style={{ color: colors.primaryForeground, fontWeight: "900" }}>
-          Ana sayfaya dön
+          {t("review.complete.backHome")}
         </Text>
       </Pressable>
 
@@ -73,7 +82,7 @@ export function ReviewCompleteState({ totalCards, knew, forgot }: Props) {
         }}
       >
         <Text style={{ color: colors.text, fontWeight: "900" }}>
-          Library’ye git
+          {t("review.complete.goLibrary")}
         </Text>
       </Pressable>
     </View>

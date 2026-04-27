@@ -1,9 +1,11 @@
 import { useAppTheme } from "@/src/theme/useTheme";
 import { router } from "expo-router";
+import { useTranslation } from "react-i18next";
 import { Pressable, Text, View } from "react-native";
 
 export function ReviewEmptyState() {
   const { colors } = useAppTheme();
+  const { t } = useTranslation("set");
 
   return (
     <View
@@ -17,7 +19,7 @@ export function ReviewEmptyState() {
       }}
     >
       <Text style={{ color: colors.text, fontSize: 20, fontWeight: "900" }}>
-        Şu an tekrar bekleyen kart yok.
+        {t("review.empty.title")}
       </Text>
 
       <Pressable
@@ -30,7 +32,7 @@ export function ReviewEmptyState() {
         }}
       >
         <Text style={{ color: colors.primaryForeground, fontWeight: "900" }}>
-          Ana sayfaya dön
+          {t("review.empty.backHome")}
         </Text>
       </Pressable>
     </View>

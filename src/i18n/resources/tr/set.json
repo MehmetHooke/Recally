@@ -59,5 +59,30 @@
                 }
             }
         }
+    },
+    "review": {
+        "complete": {
+            "title": "Tüm soruları çözdün!",
+            "scoreLabel": "Başarın",
+            "summary": "{{total}} kart çözdün · {{knew}} doğru · {{forgot}} yanlış",
+            "backHome": "Ana sayfaya dön",
+            "goLibrary": "Kütüphaneye git"
+        },
+        "empty": {
+            "title": "Şu an tekrar bekleyen kart yok.",
+            "backHome": "Ana sayfaya dön"
+        },
+        "feedback": {
+            "correctTitle": "Bravo!",
+            "wrongTitle": "Oops!",
+            "correctAnswer": "Doğru cevap: {{answer}}"
+        },
+        "question": {
+            "basicCardDescription": "Bu eski formatta bir kart. Cevabı kontrol edip devam edebilirsin.",
+            "showAnswer": "Cevabı göster"
+        },
+        "progress": {
+            "label": "Kart {{current}} / {{total}}"
+        }
     }
 }

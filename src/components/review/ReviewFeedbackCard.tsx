@@ -1,4 +1,5 @@
 import { useAppTheme } from "@/src/theme/useTheme";
+import { useTranslation } from "react-i18next";
 import { Text, View } from "react-native";
 import type { McqReviewCard } from "./types";
 
@@ -16,6 +17,7 @@ export function ReviewFeedbackCard({
   feedbackText,
 }: Props) {
   const { colors } = useAppTheme();
+  const { t } = useTranslation("set");
 
   return (
     <View
@@ -35,7 +37,9 @@ export function ReviewFeedbackCard({
           fontWeight: "900",
         }}
       >
-        {isCorrect ? "Bravo!" : "Oops!"}
+        {isCorrect
+          ? t("review.feedback.correctTitle")
+          : t("review.feedback.wrongTitle")}
       </Text>
 
       <Text
@@ -55,7 +59,9 @@ export function ReviewFeedbackCard({
             lineHeight: 21,
           }}
         >
-          Doğru cevap: {card.options?.[card.correctIndex ?? 0]}
+          {t("review.feedback.correctAnswer", {
+            answer: card.options?.[card.correctIndex ?? 0],
+          })}
         </Text>
       ) : null}
     </View>

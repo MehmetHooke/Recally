@@ -1,4 +1,5 @@
 import { useAppTheme } from "@/src/theme/useTheme";
+import { useTranslation } from "react-i18next";
 import { Pressable, Text, View } from "react-native";
 import type { McqReviewCard } from "./types";
 
@@ -22,6 +23,7 @@ export function ReviewQuestionCard({
   onShowBasicAnswer,
 }: Props) {
   const { colors } = useAppTheme();
+  const { t } = useTranslation("set");
 
   return (
     <View
@@ -101,7 +103,7 @@ export function ReviewQuestionCard({
       ) : (
         <View style={{ gap: 12 }}>
           <Text style={{ color: colors.mutedText }}>
-            Bu eski formatta bir kart. Cevabı kontrol edip devam edebilirsin.
+            {t("review.question.basicCardDescription")}
           </Text>
 
           <Pressable
@@ -121,7 +123,7 @@ export function ReviewQuestionCard({
                 fontWeight: "900",
               }}
             >
-              Cevabı göster
+              {t("review.question.showAnswer")}
             </Text>
           </Pressable>
 

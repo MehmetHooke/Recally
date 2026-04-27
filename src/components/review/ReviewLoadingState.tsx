@@ -1,9 +1,10 @@
 import { useAppTheme } from "@/src/theme/useTheme";
+import { useTranslation } from "react-i18next";
 import { ActivityIndicator, Text, View } from "react-native";
 
 export function ReviewLoadingState() {
   const { colors } = useAppTheme();
-
+  const { t } = useTranslation("set");
   return (
     <View
       style={{
@@ -15,7 +16,7 @@ export function ReviewLoadingState() {
     >
       <ActivityIndicator color={colors.primary} />
       <Text style={{ marginTop: 12, color: colors.mutedText }}>
-        Review yükleniyor...
+        {t("review.reviewLoading.loading")}
       </Text>
     </View>
   );

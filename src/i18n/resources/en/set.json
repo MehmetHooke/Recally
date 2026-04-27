@@ -56,8 +56,39 @@
                     "conceptsTitle": "Selecting key concepts",
                     "quizPreviewTitle": "Quiz preview",
                     "questionLoading": "Question loading..."
+                },
+                "reviewLoading": {
+                    "loading": "Loading..."
                 }
             }
+        }
+    },
+    "review": {
+        "complete": {
+            "title": "You answered all questions!",
+            "scoreLabel": "Your score",
+            "summary": "You reviewed {{total}} cards · {{knew}} correct · {{forgot}} wrong",
+            "backHome": "Back to home",
+            "goLibrary": "Go to library"
+        },
+        "empty": {
+            "title": "No cards to review right now.",
+            "backHome": "Back to home"
+        },
+        "feedback": {
+            "correctTitle": "Nice!",
+            "wrongTitle": "Oops!",
+            "correctAnswer": "Correct answer: {{answer}}"
+        },
+        "reviewLoading": {
+            "loading": "Yükleniyor..."
+        },
+        "question": {
+            "basicCardDescription": "This is an older card format. Check the answer and continue.",
+            "showAnswer": "Show answer"
+        },
+        "progress": {
+            "label": "Card {{current}} / {{total}}"
         }
     }
 }
