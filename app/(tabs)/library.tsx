@@ -85,7 +85,7 @@ export default function LibraryScreen() {
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: colors.background }}>
+    <View style={{ flex: 1, backgroundColor: colors.background, paddingTop: 40}}>
       <FlatList
         data={filteredSets}
         keyExtractor={(item) => item.id}

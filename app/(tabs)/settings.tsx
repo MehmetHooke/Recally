@@ -18,6 +18,9 @@ import {
 
 const trFlag = require("@/src/assets/images/tr-flag.png");
 const enFlag = require("@/src/assets/images/en-flag.png");
+const moonImage = require("@/src/assets/images/dark.png");
+const sunImage = require("@/src/assets/images/light.png");
+
 
 function Accordion({
   title,
@@ -115,6 +118,7 @@ export default function SettingsScreen() {
         style={{ flex: 1 }}
         contentContainerStyle={{
           padding: 20,
+          paddingTop:40,
           paddingBottom: 120,
           gap: 20,
         }}
@@ -136,6 +140,9 @@ export default function SettingsScreen() {
                 if (mode !== "light") toggleTheme();
               }}
               style={{
+                flexDirection: "row",
+                alignItems: "center",
+                gap: 5,
                 padding: 12,
                 borderRadius: 14,
                 borderWidth: 1,
@@ -143,6 +150,7 @@ export default function SettingsScreen() {
                 backgroundColor: colors.background,
               }}
             >
+              <Image source={sunImage} style={{ width: 26, height: 26 }} />
               <Text style={{ color: colors.text, fontWeight: "800" }}>
                 {t("settings.theme.light")}
               </Text>
@@ -153,13 +161,17 @@ export default function SettingsScreen() {
                 if (mode !== "dark") toggleTheme();
               }}
               style={{
+                flexDirection: "row",
+                alignItems: "center",
                 padding: 12,
+                gap: 5,
                 borderRadius: 14,
                 borderWidth: 1,
                 borderColor: mode === "dark" ? colors.primary : colors.border,
                 backgroundColor: colors.background,
               }}
             >
+              <Image source={moonImage} style={{ width: 26, height: 26 }} />
               <Text style={{ color: colors.text, fontWeight: "800" }}>
                 {t("settings.theme.dark")}
               </Text>
