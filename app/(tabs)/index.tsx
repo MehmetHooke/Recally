@@ -1,3 +1,4 @@
+import ProgressRow from "@/src/components/home/ProgressRow";
 import { auth } from "@/src/services/firebase";
 import { getSets, SetItem } from "@/src/services/setService";
 import { useAppTheme } from "@/src/theme/useTheme";
@@ -57,15 +58,19 @@ export default function HomeScreen() {
       0
     );
 
-    const progress =
+    const reviewProgress =
       totalCards > 0 ? Math.round((reviewedCards / totalCards) * 100) : 0;
+
+    const masteryProgress =
+      totalCards > 0 ? Math.round((masteredCards / totalCards) * 100) : 0;
 
     return {
       totalSets,
       totalCards,
       dueCards,
       masteredCards,
-      progress,
+      reviewProgress,
+      masteryProgress,
     };
   }, [sets]);
 
@@ -185,27 +190,32 @@ export default function HomeScreen() {
           </Text>
 
           <Text style={{ color: colors.mutedText, marginTop: 4, lineHeight: 20 }}>
-            {t("home.progress.description", { progress: stats.progress })}
+            {t("home.progress.description", {
+              reviewProgress: stats.reviewProgress,
+              masteryProgress: stats.masteryProgress,
+            })}
           </Text>
         </View>
 
-        <View
-          style={{
-            height: 10,
-            backgroundColor: colors.border,
-            borderRadius: 999,
-            overflow: "hidden",
-          }}
-        >
-          <View
-            style={{
-              width: `${stats.progress}%`,
-              height: "100%",
-              backgroundColor: colors.primary,
-              borderRadius: 999,
-            }}
-          />
-        </View>
+        <ProgressRow
+          title={t("home.progress.reviewTitle")}
+          value={stats.reviewProgress}
+          label={t("home.progress.reviewLabel", {
+            progress: stats.reviewProgress,
+          })}
+          height={10}
+          color={colors.primary}
+        />
+
+        <ProgressRow
+          title={t("home.progress.masteryTitle")}
+          value={stats.masteryProgress}
+          label={t("home.progress.masteryLabel", {
+            progress: stats.masteryProgress,
+          })}
+          height={6}
+          color="#16A34A"
+        />
 
         <View style={{ flexDirection: "row", gap: 10 }}>
           <StatBox label={t("home.stats.sets")} value={stats.totalSets} />
