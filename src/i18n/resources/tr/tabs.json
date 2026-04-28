@@ -69,7 +69,11 @@
         },
         "progress": {
             "title": "Öğrenme ilerlemesi",
-            "description": "Bu konuların yaklaşık %{{progress}} kadarını güçlü seviyeye taşıdın."
+            "description": "Kartlarının %{{reviewProgress}} kadarını tekrar ettin. Uzun vadeli öğrenme seviyen %{{masteryProgress}}.",
+            "reviewTitle": "Tekrar ilerlemesi",
+            "reviewLabel": "%{{progress}} tekrar edildi",
+            "masteryTitle": "Ustalık",
+            "masteryLabel": "%{{progress}} öğrenildi"
         },
         "stats": {
             "sets": "Set",
@@ -100,8 +104,12 @@
             "description": "Bu kartları şimdi tekrar edersen bilgiyi daha kalıcı hale getirirsin."
         },
         "learning": {
-            "title": "Öğrenme zekası",
-            "description": "Şu an genel ilerlemen %{{progress}}. Tekrar bekleyen kartlar, unutma riskinin olduğu yerleri gösterir."
+            "title": "Gelişim",
+            "description": "Tekrar ilerlemen %{{reviewProgress}}, uzun vadeli öğrenme seviyen %{{masteryProgress}}.",
+            "reviewProgressTitle": "Tekrar ilerlemesi",
+            "reviewProgressLabel": "%{{progress}} tekrar edildi",
+            "masteryProgressTitle": "Ustalık",
+            "masteryProgressLabel": "%{{progress}} öğrenildi"
         },
         "stats": {
             "sets": "Set",

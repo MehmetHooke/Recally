@@ -1,9 +1,9 @@
 import {
-    collection,
-    doc,
-    getDocs,
-    Timestamp,
-    updateDoc,
+  collection,
+  doc,
+  getDocs,
+  Timestamp,
+  updateDoc,
 } from "firebase/firestore";
 import { auth, db } from "./firebase";
 
@@ -14,9 +14,10 @@ export type SetComputedStats = {
   learningCount: number;
   newCount: number;
   reviewedCount: number;
-  progress: number;
   reviewProgress: number;
+  masteryProgress: number;
 };
+
 export async function recomputeSetStats(
   setId: string,
 ): Promise<SetComputedStats> {
@@ -58,11 +59,11 @@ export async function recomputeSetStats(
   const totalCards = snapshot.docs.length;
   const reviewedCount = Math.max(totalCards - dueCount, 0);
 
-  const progress =
-    totalCards > 0 ? Math.round((masteredCount / totalCards) * 100) : 0;
-
   const reviewProgress =
     totalCards > 0 ? Math.round((reviewedCount / totalCards) * 100) : 0;
+
+  const masteryProgress =
+    totalCards > 0 ? Math.round((masteredCount / totalCards) * 100) : 0;
 
   const setRef = doc(db, "users", user.uid, "sets", setId);
 
@@ -73,9 +74,9 @@ export async function recomputeSetStats(
     masteredCount,
     reviewedCount,
     reviewProgress,
+    masteryProgress,
     learningCount,
     newCount,
-    progress,
     updatedAt: Timestamp.now(),
   });
 
@@ -85,8 +86,8 @@ export async function recomputeSetStats(
     masteredCount,
     reviewedCount,
     reviewProgress,
+    masteryProgress,
     learningCount,
     newCount,
-    progress,
   };
 }

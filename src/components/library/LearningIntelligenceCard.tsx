@@ -4,20 +4,30 @@ import { Text, View } from "react-native";
 import { StatBox } from "./StatBox";
 
 type Props = {
-  progress: number;
+  reviewProgress: number;
+  masteryProgress: number;
   totalSets: number;
   totalCards: number;
   dueCards: number;
 };
 
 export function LearningIntelligenceCard({
-  progress,
+  masteryProgress,
+  reviewProgress,
   totalSets,
   totalCards,
   dueCards,
 }: Props) {
   const { colors } = useAppTheme();
   const { t } = useTranslation("tabs");
+
+  const safeReviewProgress = Number.isFinite(reviewProgress)
+    ? reviewProgress
+    : 0;
+
+  const safeMasteryProgress = Number.isFinite(masteryProgress)
+    ? masteryProgress
+    : 0;
 
   return (
     <View
@@ -27,7 +37,7 @@ export function LearningIntelligenceCard({
         borderWidth: 1,
         borderRadius: 22,
         padding: 16,
-        gap: 14,
+        gap: 16,
       }}
     >
       <View>
@@ -36,13 +46,86 @@ export function LearningIntelligenceCard({
         </Text>
 
         <Text style={{ color: colors.mutedText, marginTop: 5, lineHeight: 20 }}>
-          {t("library.learning.description", { progress })}
+          {t("library.learning.description", {
+            reviewProgress: safeReviewProgress,
+            masteryProgress: safeMasteryProgress,
+          })}
+        </Text>
+      </View>
+
+      <ProgressRow
+        title={t("library.learning.reviewProgressTitle")}
+        value={safeReviewProgress}
+        label={t("library.learning.reviewProgressLabel", {
+          progress: safeReviewProgress,
+        })}
+        height={10}
+        color={colors.primary}
+      />
+
+      <ProgressRow
+        title={t("library.learning.masteryProgressTitle")}
+        value={safeMasteryProgress}
+        label={t("library.learning.masteryProgressLabel", {
+          progress: safeMasteryProgress,
+        })}
+        height={6}
+        color="#16A34A"
+      />
+
+      <View style={{ flexDirection: "row", gap: 10 }}>
+        <StatBox label={t("library.stats.sets")} value={totalSets} />
+        <StatBox label={t("library.stats.cards")} value={totalCards} />
+        <StatBox label={t("library.stats.review")} value={dueCards} />
+      </View>
+    </View>
+  );
+}
+
+function ProgressRow({
+  title,
+  value,
+  label,
+  height,
+  color,
+}: {
+  title: string;
+  value: number;
+  label: string;
+  height: number;
+  color: string;
+}) {
+  const { colors } = useAppTheme();
+  const safeValue = Number.isFinite(value) ? value : 0;
+
+  return (
+    <View>
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <Text style={{ color: colors.text, fontWeight: "900", fontSize: 14 }}>
+          {title}
+        </Text>
+
+        <Text
+          style={{
+            color: colors.mutedText,
+            fontWeight: "900",
+            fontSize: 13,
+          }}
+        >
+          %{safeValue}
         </Text>
       </View>
 
       <View
         style={{
-          height: 10,
+          marginTop: 8,
+          height,
           backgroundColor: colors.border,
           borderRadius: 999,
           overflow: "hidden",
@@ -50,19 +133,24 @@ export function LearningIntelligenceCard({
       >
         <View
           style={{
-            width: `${progress}%`,
+            width: `${safeValue}%`,
             height: "100%",
-            backgroundColor: colors.primary,
+            backgroundColor: color,
             borderRadius: 999,
           }}
         />
       </View>
 
-      <View style={{ flexDirection: "row", gap: 10 }}>
-        <StatBox label={t("library.stats.sets")} value={totalSets} />
-        <StatBox label={t("library.stats.cards")} value={totalCards} />
-        <StatBox label={t("library.stats.review")} value={dueCards} />
-      </View>
+      <Text
+        style={{
+          color: colors.mutedText,
+          marginTop: 5,
+          fontSize: 12,
+          fontWeight: "700",
+        }}
+      >
+        {label}
+      </Text>
     </View>
   );
 }

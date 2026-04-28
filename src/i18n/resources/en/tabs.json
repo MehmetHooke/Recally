@@ -69,7 +69,11 @@
         },
         "progress": {
             "title": "Learning Progress",
-            "description": "You have strengthened about {{progress}}% of these topics."
+            "description": "You reviewed {{reviewProgress}}% of your cards. Mastery is at {{masteryProgress}}%.",
+            "reviewTitle": "Review progress",
+            "reviewLabel": "%{{progress}} reviewed",
+            "masteryTitle": "Mastery",
+            "masteryLabel": "%{{progress}} mastered"
         },
         "stats": {
             "sets": "Sets",
@@ -101,7 +105,11 @@
         },
         "learning": {
             "title": "Learning Intelligence",
-            "description": "Your overall progress is {{progress}}%. Due cards highlight where you're at risk of forgetting."
+            "description": "Your review progress is {{reviewProgress}}%, your long-term learning level is {{masteryProgress}}%.",
+            "reviewProgressTitle": "Review progress",
+            "reviewProgressLabel": "%{{progress}} reviewed",
+            "masteryProgressTitle": "Mastery",
+            "masteryProgressLabel": "%{{progress}} mastered"
         },
         "stats": {
             "sets": "Sets",
