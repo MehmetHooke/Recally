@@ -21,6 +21,8 @@ export default function LibraryScreen() {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<FilterType>("all");
 
+
+
   const loadSets = async () => {
     try {
       setLoading(true);
@@ -57,6 +59,8 @@ export default function LibraryScreen() {
 
   const totalCards = sets.reduce((sum, set) => sum + (set.totalCards ?? 0), 0);
   const dueCards = sets.reduce((sum, set) => sum + (set.dueCount ?? 0), 0);
+
+
   const masteredCards = sets.reduce(
     (sum, set) => sum + (set.masteredCount ?? 0),
     0
@@ -67,9 +71,12 @@ export default function LibraryScreen() {
     0
   );
 
-  const progress =
+  const reviewProgress =
     totalCards > 0 ? Math.round((reviewedCards / totalCards) * 100) : 0;
 
+  const masteryProgress =
+    totalCards > 0 ? Math.round((masteredCards / totalCards) * 100) : 0;
+    
   const handleOpenSet = (setId: string) => {
     router.push(`/set/${setId}`);
   };
@@ -104,7 +111,8 @@ export default function LibraryScreen() {
             <LibraryHeader />
 
             <LearningIntelligenceCard
-              progress={progress}
+              reviewProgress={reviewProgress}
+              masteryProgress={masteryProgress}
               totalSets={sets.length}
               totalCards={totalCards}
               dueCards={dueCards}
