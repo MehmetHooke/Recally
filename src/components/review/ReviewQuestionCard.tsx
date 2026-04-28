@@ -34,6 +34,7 @@ export function ReviewQuestionCard({
         borderRadius: 24,
         padding: 20,
         gap: 18,
+        
       }}
     >
       <Text

@@ -15,21 +15,23 @@ export function LibrarySetCard({ item, onPress }: Props) {
 
   const total = item.totalCards ?? 0;
   const due = item.dueCount ?? 0;
-  const mastered = item.masteredCount ?? 0;
-  const itemProgress = total > 0 ? Math.round((mastered / total) * 100) : 0;
+  const reviewProgress = item.reviewProgress ?? 0;
+  const masteryProgress = item.masteryProgress ?? 0;
+
   const statusLabel =
     due > 0
       ? t("library.setCard.status.due")
-      : itemProgress >= 100
+      : masteryProgress >= 100
         ? t("library.setCard.status.mastered")
         : t("library.setCard.status.inProgress");
 
   const statusColor =
     due > 0
       ? colors.primary
-      : itemProgress >= 100
+      : masteryProgress >= 100
         ? "#16A34A"
         : colors.mutedText;
+
   const summaryPreview = getSummaryPreview(item.summary) || item.sourceText;
 
   const iconSource =
@@ -61,6 +63,7 @@ export function LibrarySetCard({ item, onPress }: Props) {
         >
           {item.title}
         </Text>
+
         <Text
           style={{
             color: statusColor,
@@ -72,7 +75,13 @@ export function LibrarySetCard({ item, onPress }: Props) {
           {statusLabel}
         </Text>
 
-        <View style={{ flexDirection: "row", alignItems: "center", marginTop: 6 }}>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            marginTop: 6,
+          }}
+        >
           <Image
             source={iconSource}
             style={{
@@ -113,7 +122,7 @@ export function LibrarySetCard({ item, onPress }: Props) {
         <MiniBadge label={t("library.setCard.dueBadge", { count: due })} />
         <MiniBadge
           label={t("library.setCard.masteredBadge", {
-            progress: itemProgress,
+            progress: reviewProgress,
           })}
         />
       </View>
@@ -128,7 +137,7 @@ export function LibrarySetCard({ item, onPress }: Props) {
       >
         <View
           style={{
-            width: `${itemProgress}%`,
+            width: `${reviewProgress}%`,
             height: "100%",
             backgroundColor: colors.primary,
             borderRadius: 999,

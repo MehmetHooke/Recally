@@ -34,6 +34,12 @@
                 "savedLink": "Kaydedilen link",
                 "retryButton": "Tekrar dene",
                 "newLinkButton": "Yeni link ekle"
+            },
+            "progress": {
+                "reviewTitle": "Tekrar ilerlemesi",
+                "reviewLabel": "%{{progress}} tekrar edildi",
+                "masteryTitle": "Ustalık",
+                "masteryLabel": "%{{progress}} öğrenildi"
             }
         },
         "processing": {

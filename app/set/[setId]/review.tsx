@@ -155,7 +155,7 @@ export default function ReviewScreen() {
 
   return (
     <ScrollView
-      style={{ flex: 1, backgroundColor: colors.background }}
+      style={{ flex: 1, backgroundColor: colors.background ,paddingTop:40}}
       contentContainerStyle={{
         padding: 20,
         paddingBottom: 120,

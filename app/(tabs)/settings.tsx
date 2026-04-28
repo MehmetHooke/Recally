@@ -12,7 +12,6 @@ import {
   Pressable,
   ScrollView,
   Text,
-  UIManager,
   View
 } from "react-native";
 
@@ -88,9 +87,6 @@ function Accordion({
 export default function SettingsScreen() {
   const { colors, mode, toggleTheme } = useAppTheme();
 
-  if (Platform.OS === "android") {
-    UIManager.setLayoutAnimationEnabledExperimental?.(true);
-  }
   const router = useRouter();
   const { t, i18n } = useTranslation("tabs");
 

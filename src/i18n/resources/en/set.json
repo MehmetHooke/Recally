@@ -34,6 +34,12 @@
                 "savedLink": "Saved link",
                 "retryButton": "Try again",
                 "newLinkButton": "Add a new link"
+            },
+            "progress": {
+                "reviewTitle": "Review progress",
+                "reviewLabel": "%{{progress}} reviewed",
+                "masteryTitle": "Mastery",
+                "masteryLabel": "%{{progress}} mastered"
             }
         },
         "processing": {

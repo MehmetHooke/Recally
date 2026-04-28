@@ -24,8 +24,8 @@ export type StudySet = {
   learningCount?: number;
   newCount?: number;
   reviewedCount?: number;
-  progress?: number;
   reviewProgress?: number;
+  masteryProgress?: number;
 
   errorMessage?: string | null;
   createdAt?: any;

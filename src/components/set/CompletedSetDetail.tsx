@@ -4,6 +4,8 @@ import type { StudySet } from "@/src/types/study-set";
 import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 import { Image, Pressable, ScrollView, Text, View } from "react-native";
+import SetProgressRow from "./setProgressRow";
+
 
 function isStructuredSummary(
   summary: StudySet["summary"]
@@ -29,7 +31,9 @@ export function CompletedSetDetail({
 
   const dueCount = set.dueCount ?? 0;
   const masteredCount = set.masteredCount ?? 0;
-  const progress = set.reviewProgress ?? 0;
+
+  const reviewProgress = set.reviewProgress ?? 0;
+  const masteryProgress = set.masteryProgress ?? 0;
   const sourceLabel = isYoutubeSource
     ? t("detail.completed.source.youtube")
     : t("detail.completed.source.text");
@@ -145,33 +149,25 @@ export function CompletedSetDetail({
           <StatPill label={t("detail.completed.stats.mastered")} value={masteredCount} />
         </View>
 
-        <View
-          style={{
-            height: 9,
-            backgroundColor: "rgba(255,255,255,0.22)",
-            borderRadius: 999,
-            overflow: "hidden",
-          }}
-        >
-          <View
-            style={{
-              width: `${progress}%`,
-              height: "100%",
-              backgroundColor: colors.primaryForeground,
-              borderRadius: 999,
-            }}
-          />
-        </View>
+        <SetProgressRow
+          title={t("detail.completed.progress.reviewTitle")}
+          value={reviewProgress}
+          label={t("detail.completed.progress.reviewLabel", {
+            progress: reviewProgress,
+          })}
+          height={9}
+          variant="review"
+        />
 
-        <Text
-          style={{
-            color: colors.primaryForeground,
-            opacity: 0.92,
-            fontWeight: "800",
-          }}
-        >
-          %{progress} tamamlandı
-        </Text>
+        <SetProgressRow
+          title={t("detail.completed.progress.masteryTitle")}
+          value={masteryProgress}
+          label={t("detail.completed.progress.masteryLabel", {
+            progress: masteryProgress,
+          })}
+          height={6}
+          variant="mastery"
+        />
 
         <Pressable
           onPress={onOpenReview}
