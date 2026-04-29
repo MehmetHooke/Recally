@@ -80,7 +80,7 @@ export default function SetDetailScreen() {
 
           successTimeoutRef.current = setTimeout(() => {
             setShowSuccess(false);
-          }, 2200);
+          }, 1700);
         }
       },
       (snapshotError) => {
