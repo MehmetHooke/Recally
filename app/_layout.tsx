@@ -1,10 +1,12 @@
 import "@/global.css";
+import { AppAlertProvider } from "@/src/context/AppAlertContext";
 import { AuthProvider, useAuth } from "@/src/context/AuthContext";
 import { initI18n } from "@/src/i18n";
 import { ThemeProvider } from "@/src/theme/ThemeProvider";
 import { Stack } from "expo-router";
 import { useEffect, useState } from "react";
 import { ActivityIndicator, View } from "react-native";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
 function AppLoading() {
   return (
@@ -50,10 +52,14 @@ export default function RootLayout() {
   }
 
   return (
-    <ThemeProvider>
-      <AuthProvider>
-        <RootLayoutInner />
-      </AuthProvider>
-    </ThemeProvider>
+    <SafeAreaProvider>
+      <ThemeProvider>
+        <AuthProvider>
+          <AppAlertProvider>
+            <RootLayoutInner />
+          </AppAlertProvider>
+        </AuthProvider>
+      </ThemeProvider>
+    </SafeAreaProvider>
   );
 }

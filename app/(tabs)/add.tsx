@@ -1,10 +1,10 @@
 import { createYoutubeSetJob } from "@/src/services/functions";
+import { useAppAlert } from "@/src/hooks/useAppAlert";
 import { useAppTheme } from "@/src/theme/useTheme";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
-  Alert,
   Pressable,
   ScrollView,
   Text,
@@ -16,6 +16,7 @@ export default function AddContentScreen() {
   const router = useRouter();
   const { colors } = useAppTheme();
   const { t } = useTranslation("tabs");
+  const { showAlert } = useAppAlert();
 
   const [youtubeUrl, setYoutubeUrl] = useState("");
   const [loading, setLoading] = useState(false);
@@ -28,12 +29,20 @@ export default function AddContentScreen() {
     const trimmedUrl = youtubeUrl.trim();
 
     if (!trimmedUrl) {
-      Alert.alert(t("add.alerts.errorTitle"), t("add.alerts.emptyYoutubeUrl"));
+      showAlert({
+        type: "error",
+        title: t("add.alerts.errorTitle"),
+        message: t("add.alerts.emptyYoutubeUrl"),
+      });
       return;
     }
 
     if (!isValidYoutubeUrl(trimmedUrl)) {
-      Alert.alert(t("add.alerts.errorTitle"), t("add.alerts.invalidYoutubeUrl"));
+      showAlert({
+        type: "error",
+        title: t("add.alerts.errorTitle"),
+        message: t("add.alerts.invalidYoutubeUrl"),
+      });
       return;
     }
 
@@ -50,12 +59,14 @@ export default function AddContentScreen() {
     } catch (error) {
       console.error("YouTube create job error:", error);
 
-      Alert.alert(
-        t("add.alerts.errorTitle"),
-        error instanceof Error
-          ? error.message
-          : t("add.errors.videoProcessingFailed")
-      );
+      showAlert({
+        type: "error",
+        title: t("add.alerts.errorTitle"),
+        message:
+          error instanceof Error
+            ? error.message
+            : t("add.errors.videoProcessingFailed"),
+      });
     } finally {
       setLoading(false);
     }
@@ -196,10 +207,11 @@ export default function AddContentScreen() {
 
         <Pressable
           onPress={() =>
-            Alert.alert(
-              t("add.alerts.comingSoonTitle"),
-              t("add.otherSources.textModeComingSoonMessage")
-            )
+            showAlert({
+              type: "info",
+              title: t("add.alerts.comingSoonTitle"),
+              message: t("add.otherSources.textModeComingSoonMessage"),
+            })
           }
           style={{
             backgroundColor: colors.background,
@@ -216,10 +228,11 @@ export default function AddContentScreen() {
 
         <Pressable
           onPress={() =>
-            Alert.alert(
-              t("add.alerts.comingSoonTitle"),
-              t("add.otherSources.pdfComingSoonMessage")
-            )
+            showAlert({
+              type: "info",
+              title: t("add.alerts.comingSoonTitle"),
+              message: t("add.otherSources.pdfComingSoonMessage"),
+            })
           }
           style={{
             backgroundColor: colors.background,

@@ -3,5 +3,14 @@
   "continue": "Devam et",
   "login": "Giriş yap",
   "logout": "Çıkış yap",
-  "loading": "Yükleniyor..."
+  "loading": "Yükleniyor...",
+  "alert": {
+    "successTitle": "Başarılı",
+    "errorTitle": "Bir şeyler ters gitti",
+    "warningTitle": "Uyarı",
+    "infoTitle": "Bilgi",
+    "dismiss": "Kapat",
+    "retry": "Tekrar dene",
+    "loadFailedMessage": "Verilerin şu anda yüklenemedi."
+  }
 }

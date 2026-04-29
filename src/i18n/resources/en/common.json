@@ -3,5 +3,14 @@
   "continue": "Continue",
   "login": "Login",
   "logout": "Logout",
-  "loading":"Loading..."
+  "loading": "Loading...",
+  "alert": {
+    "successTitle": "Success",
+    "errorTitle": "Something went wrong",
+    "warningTitle": "Warning",
+    "infoTitle": "Info",
+    "dismiss": "Dismiss",
+    "retry": "Retry",
+    "loadFailedMessage": "We could not load your data right now."
+  }
 }

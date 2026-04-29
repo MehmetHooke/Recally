@@ -8,38 +8,49 @@ import {
 } from "@/src/components/library/LibraryFilters";
 import { LibraryHeader } from "@/src/components/library/LibraryHeader";
 import { LibrarySetCard } from "@/src/components/library/LibrarySetCard";
+import { useAppAlert } from "@/src/hooks/useAppAlert";
 import { getSets, SetItem } from "@/src/services/setService";
 import { useAppTheme } from "@/src/theme/useTheme";
 import { useFocusEffect, useRouter } from "expo-router";
 import { useCallback, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { FlatList, View } from "react-native";
 
 export default function LibraryScreen() {
   const router = useRouter();
   const { colors } = useAppTheme();
+  const { t } = useTranslation(["tabs", "common"]);
+  const { showAlert } = useAppAlert();
 
   const [sets, setSets] = useState<SetItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<FilterType>("all");
 
-
-
-  const loadSets = async () => {
+  const loadSets = useCallback(async () => {
     try {
       setLoading(true);
       const data = await getSets();
       setSets(data);
     } catch (error) {
       console.error("Get sets error:", error);
+      showAlert({
+        type: "error",
+        title: t("alert.errorTitle", { ns: "common" }),
+        message: t("alert.loadFailedMessage", { ns: "common" }),
+        primaryActionLabel: t("alert.retry", { ns: "common" }),
+        onPrimaryAction: () => {
+          loadSets();
+        },
+      });
     } finally {
       setLoading(false);
     }
-  };
+  }, [showAlert, t]);
 
   useFocusEffect(
     useCallback(() => {
       loadSets();
-    }, [])
+    }, [loadSets])
   );
 
   const filteredSets = useMemo(() => {
@@ -60,7 +71,6 @@ export default function LibraryScreen() {
 
   const totalCards = sets.reduce((sum, set) => sum + (set.totalCards ?? 0), 0);
   const dueCards = sets.reduce((sum, set) => sum + (set.dueCount ?? 0), 0);
-
 
   const masteredCards = sets.reduce(
     (sum, set) => sum + (set.masteredCount ?? 0),
