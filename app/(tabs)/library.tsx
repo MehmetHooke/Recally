@@ -1,3 +1,4 @@
+import { AppLoadingState } from "@/src/components/common/AppLoadingState";
 import { DueReminderCard } from "@/src/components/library/DueReminderCard";
 import { LearningIntelligenceCard } from "@/src/components/library/LearningIntelligenceCard";
 import { LibraryEmptyState } from "@/src/components/library/LibraryEmptyState";
@@ -11,7 +12,7 @@ import { getSets, SetItem } from "@/src/services/setService";
 import { useAppTheme } from "@/src/theme/useTheme";
 import { useFocusEffect, useRouter } from "expo-router";
 import { useCallback, useMemo, useState } from "react";
-import { ActivityIndicator, FlatList, View } from "react-native";
+import { FlatList, View } from "react-native";
 
 export default function LibraryScreen() {
   const router = useRouter();
@@ -76,24 +77,13 @@ export default function LibraryScreen() {
 
   const masteryProgress =
     totalCards > 0 ? Math.round((masteredCards / totalCards) * 100) : 0;
-    
+
   const handleOpenSet = (setId: string) => {
     router.push(`/set/${setId}`);
   };
 
   if (loading) {
-    return (
-      <View
-        style={{
-          flex: 1,
-          backgroundColor: colors.background,
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <ActivityIndicator color={colors.primary} />
-      </View>
-    );
+    return <AppLoadingState />;
   }
 
   return (
