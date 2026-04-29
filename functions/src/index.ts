@@ -49,6 +49,120 @@ type GeneratedMcqCard = {
   wrongExplanations: string[];
 };
 
+function getDefaultYoutubeSetTitle(language: AppLanguage) {
+  return language === "tr" ? "YouTube Çalışma Seti" : "YouTube Study Set";
+}
+
+function cleanTitleText(value: string) {
+  return value
+    .replace(/^["'`]+|["'`]+$/g, "")
+    .replace(/^(title|baslik)\s*[:\-]\s*/i, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function countTitleWords(value: string) {
+  return (value.match(/[^\s]+/g) || []).length;
+}
+
+function isPlaceholderYoutubeTitle(value: string) {
+  const normalized = value
+    .toLocaleLowerCase("en-US")
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9\s]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+
+  const blockedExactTitles = new Set([
+    "youtube study set",
+    "youtube calisma seti",
+    "study set",
+    "calisma seti",
+    "video study set",
+    "video calisma seti",
+    "youtube video",
+    "video",
+    "title",
+    "short useful title",
+    "placeholder",
+    "untitled",
+    "video could not be analyzed",
+  ]);
+
+  if (!normalized || blockedExactTitles.has(normalized)) {
+    return true;
+  }
+
+  const blockedFragments = [
+    "placeholder",
+    "generic title",
+    "insert title",
+    "write title",
+    "study set",
+    "calisma seti",
+    "could not be analyzed",
+  ];
+
+  return blockedFragments.some((fragment) => normalized.includes(fragment));
+}
+
+function normalizeGeneratedTitle(title: unknown) {
+  if (typeof title !== "string") {
+    return null;
+  }
+
+  const cleaned = cleanTitleText(title);
+  const wordCount = countTitleWords(cleaned);
+
+  if (!cleaned || wordCount < 3 || wordCount > 8) {
+    return null;
+  }
+
+  if (isPlaceholderYoutubeTitle(cleaned)) {
+    return null;
+  }
+
+  return cleaned;
+}
+
+function buildYoutubeTitleFromContent(parsed: any, language: AppLanguage) {
+  const directTitle = normalizeGeneratedTitle(parsed?.title);
+  if (directTitle) {
+    return directTitle;
+  }
+
+  const sectionTitles = Array.isArray(parsed?.summary?.sections)
+    ? parsed.summary.sections.map((section: any) => section?.title)
+    : [];
+
+  for (const sectionTitle of sectionTitles) {
+    const normalizedSectionTitle = normalizeGeneratedTitle(sectionTitle);
+    if (normalizedSectionTitle) {
+      return normalizedSectionTitle;
+    }
+  }
+
+  const keyConcepts = Array.isArray(parsed?.keyConcepts)
+    ? parsed.keyConcepts
+        .filter((concept: unknown) => typeof concept === "string")
+        .map((concept: string) => cleanTitleText(concept))
+        .filter(Boolean)
+    : [];
+
+  if (keyConcepts.length >= 2) {
+    const combinedTitle = normalizeGeneratedTitle(
+      `${keyConcepts[0]} ${language === "tr" ? "ve" : "and"} ${keyConcepts[1]}`,
+    );
+
+    if (combinedTitle) {
+      return combinedTitle;
+    }
+  }
+
+  return getDefaultYoutubeSetTitle(language);
+}
+
 function getYoutubePrompt(language: AppLanguage) {
   return `
 You are an expert learning designer.
@@ -64,6 +178,12 @@ IMPORTANT RULES:
 - Do not create questions that are not covered in the summary.
 - Create exactly 6 multiple-choice cards.
 - Each card must have exactly 4 options.
+- The "title" field is required and must describe the video's actual study topic.
+- The title must be specific, meaningful, and useful as a saved learning-library title.
+- The title must be 3-8 words long.
+- The title must NOT be generic, vague, or placeholder text.
+- The title must NOT be any variation of: "YouTube Study Set", "YouTube Çalışma Seti", "Study Set", "Video Title", "Untitled", or "Short useful title".
+- The title must NOT mention YouTube unless the video itself is about YouTube.
 - correctIndex must be a number: 0, 1, 2, or 3.
 - answer must be exactly the same text as options[correctIndex].
 - wrongExplanations must have exactly 4 strings.
@@ -92,7 +212,7 @@ ${getLanguageInstruction(language)}
 
 {
   "ok": true,
-  "title": "Short useful title",
+  "title": "Specific topic-based title",
   "summary": {
     "overview": "A short 3-5 sentence overview of the video.",
     "sections": [
@@ -138,6 +258,8 @@ ${getLanguageInstruction(language)}
     }
   ]
 }
+
+Before returning the JSON, verify that title is content-specific, non-generic, and 3-8 words long. If it is vague or placeholder-like, rewrite it so it names the real subject of the video.
 `;
 }
 
@@ -236,8 +358,10 @@ async function generateYoutubeContent(
       };
     });
 
+  const normalizedTitle = buildYoutubeTitleFromContent(parsed, language);
+
   return {
-    title: parsed.title || "YouTube Study Set",
+    title: normalizedTitle,
     summary: (parsed.summary || {
       overview: "",
       sections: [],
@@ -491,10 +615,7 @@ export const processYoutubeSetJob = onDocumentCreated(
 
       await setRef.update({
         status: "completed",
-        title:
-          parsed.title || language === "tr"
-            ? "Youtube Çalışma Seti"
-            : "Youtube Study Set",
+        title: parsed.title || getDefaultYoutubeSetTitle(language),
         summary: parsed.summary,
         keyConcepts: parsed.keyConcepts,
         cards: parsed.cards,
