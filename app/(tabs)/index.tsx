@@ -5,11 +5,13 @@ import { HomeHeroReviewCard } from "@/src/components/home/HomeHeroReviewCard";
 import { HomeProgressCard } from "@/src/components/home/HomeProgressCard";
 import { auth } from "@/src/services/firebase";
 import { getSets, SetItem } from "@/src/services/setService";
+import { getUserStreakCount } from "@/src/services/streakService";
 import { useAppTheme } from "@/src/theme/useTheme";
 import { useFocusEffect, useRouter } from "expo-router";
 import { useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ScrollView } from "react-native";
+
 
 export default function HomeScreen() {
   const router = useRouter();
@@ -20,6 +22,7 @@ export default function HomeScreen() {
 
   const [sets, setSets] = useState<SetItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [streakCount, setStreakCount] = useState(0);
 
   const userName =
     auth.currentUser?.displayName ||
@@ -29,7 +32,10 @@ export default function HomeScreen() {
   const loadHome = async () => {
     try {
       setLoading(true);
-      const data = await getSets();
+      const [data, streak] = await Promise.all([
+        getSets(),
+        getUserStreakCount(),
+      ]);
       setSets(data);
     } catch (error) {
       console.error("Home load error:", error);
@@ -117,7 +123,7 @@ export default function HomeScreen() {
 
       <HomeHeroReviewCard
         dueCards={stats.dueCards}
-        streakCount={10}
+        streakCount={streakCount}
         onPrimaryPress={handleStartReview}
         onCreatePress={handleCreateCards}
       />
