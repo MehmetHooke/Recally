@@ -21,6 +21,7 @@ export function HomeHeroReviewCard({
 
 
     const hasDue = dueCards > 0;
+    const hasStreak = streakCount > 0;
 
     return (
         <View
@@ -59,11 +60,12 @@ export function HomeHeroReviewCard({
                     <Image
                         source={require("@/src/assets/images/flame.png")}
                         style={{
-                            width: 16,
-                            height: 30,
-                                                    
+                            width: 16, 
+                            height: 20,
+                            resizeMode: "cover",
                         }}
                     />
+
                     <Text
                         style={{
                             color: colors.primaryForeground,
@@ -71,7 +73,9 @@ export function HomeHeroReviewCard({
                             fontWeight: "900",
                         }}
                     >
-                        {t("home.hero.streak", { count: streakCount })}
+                        {hasStreak
+                            ? t("home.hero.streak", { count: streakCount })
+                            : t("home.hero.startStreak")}
                     </Text>
                 </View>
             </View>
