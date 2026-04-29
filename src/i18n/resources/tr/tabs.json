@@ -75,6 +75,16 @@
             "masteryTitle": "Ustalık",
             "masteryLabel": "%{{progress}} öğrenildi"
         },
+        "continue": {
+            "title": "Öğrenmeye devam et",
+            "viewAll": "Tümünü gör",
+            "emptyTitle": "İlk tekrar setini oluştur",
+            "emptyDescription": "Not, metin veya YouTube linki ekle; bunları tekrar kartlarına dönüştür.",
+            "emptyButton": "Kart oluştur",
+            "cardMeta": "{{cards}} kart • {{due}} tekrar",
+            "reviewCta": "Şimdi tekrar et",
+            "openCta": "Seti aç"
+        },
         "stats": {
             "sets": "Set",
             "cards": "Kart",
@@ -96,6 +106,19 @@
             "title": "Henüz set yok",
             "description": "İlk içeriğini ekle. Recallly onu saniyeler içinde soru kartlarına çevirsin.",
             "button": "İlk setini oluştur"
+        },
+        "hero": {
+            "title": {
+                "hasDue": "İlerlemeni kaybetme",
+                "noDue": "Bugün temizsin"
+            },
+            "streak": "Hafızanı {{count}} gündür koruyorsun",
+            "description": {
+                "hasDue": "Kartların seni bekliyor. Unutmadan önce tekrar et.",
+                "noDue": "Bugün tekrar etmen gereken kart yok. Yeni içerik ekleyerek hafızanı güçlendirmeye devam et."
+            },
+            "primaryButton": "İlerlemeni koru",
+            "createButton": "Yeni kart oluştur"
         }
     },
     "library": {

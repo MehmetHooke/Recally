@@ -80,6 +80,16 @@
             "cards": "Cards",
             "due": "Due"
         },
+        "continue": {
+            "title": "Continue learning",
+            "viewAll": "View all",
+            "emptyTitle": "Create your first recall set",
+            "emptyDescription": "Paste notes, text, or a YouTube link and turn it into review cards.",
+            "emptyButton": "Create cards",
+            "cardMeta": "{{cards}} cards • {{due}} due",
+            "reviewCta": "Review now",
+            "openCta": "Open set"
+        },
         "weakSpot": {
             "title": "Weak Spot",
             "subtitle": "You may forget these cards within 2 days",
@@ -96,6 +106,19 @@
             "title": "No sets yet",
             "description": "Add your first piece of content. Recallly will turn it into question cards in seconds.",
             "button": "Create your first set"
+        },
+        "hero": {
+            "title": {
+                "hasDue": "Don’t lose your progress",
+                "noDue": "You’re clear today"
+            },
+            "streak": "You’ve protected your memory for {{count}} days",
+            "description": {
+                "hasDue": "Cards are waiting for you. Review them now before they fade.",
+                "noDue": "No reviews due today. Add new content and keep building your memory."
+            },
+            "primaryButton": "Save your progress",
+            "createButton": "Create new cards"
         }
     },
     "library": {

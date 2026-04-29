@@ -2,5 +2,6 @@
   "welcome": "Welcome",
   "continue": "Continue",
   "login": "Login",
-  "logout": "Logout"
+  "logout": "Logout",
+  "loading":"Loading..."
 }
