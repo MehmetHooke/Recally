@@ -1,3 +1,4 @@
+import { SuccessAnimation } from "@/src/components/common/SuccessAnimation";
 import { CompletedSetDetail } from "@/src/components/set/CompletedSetDetail";
 import { FailedSetDetail } from "@/src/components/set/FailedSetDetail";
 import { ProcessingSetDetail } from "@/src/components/set/ProcessingSetDetail";
@@ -7,7 +8,7 @@ import { useAppTheme } from "@/src/theme/useTheme";
 import type { StudySet } from "@/src/types/study-set";
 import { router, useLocalSearchParams } from "expo-router";
 import { doc, onSnapshot } from "firebase/firestore";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ActivityIndicator, Pressable, Text, View } from "react-native";
 
@@ -19,6 +20,11 @@ export default function SetDetailScreen() {
   const [setData, setSetData] = useState<StudySet | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [showSuccess, setShowSuccess] = useState(false);
+
+  const previousStatusRef = useRef<StudySet["status"] | null>(null);
+  const hasPlayedSuccessRef = useRef(false);
+  const successTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     if (!setId || typeof setId !== "string") {
@@ -46,11 +52,36 @@ export default function SetDetailScreen() {
           return;
         }
 
-        setSetData(
-          normalizeSetItem(snap.id, snap.data() as Omit<StudySet, "id">)
+        const newData = normalizeSetItem(
+          snap.id,
+          snap.data() as Omit<StudySet, "id">
         );
+
+        const previousStatus = previousStatusRef.current;
+
+        const shouldPlaySuccess =
+          previousStatus === "processing" &&
+          newData.status === "completed" &&
+          !hasPlayedSuccessRef.current;
+
+        previousStatusRef.current = newData.status;
+
+        setSetData(newData);
         setError(null);
         setLoading(false);
+
+        if (shouldPlaySuccess) {
+          hasPlayedSuccessRef.current = true;
+          setShowSuccess(true);
+
+          if (successTimeoutRef.current) {
+            clearTimeout(successTimeoutRef.current);
+          }
+
+          successTimeoutRef.current = setTimeout(() => {
+            setShowSuccess(false);
+          }, 2200);
+        }
       },
       (snapshotError) => {
         console.error("SET DETAIL SNAPSHOT ERROR:", snapshotError);
@@ -59,7 +90,13 @@ export default function SetDetailScreen() {
       }
     );
 
-    return unsub;
+    return () => {
+      unsub();
+
+      if (successTimeoutRef.current) {
+        clearTimeout(successTimeoutRef.current);
+      }
+    };
   }, [setId, t]);
 
   const handleStartReview = () => {
@@ -120,13 +157,38 @@ export default function SetDetailScreen() {
     );
   }
 
+  let content: React.ReactNode;
+
   if (setData.status === "processing") {
-    return <ProcessingSetDetail set={setData} />;
+    content = <ProcessingSetDetail set={setData} />;
+  } else if (setData.status === "failed") {
+    content = <FailedSetDetail set={setData} />;
+  } else {
+    content = <CompletedSetDetail set={setData} onOpenReview={handleStartReview} />;
   }
 
-  if (setData.status === "failed") {
-    return <FailedSetDetail set={setData} />;
-  }
+  return (
+    <View style={{ flex: 1, backgroundColor: colors.background }}>
+      {content}
 
-  return <CompletedSetDetail set={setData} onOpenReview={handleStartReview} />;
+      {showSuccess ? (
+        <View
+          pointerEvents="none"
+          style={{
+            position: "absolute",
+            top: 0,
+            right: 0,
+            bottom: 0,
+            left: 0,
+            backgroundColor: "rgba(255,255,255,0.72)",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 999,
+          }}
+        >
+          <SuccessAnimation transparent />
+        </View>
+      ) : null}
+    </View>
+  );
 }
