@@ -118,7 +118,8 @@
                 "noDue": "No reviews due today. Add new content and keep building your memory."
             },
             "primaryButton": "Save your progress",
-            "createButton": "Create new cards"
+            "createButton": "Create new cards",
+            "startStreak": "Start your streak!"
         }
     },
     "library": {

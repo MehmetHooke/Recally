@@ -1,6 +1,13 @@
 {
     "detail": {
         "backButton": "Geri dön",
+        "failed": {
+            "title": "Video işlenemedi",
+            "description": "Bu bazen video erişimi, uzunluk veya AI yoğunluğundan olabilir.",
+            "savedLink": "Kaydedilen link",
+            "retryButton": "Tekrar dene",
+            "newLinkButton": "Yeni link ekle"
+        },
         "errors": {
             "setNotFound": "Set bulunamadı",
             "userNotFound": "Kullanıcı bulunamadı",
@@ -27,13 +34,6 @@
                 "summary": "Özet",
                 "keyConcepts": "Ana kavramlar",
                 "source": "Kaynak"
-            },
-            "failed": {
-                "title": "Video işlenemedi",
-                "description": "Bu bazen video erişimi, uzunluk veya AI yoğunluğundan olabilir.",
-                "savedLink": "Kaydedilen link",
-                "retryButton": "Tekrar dene",
-                "newLinkButton": "Yeni link ekle"
             },
             "progress": {
                 "reviewTitle": "Tekrar ilerlemesi",

@@ -118,7 +118,8 @@
                 "noDue": "Bugün tekrar etmen gereken kart yok. Yeni içerik ekleyerek hafızanı güçlendirmeye devam et."
             },
             "primaryButton": "İlerlemeni koru",
-            "createButton": "Yeni kart oluştur"
+            "createButton": "Yeni kart oluştur",
+            "startStreak": "Serini başlat"
         }
     },
     "library": {

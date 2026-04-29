@@ -1,6 +1,13 @@
 {
     "detail": {
         "backButton": "Go back",
+        "failed": {
+            "title": "Video could not be processed",
+            "description": "This can sometimes happen because of video access, video length, or high AI demand.",
+            "savedLink": "Saved link",
+            "retryButton": "Try again",
+            "newLinkButton": "Add a new link"
+        },
         "errors": {
             "setNotFound": "Set not found",
             "userNotFound": "User not found",
@@ -27,13 +34,6 @@
                 "summary": "Summary",
                 "keyConcepts": "Key concepts",
                 "source": "Source"
-            },
-            "failed": {
-                "title": "Video could not be processed",
-                "description": "This can sometimes happen because of video access, video length, or high AI demand.",
-                "savedLink": "Saved link",
-                "retryButton": "Try again",
-                "newLinkButton": "Add a new link"
             },
             "progress": {
                 "reviewTitle": "Review progress",
