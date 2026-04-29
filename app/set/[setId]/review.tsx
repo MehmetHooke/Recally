@@ -10,6 +10,7 @@ import {
   markCardForgot,
   markCardKnew,
 } from "@/src/services/cards";
+import { updateReviewStreak } from "@/src/services/streakService";
 import { useAppTheme } from "@/src/theme/useTheme";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useMemo, useState } from "react";
@@ -83,10 +84,11 @@ export default function ReviewScreen() {
     setAnswered(false);
   };
 
-  const goNext = () => {
+  const goNext = async () => {
     resetCardState();
 
     if (currentIndex + 1 >= cards.length) {
+      await updateReviewStreak();
       setDone(true);
       return;
     }
@@ -110,7 +112,7 @@ export default function ReviewScreen() {
         setStats((prev) => ({ ...prev, forgot: prev.forgot + 1 }));
       }
 
-      goNext();
+      await goNext();
     } catch (error) {
       console.error("SUBMIT REVIEW ERROR:", error);
     } finally {
@@ -155,7 +157,7 @@ export default function ReviewScreen() {
 
   return (
     <ScrollView
-      style={{ flex: 1, backgroundColor: colors.background ,paddingTop:40}}
+      style={{ flex: 1, backgroundColor: colors.background, paddingTop: 40 }}
       contentContainerStyle={{
         padding: 20,
         paddingBottom: 120,
