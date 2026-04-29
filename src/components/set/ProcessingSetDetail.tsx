@@ -66,6 +66,7 @@ export function ProcessingSetDetail({ set }: { set: StudySet }) {
         padding: 20,
         gap: 16,
         paddingBottom: 32,
+        paddingTop:40
       }}
       showsVerticalScrollIndicator={false}
     >
