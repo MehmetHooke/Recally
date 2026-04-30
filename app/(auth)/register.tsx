@@ -22,9 +22,17 @@ export default function RegisterScreen() {
   const [passwordAgain, setPasswordAgain] = useState("");
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
 
   const handleRegister = async () => {
-    if (!email.trim() || !password.trim() || !passwordAgain.trim()) {
+    if (
+      !firstName.trim() ||
+      !lastName.trim() ||
+      !email.trim() ||
+      !password.trim() ||
+      !passwordAgain.trim()
+    ) {
       setErrorMessage(t("register.errors.requiredFields"));
       return;
     }
@@ -42,7 +50,7 @@ export default function RegisterScreen() {
     try {
       setLoading(true);
       setErrorMessage("");
-      await register(email.trim(), password);
+      await register(email.trim(), password, firstName, lastName);
       router.replace("/(tabs)");
     } catch (error) {
       console.log("Register error:", error);
@@ -121,6 +129,41 @@ export default function RegisterScreen() {
             {t("register.title")}
           </Text>
 
+          <TextInput
+            placeholder={t("register.firstNamePlaceholder")}
+            placeholderTextColor={colors.mutedText}
+            value={firstName}
+            onChangeText={setFirstName}
+            autoCapitalize="words"
+            style={{
+              backgroundColor: colors.background,
+              borderColor: colors.border,
+              borderWidth: 1,
+              borderRadius: 16,
+              padding: 15,
+              color: colors.text,
+              fontSize: 15,
+              fontWeight: "600",
+            }}
+          />
+
+          <TextInput
+            placeholder={t("register.lastNamePlaceholder")}
+            placeholderTextColor={colors.mutedText}
+            value={lastName}
+            onChangeText={setLastName}
+            autoCapitalize="words"
+            style={{
+              backgroundColor: colors.background,
+              borderColor: colors.border,
+              borderWidth: 1,
+              borderRadius: 16,
+              padding: 15,
+              color: colors.text,
+              fontSize: 15,
+              fontWeight: "600",
+            }}
+          />
           <TextInput
             placeholder={t("register.emailPlaceholder")}
             placeholderTextColor={colors.mutedText}
