@@ -22,7 +22,7 @@ export const register = async (
 
   const user = userCredential.user;
 
-  const displayName = `${firstName.trim()} ${lastName.trim()}`.trim();
+  const displayName = firstName.trim();
 
   await updateProfile(user, {
     displayName,

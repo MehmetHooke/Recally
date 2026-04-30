@@ -24,14 +24,18 @@ export default function HomeScreen() {
   const [loading, setLoading] = useState(true);
   const [streakCount, setStreakCount] = useState(0);
 
+  const rawName = auth.currentUser?.displayName;
+
   const userName =
-    auth.currentUser?.displayName ||
-    auth.currentUser?.email?.split("@")[0] ||
-    t("home.fallbackUserName");
+    rawName && rawName.trim().length > 0
+      ? rawName
+      : auth.currentUser?.email?.split("@")[0] ||
+      t("home.fallbackUserName");
 
   const loadHome = async () => {
     try {
       setLoading(true);
+      console.log(userName)
       const [data, streak] = await Promise.all([
         getSets(),
         getUserStreakCount(),
