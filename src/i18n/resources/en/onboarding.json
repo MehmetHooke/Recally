@@ -1,0 +1,19 @@
+{
+  "languageTitle": "Choose your language",
+  "languageSubtitle": "Which language would you like to use Recallly in?",
+  "turkish": "Türkçe",
+  "english": "English",
+  "continue": "Continue",
+  "getStarted": "Get started",
+
+  "slide1Title": "Turn YouTube videos into quizzes",
+  "slide1Subtitle": "Paste a link. Recallly summarizes the video, extracts key concepts, and creates quiz cards for you.",
+
+  "slide2Title": "Learn first, then test yourself",
+  "slide2Subtitle": "Read a short summary, then answer questions built from that summary.",
+
+  "slide3Title": "Track what you might forget",
+  "slide3Subtitle": "See your strong and weak areas based on your answers.",
+
+  "skip": "Skip"
+}

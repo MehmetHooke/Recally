@@ -2,6 +2,7 @@ import "@/global.css";
 import { AppAlertProvider } from "@/src/context/AppAlertContext";
 import { AuthProvider, useAuth } from "@/src/context/AuthContext";
 import { initI18n } from "@/src/i18n";
+import { getOnboardingCompleted } from "@/src/services/onboarding";
 import { ThemeProvider } from "@/src/theme/ThemeProvider";
 import { Stack } from "expo-router";
 import { useEffect, useState } from "react";
@@ -18,14 +19,24 @@ function AppLoading() {
 
 function RootLayoutInner() {
   const { user, loading } = useAuth();
+  const [onboardingReady, setOnboardingReady] = useState(false);
+  const [onboardingCompleted, setOnboardingCompletedState] = useState(false);
 
-  if (loading) {
+  useEffect(() => {
+    getOnboardingCompleted()
+      .then(setOnboardingCompletedState)
+      .finally(() => setOnboardingReady(true));
+  }, []);
+
+  if (loading || !onboardingReady) {
     return <AppLoading />;
   }
 
   return (
     <Stack screenOptions={{ headerShown: false }}>
-      {!user ? (
+      {!onboardingCompleted ? (
+        <Stack.Screen name="onboarding" options={{ headerShown: false }} />
+      ) : !user ? (
         <Stack.Screen name="(auth)" options={{ headerShown: false }} />
       ) : (
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />

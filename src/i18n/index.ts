@@ -5,25 +5,28 @@ import { initReactI18next } from "react-i18next";
 
 import enAuth from "./resources/en/auth.json";
 import enCommon from "./resources/en/common.json";
+import enOnboarding from "./resources/en/onboarding.json";
 import enSet from "./resources/en/set.json";
 import enTabs from "./resources/en/tabs.json";
 import trAuth from "./resources/tr/auth.json";
 import trCommon from "./resources/tr/common.json";
+import trOnboarding from "./resources/tr/onboarding.json";
 import trSet from "./resources/tr/set.json";
 import trTabs from "./resources/tr/tabs.json";
-
 const resources = {
   en: {
     common: enCommon,
     auth: enAuth,
     tabs: enTabs,
     set: enSet,
+    onboarding: enOnboarding,
   },
   tr: {
     common: trCommon,
     auth: trAuth,
     tabs: trTabs,
     set: trSet,
+    onboarding: trOnboarding,
   },
 };
 
@@ -55,7 +58,7 @@ export const initI18n = async () => {
     resources,
     lng: lang,
     fallbackLng: "en",
-    ns: ["common", "auth", "tabs", "set"],
+    ns: ["common", "auth", "tabs", "set", "onboarding"],
     defaultNS: "common",
     interpolation: {
       escapeValue: false,
