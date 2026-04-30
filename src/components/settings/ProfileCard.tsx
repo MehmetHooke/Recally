@@ -2,8 +2,15 @@ import { useAppTheme } from "@/src/theme/useTheme";
 import { useTranslation } from "react-i18next";
 import { Image, Text, View } from "react-native";
 
-const profilePlaceholder = require("@/src/assets/images/profilePlaceholder.jpg");
+const profilePlaceholders = [
+  require("@/src/assets/images/profilePlaceholders/profilePlaceholder1.png"),
+  require("@/src/assets/images/profilePlaceholders/profilePlaceholder2.png"),
+  require("@/src/assets/images/profilePlaceholders/profilePlaceholder3.png"),
+  require("@/src/assets/images/profilePlaceholders/profilePlaceholder4.png"),
+];
 
+const randomPlaceholder =
+  profilePlaceholders[Math.floor(Math.random() * profilePlaceholders.length)];
 type Props = {
     firstName: string;
     lastName: string;
@@ -31,7 +38,7 @@ export function ProfileCard({ firstName, lastName, email, plan }: Props) {
             }}
         >
             <Image
-                source={profilePlaceholder}
+                source={randomPlaceholder}
                 style={{
                     width: 76,
                     height: 76,
