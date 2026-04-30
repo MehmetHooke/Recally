@@ -35,7 +35,6 @@ export default function HomeScreen() {
   const loadHome = async () => {
     try {
       setLoading(true);
-      console.log(userName)
       const [data, streak] = await Promise.all([
         getSets(),
         getUserStreakCount(),

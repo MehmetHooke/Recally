@@ -35,6 +35,8 @@ export const register = async (
     displayName,
     email: user.email,
     plan: "free",
+    usedSets: 0,
+    maxFreeSets: 5,
     streakCount: 0,
     language: "tr",
     reminderTime: null,

@@ -51,8 +51,12 @@
         },
         "premium": {
             "title": "Premium",
-            "description": "Unlimited sets and AI generation coming soon.",
-            "button": "Upgrade · coming soon"
+            "description": "Create more study sets and unlock your full learning flow.",
+            "premiumDescription": "Your Premium plan is active. Enjoy unlimited study sets and AI generations.",
+            "button": "Upgrade",
+            "setsUsage": "sets used",
+            "premiumPlan": "Premium Plan",
+            "freePlan": "Free Plan"
         },
         "logout": "Log out"
     },
