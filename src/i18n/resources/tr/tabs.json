@@ -55,8 +55,8 @@
             "premiumDescription": "Premium planın aktif. Sınırsız çalışma seti ve AI üretiminin keyfini çıkar.",
             "button": "Yükselt",
             "setsUsage": "kart kullanıldı",
-            "premiumPlan":"Ücretli Plan",
-            "freePlan":"Ücretsiz Plan"
+            "premiumPlan": "Ücretli Plan",
+            "freePlan": "Ücretsiz Plan"
         },
         "logout": "Çıkış yap"
     },
@@ -85,7 +85,9 @@
             "emptyTitle": "İlk tekrar setini oluştur",
             "emptyDescription": "Not, metin veya YouTube linki ekle; bunları tekrar kartlarına dönüştür.",
             "emptyButton": "Kart oluştur",
-            "cardMeta": "{{cards}} kart • {{due}} tekrar",
+            "dueMeta": "{{count}} kart tekrar bekliyor",
+            "noDueMeta": "Bugün tekrar yok",
+            "progressLabel": "{{progress}}%",
             "reviewCta": "Şimdi tekrar et",
             "openCta": "Seti aç"
         },

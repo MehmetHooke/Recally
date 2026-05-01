@@ -22,6 +22,7 @@ export function HomeHeader({ userName }: Props) {
           fontSize: 30,
           fontWeight: "900",
           marginTop: 4,
+          letterSpacing: -0.6,
         }}
       >
         {t("home.title")}

@@ -12,13 +12,10 @@ import { useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ScrollView } from "react-native";
 
-
 export default function HomeScreen() {
   const router = useRouter();
   const { colors } = useAppTheme();
   const { t } = useTranslation("tabs");
-
-
 
   const [sets, setSets] = useState<SetItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -29,17 +26,19 @@ export default function HomeScreen() {
   const userName =
     rawName && rawName.trim().length > 0
       ? rawName
-      : auth.currentUser?.email?.split("@")[0] ||
-      t("home.fallbackUserName");
+      : auth.currentUser?.email?.split("@")[0] || t("home.fallbackUserName");
 
   const loadHome = async () => {
     try {
       setLoading(true);
+
       const [data, streak] = await Promise.all([
         getSets(),
         getUserStreakCount(),
       ]);
+
       setSets(data);
+      setStreakCount(streak);
     } catch (error) {
       console.error("Home load error:", error);
     } finally {
@@ -86,8 +85,6 @@ export default function HomeScreen() {
   const firstDueSet = sets.find((set) => (set.dueCount ?? 0) > 0);
   const recentSets = sets.slice(0, 3);
 
-
-
   const handleStartReview = () => {
     if (firstDueSet) {
       router.push(`/set/${firstDueSet.id}/review`);
@@ -115,12 +112,17 @@ export default function HomeScreen() {
 
   return (
     <ScrollView
-      style={{ flex: 1, backgroundColor: colors.background, paddingTop: 40 }}
+      style={{
+        flex: 1,
+        backgroundColor: colors.background,
+        paddingTop: 40,
+      }}
       contentContainerStyle={{
         padding: 20,
         paddingBottom: 120,
         gap: 18,
       }}
+      showsVerticalScrollIndicator={false}
     >
       <HomeHeader userName={userName} />
 

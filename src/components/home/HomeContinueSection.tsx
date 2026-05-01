@@ -45,11 +45,11 @@ export function HomeContinueSection({
         <View
           style={{
             backgroundColor: colors.card,
-            borderColor: colors.border,
+            borderColor: colors.softBorder,
             borderWidth: 1,
-            borderRadius: 18,
+            borderRadius: 20,
             padding: 18,
-            gap: 10,
+            gap: 12,
           }}
         >
           <Text style={{ color: colors.text, fontSize: 17, fontWeight: "900" }}>
@@ -62,12 +62,13 @@ export function HomeContinueSection({
 
           <Pressable
             onPress={onCreatePress}
-            style={{
+            style={({ pressed }) => ({
               backgroundColor: colors.primary,
               paddingVertical: 14,
               borderRadius: 14,
               alignItems: "center",
-            }}
+              opacity: pressed ? 0.88 : 1,
+            })}
           >
             <Text
               style={{ color: colors.primaryForeground, fontWeight: "900" }}
@@ -99,42 +100,86 @@ function ContinueSetCard({
   const { colors } = useAppTheme();
   const { t } = useTranslation("tabs");
 
-  const totalCards = set.totalCards ?? 0;
   const dueCards = set.dueCount ?? 0;
-  const reviewProgress = set.reviewProgress ?? 0;
+
+  const reviewProgress = Math.max(
+    0,
+    Math.min(100, Math.round(set.reviewProgress ?? 0))
+  );
+
+  const hasDue = dueCards > 0;
 
   return (
     <Pressable
       onPress={onPress}
-      style={{
+      style={({ pressed }) => ({
         backgroundColor: colors.card,
-        borderColor: colors.border,
+        borderColor: hasDue ? colors.primarySoft : colors.softBorder,
         borderWidth: 1,
         borderRadius: 18,
         padding: 16,
-        gap: 10,
-      }}
+        gap: 12,
+        opacity: pressed ? 0.9 : 1,
+      })}
     >
-      <View>
-        <Text
-          style={{ color: colors.text, fontSize: 17, fontWeight: "900" }}
-          numberOfLines={1}
-        >
-          {set.title}
-        </Text>
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "flex-start",
+          gap: 12,
+        }}
+      >
+        <View style={{ flex: 1 }}>
+          <Text
+            style={{ color: colors.text, fontSize: 17, fontWeight: "900" }}
+            numberOfLines={1}
+          >
+            {set.title}
+          </Text>
 
-        <Text style={{ color: colors.mutedText, fontSize: 14, marginTop: 4 }}>
-          {t("home.continue.cardMeta", {
-            cards: totalCards,
-            due: dueCards,
-          })}
-        </Text>
+          <Text
+            style={{
+              color: hasDue ? colors.text : colors.mutedText,
+              fontSize: 14,
+              fontWeight: "700",
+              marginTop: 5,
+            }}
+          >
+            {hasDue
+              ? t("home.continue.dueMeta", { count: dueCards })
+              : t("home.continue.noDueMeta")}
+          </Text>
+        </View>
+
+        <View
+          style={{
+            backgroundColor: colors.background,
+            borderColor: colors.softBorder,
+            borderWidth: 1,
+            borderRadius: 999,
+            paddingHorizontal: 10,
+            paddingVertical: 5,
+          }}
+        >
+          <Text
+            style={{
+              color: colors.text,
+              fontSize: 12,
+              fontWeight: "900",
+            }}
+          >
+            {t("home.continue.progressLabel", {
+              progress: reviewProgress,
+            })}
+          </Text>
+        </View>
       </View>
 
       <View
         style={{
           height: 7,
-          backgroundColor: colors.border,
+          backgroundColor: colors.progressTrack,
           borderRadius: 999,
           overflow: "hidden",
         }}
@@ -149,8 +194,14 @@ function ContinueSetCard({
         />
       </View>
 
-      <Text style={{ color: colors.primary, fontWeight: "900", marginTop: 2 }}>
-        {dueCards > 0
+      <Text
+        style={{
+          color: hasDue ? colors.primary : colors.mutedText,
+          fontWeight: "900",
+          marginTop: 2,
+        }}
+      >
+        {hasDue
           ? t("home.continue.reviewCta")
           : t("home.continue.openCta")}
       </Text>

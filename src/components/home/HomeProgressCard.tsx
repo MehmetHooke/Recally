@@ -32,7 +32,7 @@ export function HomeProgressCard({
     <View
       style={{
         backgroundColor: colors.card,
-        borderColor: colors.border,
+        borderColor: colors.softBorder,
         borderWidth: 1,
         borderRadius: 22,
         padding: 16,
@@ -69,7 +69,7 @@ export function HomeProgressCard({
           progress: safeMasteryProgress,
         })}
         height={6}
-        color="#16A34A"
+        color={colors.success}
       />
 
       <View style={{ flexDirection: "row", gap: 10 }}>
@@ -95,6 +95,7 @@ function ProgressRow({
   color: string;
 }) {
   const { colors } = useAppTheme();
+
   const safeValue = Math.max(
     0,
     Math.min(100, Number.isFinite(value) ? value : 0)
@@ -128,7 +129,7 @@ function ProgressRow({
         style={{
           marginTop: 8,
           height,
-          backgroundColor: colors.border,
+          backgroundColor: colors.progressTrack,
           borderRadius: 999,
           overflow: "hidden",
         }}
@@ -164,8 +165,8 @@ function MiniStat({ label, value }: { label: string; value: number }) {
     <View
       style={{
         flex: 1,
-        backgroundColor: colors.background,
-        borderColor: colors.border,
+        backgroundColor: colors.primarySoft,
+        borderColor: colors.softBorder,
         borderWidth: 1,
         borderRadius: 14,
         padding: 12,

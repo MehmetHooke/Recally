@@ -90,7 +90,9 @@
             "emptyTitle": "Create your first recall set",
             "emptyDescription": "Paste notes, text, or a YouTube link and turn it into review cards.",
             "emptyButton": "Create cards",
-            "cardMeta": "{{cards}} cards • {{due}} due",
+            "dueMeta": "{{count}} cards ready to review",
+            "noDueMeta": "No review needed today",
+            "progressLabel": "{{progress}}%",
             "reviewCta": "Review now",
             "openCta": "Open set"
         },
