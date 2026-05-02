@@ -14,7 +14,7 @@ import { updateReviewStreak } from "@/src/services/streakService";
 import { useAppTheme } from "@/src/theme/useTheme";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useMemo, useState } from "react";
-import { Pressable, ScrollView, Text } from "react-native";
+import { Pressable, ScrollView, Text, View } from "react-native";
 
 export default function ReviewScreen() {
   const { setId } = useLocalSearchParams<{ setId: string }>();
@@ -32,6 +32,19 @@ export default function ReviewScreen() {
     knew: 0,
     forgot: 0,
   });
+
+  function alpha(hex: string, opacity: number) {
+    if (!hex.startsWith("#")) return hex;
+
+    const clean = hex.replace("#", "");
+    const bigint = parseInt(clean, 16);
+
+    const r = (bigint >> 16) & 255;
+    const g = (bigint >> 8) & 255;
+    const b = bigint & 255;
+
+    return `rgba(${r},${g},${b},${opacity})`;
+  }
 
   useEffect(() => {
     if (!setId || typeof setId !== "string") return;
@@ -55,14 +68,15 @@ export default function ReviewScreen() {
     return cards[currentIndex] ?? null;
   }, [cards, currentIndex]);
 
-  const isMcq =
+  const isMcq = Boolean(
     currentCard &&
     Array.isArray(currentCard.options) &&
     currentCard.options.length === 4 &&
-    typeof currentCard.correctIndex === "number";
+    typeof currentCard.correctIndex === "number"
+  );
 
   const isCorrect =
-    isMcq && selectedIndex !== null
+    isMcq && currentCard && selectedIndex !== null
       ? selectedIndex === currentCard.correctIndex
       : false;
 
@@ -156,63 +170,86 @@ export default function ReviewScreen() {
   }
 
   return (
-    <ScrollView
-      style={{ flex: 1, backgroundColor: colors.background, paddingTop: 40 }}
-      contentContainerStyle={{
-        padding: 20,
-        paddingBottom: 120,
-        gap: 16,
+    <View
+      style={{
+        flex: 1,
+        backgroundColor: colors.background,
       }}
     >
-      <ReviewProgress currentIndex={currentIndex} totalCards={cards.length} />
-
-      <ReviewQuestionCard
-        card={currentCard}
-        selectedIndex={selectedIndex}
-        answered={answered}
-        submitting={submitting}
-        isMcq={!!isMcq}
-        onSelectOption={handleSelectOption}
-        onShowBasicAnswer={handleShowBasicAnswer}
+      <View
+        pointerEvents="none"
+        style={{
+          position: "absolute",
+          top: -130,
+          right: -100,
+          width: 280,
+          height: 280,
+          borderRadius: 999,
+          backgroundColor: alpha(colors.aiGlow, 0.11),
+        }}
       />
 
-      {answered ? (
-        <ReviewFeedbackCard
+      <View
+        pointerEvents="none"
+        style={{
+          position: "absolute",
+          bottom: -150,
+          left: -110,
+          width: 300,
+          height: 300,
+          borderRadius: 999,
+          backgroundColor: alpha(colors.primary, 0.08),
+        }}
+      />
+
+      <View
+        pointerEvents="none"
+        style={{
+          position: "absolute",
+          top: 180,
+          left: -120,
+          width: 220,
+          height: 220,
+          borderRadius: 999,
+          backgroundColor: alpha(colors.secondary, 0.06),
+        }}
+      />
+
+      <ScrollView
+        style={{
+          flex: 1,
+          paddingTop: 40,
+        }}
+        contentContainerStyle={{
+          padding: 20,
+          paddingBottom: 120,
+          gap: 16,
+        }}
+        showsVerticalScrollIndicator={false}
+      >
+        <ReviewProgress currentIndex={currentIndex} totalCards={cards.length} />
+
+        <ReviewQuestionCard
           card={currentCard}
-          isCorrect={!!isCorrect}
-          isMcq={!!isMcq}
-          feedbackText={feedbackText}
+          selectedIndex={selectedIndex}
+          answered={answered}
+          submitting={submitting}
+          isMcq={isMcq}
+          onSelectOption={handleSelectOption}
+          onShowBasicAnswer={handleShowBasicAnswer}
         />
-      ) : null}
 
-      {answered && isMcq ? (
-        <Pressable
-          onPress={() => submitResult(isCorrect ? "knew" : "forgot")}
-          disabled={submitting}
-          style={{
-            backgroundColor: colors.primary,
-            paddingVertical: 16,
-            borderRadius: 16,
-            alignItems: "center",
-            opacity: submitting ? 0.6 : 1,
-          }}
-        >
-          <Text
-            style={{
-              color: colors.primaryForeground,
-              fontWeight: "900",
-              fontSize: 15,
-            }}
-          >
-            {submitting ? "Kaydediliyor..." : "Devam et"}
-          </Text>
-        </Pressable>
-      ) : null}
-
-      {answered && !isMcq ? (
-        <>
+        {answered ? (
+          <ReviewFeedbackCard
+            card={currentCard}
+            isCorrect={isCorrect}
+            isMcq={isMcq}
+            feedbackText={feedbackText}
+          />
+        ) : null}
+        {answered && isMcq ? (
           <Pressable
-            onPress={() => submitResult("knew")}
+            onPress={() => submitResult(isCorrect ? "knew" : "forgot")}
             disabled={submitting}
             style={{
               backgroundColor: colors.primary,
@@ -229,35 +266,63 @@ export default function ReviewScreen() {
                 fontSize: 15,
               }}
             >
-              {submitting ? "Kaydediliyor..." : "Biliyordum"}
+              {submitting ? "Kaydediliyor..." : "Devam et"}
             </Text>
           </Pressable>
+        ) : null}
 
-          <Pressable
-            onPress={() => submitResult("forgot")}
-            disabled={submitting}
-            style={{
-              backgroundColor: colors.card,
-              borderColor: colors.border,
-              borderWidth: 1,
-              paddingVertical: 16,
-              borderRadius: 16,
-              alignItems: "center",
-              opacity: submitting ? 0.6 : 1,
-            }}
-          >
-            <Text
-              style={{
-                color: colors.text,
-                fontWeight: "900",
-                fontSize: 15,
-              }}
+        {answered && !isMcq ? (
+          <>
+            <Pressable
+              onPress={() => submitResult("knew")}
+              disabled={submitting}
+              style={({ pressed }) => ({
+                backgroundColor: colors.primary,
+                paddingVertical: 16,
+                borderRadius: 16,
+                alignItems: "center",
+                opacity: submitting ? 0.6 : pressed ? 0.88 : 1,
+                transform: [{ scale: pressed && !submitting ? 0.99 : 1 }],
+              })}
             >
-              Unuttum
-            </Text>
-          </Pressable>
-        </>
-      ) : null}
-    </ScrollView>
+              <Text
+                style={{
+                  color: colors.primaryForeground,
+                  fontWeight: "900",
+                  fontSize: 15,
+                }}
+              >
+                {submitting ? "Kaydediliyor..." : "Biliyordum"}
+              </Text>
+            </Pressable>
+
+            <Pressable
+              onPress={() => submitResult("forgot")}
+              disabled={submitting}
+              style={({ pressed }) => ({
+                backgroundColor: colors.card,
+                borderColor: colors.softBorder,
+                borderWidth: 1,
+                paddingVertical: 16,
+                borderRadius: 16,
+                alignItems: "center",
+                opacity: submitting ? 0.6 : pressed ? 0.88 : 1,
+                transform: [{ scale: pressed && !submitting ? 0.99 : 1 }],
+              })}
+            >
+              <Text
+                style={{
+                  color: colors.text,
+                  fontWeight: "900",
+                  fontSize: 15,
+                }}
+              >
+                Unuttum
+              </Text>
+            </Pressable>
+          </>
+        ) : null}
+      </ScrollView>
+    </View>
   );
 }

@@ -13,6 +13,19 @@ type Props = {
   onShowBasicAnswer: () => void;
 };
 
+function alpha(hex: string, opacity: number) {
+  if (!hex.startsWith("#")) return hex;
+
+  const clean = hex.replace("#", "");
+  const bigint = parseInt(clean, 16);
+
+  const r = (bigint >> 16) & 255;
+  const g = (bigint >> 8) & 255;
+  const b = bigint & 255;
+
+  return `rgba(${r},${g},${b},${opacity})`;
+}
+
 export function ReviewQuestionCard({
   card,
   selectedIndex,
@@ -29,12 +42,11 @@ export function ReviewQuestionCard({
     <View
       style={{
         backgroundColor: colors.card,
-        borderColor: colors.border,
+        borderColor: colors.softBorder,
         borderWidth: 1,
         borderRadius: 24,
         padding: 20,
         gap: 18,
-        
       }}
     >
       <Text
@@ -43,35 +55,60 @@ export function ReviewQuestionCard({
           fontSize: 24,
           fontWeight: "900",
           lineHeight: 31,
+          letterSpacing: -0.3,
         }}
       >
         {card.question}
       </Text>
 
       {isMcq ? (
-        <View style={{ gap: 10 }}>
+        <View style={{ gap: 11 }}>
           {card.options!.map((option, index) => {
             const isSelected = selectedIndex === index;
             const optionIsCorrect = card.correctIndex === index;
 
-            let bg = colors.background;
+            let bg = colors.elevatedCard;
             let border = colors.border;
-            let textColor = colors.text;
+            let optionTextColor = colors.text;
+
+            let badgeBg = colors.card;
+            let badgeBorder = colors.border;
+            let badgeTextColor = colors.mutedText;
 
             if (answered) {
               if (optionIsCorrect) {
-                bg = "#DCFCE7";
-                border = "#22C55E";
-                textColor = "#166534";
+                bg = alpha(colors.success, 0.13);
+                border = colors.success;
+                optionTextColor = colors.text;
+
+                badgeBg = colors.success;
+                badgeBorder = colors.success;
+                badgeTextColor = colors.primaryForeground;
               } else if (isSelected) {
-                bg = "#FEE2E2";
-                border = "#EF4444";
-                textColor = "#991B1B";
+                bg = alpha(colors.danger, 0.13);
+                border = colors.danger;
+                optionTextColor = colors.text;
+
+                badgeBg = colors.danger;
+                badgeBorder = colors.danger;
+                badgeTextColor = colors.primaryForeground;
+              } else {
+                bg = colors.elevatedCard;
+                border = colors.border;
+                optionTextColor = colors.mutedText;
+
+                badgeBg = colors.card;
+                badgeBorder = colors.border;
+                badgeTextColor = colors.subtleText;
               }
             } else if (isSelected) {
-              bg = colors.primary;
+              bg = colors.primarySoft;
               border = colors.primary;
-              textColor = colors.primaryForeground;
+              optionTextColor = colors.text;
+
+              badgeBg = colors.primary;
+              badgeBorder = colors.primary;
+              badgeTextColor = colors.primaryForeground;
             }
 
             return (
@@ -79,44 +116,81 @@ export function ReviewQuestionCard({
                 key={`${option}-${index}`}
                 onPress={() => onSelectOption(index)}
                 disabled={answered || submitting}
-                style={{
+                style={({ pressed }) => ({
+                  width: "100%",
                   backgroundColor: bg,
                   borderColor: border,
-                  borderWidth: 1,
-                  borderRadius: 16,
-                  padding: 15,
-                }}
+                  borderWidth: isSelected || optionIsCorrect ? 1.5 : 1,
+                  borderRadius: 18,
+                  paddingVertical: 14,
+                  paddingHorizontal: 14,
+                  opacity: pressed && !answered ? 0.88 : 1,
+                  transform: [{ scale: pressed && !answered ? 0.99 : 1 }],
+                })}
               >
-                <Text
+                <View
                   style={{
-                    color: textColor,
-                    fontSize: 15,
-                    fontWeight: "800",
-                    lineHeight: 21,
+                    flexDirection: "row",
+                    alignItems: "center",
+                    gap: 12,
                   }}
                 >
-                  {String.fromCharCode(65 + index)}. {option}
-                </Text>
+                  <View
+                    style={{
+                      width: 32,
+                      height: 32,
+                      borderRadius: 999,
+                      backgroundColor: badgeBg,
+                      borderColor: badgeBorder,
+                      borderWidth: 1,
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <Text
+                      style={{
+                        color: badgeTextColor,
+                        fontSize: 13,
+                        fontWeight: "900",
+                      }}
+                    >
+                      {String.fromCharCode(65 + index)}
+                    </Text>
+                  </View>
+
+                  <Text
+                    style={{
+                      color: optionTextColor,
+                      fontSize: 15,
+                      fontWeight: "800",
+                      lineHeight: 21,
+                      flex: 1,
+                    }}
+                  >
+                    {option}
+                  </Text>
+                </View>
               </Pressable>
             );
           })}
         </View>
       ) : (
         <View style={{ gap: 12 }}>
-          <Text style={{ color: colors.mutedText }}>
+          <Text style={{ color: colors.mutedText, lineHeight: 21 }}>
             {t("review.question.basicCardDescription")}
           </Text>
 
           <Pressable
             onPress={onShowBasicAnswer}
             disabled={answered}
-            style={{
+            style={({ pressed }) => ({
               backgroundColor: colors.primary,
               paddingVertical: 14,
               borderRadius: 14,
               alignItems: "center",
-              opacity: answered ? 0.6 : 1,
-            }}
+              opacity: answered ? 0.6 : pressed ? 0.88 : 1,
+              transform: [{ scale: pressed && !answered ? 0.99 : 1 }],
+            })}
           >
             <Text
               style={{
@@ -129,15 +203,26 @@ export function ReviewQuestionCard({
           </Pressable>
 
           {answered ? (
-            <Text
+            <View
               style={{
-                color: colors.text,
-                fontSize: 17,
-                fontWeight: "800",
+                backgroundColor: colors.elevatedCard,
+                borderColor: colors.softBorder,
+                borderWidth: 1,
+                borderRadius: 16,
+                padding: 15,
               }}
             >
-              {card.answer}
-            </Text>
+              <Text
+                style={{
+                  color: colors.text,
+                  fontSize: 17,
+                  fontWeight: "800",
+                  lineHeight: 24,
+                }}
+              >
+                {card.answer}
+              </Text>
+            </View>
           ) : null}
         </View>
       )}
