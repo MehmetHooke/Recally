@@ -2,11 +2,11 @@ import { changeAppLanguage } from "@/src/i18n";
 import { useAppTheme } from "@/src/theme/useTheme";
 import { useTranslation } from "react-i18next";
 import {
-    Image,
-    ImageSourcePropType,
-    Pressable,
-    Text,
-    View,
+  Image,
+  ImageSourcePropType,
+  Pressable,
+  Text,
+  View,
 } from "react-native";
 
 const trFlag = require("@/src/assets/images/tr-flag.png");
@@ -33,7 +33,13 @@ export function LanguageStep({
 
   return (
     <View style={{ gap: 20 }}>
-      <View>
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
         <Text
           style={{
             color: colors.text,
