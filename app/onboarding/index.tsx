@@ -22,11 +22,11 @@ type Language = "tr" | "en";
 type OnboardingItem =
   | { type: "language" }
   | {
-      type: "slide";
-      title: string;
-      subtitle: string;
-      image: ImageSourcePropType;
-    };
+    type: "slide";
+    title: string;
+    subtitle: string;
+    image: ImageSourcePropType;
+  };
 
 const onboardingImages: Record<
   Language,
@@ -132,6 +132,15 @@ export default function OnboardingScreen() {
           showsHorizontalScrollIndicator={false}
           scrollEnabled={!isLanguageStep || !!selectedLanguage}
           bounces={false}
+          initialNumToRender={1}
+          maxToRenderPerBatch={1}
+          windowSize={2}
+          removeClippedSubviews
+          getItemLayout={(_, itemIndex) => ({
+            length: width,
+            offset: width * itemIndex,
+            index: itemIndex,
+          })}
           onMomentumScrollEnd={handleMomentumEnd}
           renderItem={({ item }) => (
             <View

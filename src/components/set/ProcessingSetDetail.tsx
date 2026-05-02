@@ -15,6 +15,19 @@ function getProcessingMessage(seconds: number, t: (key: string) => string) {
   return t("detail.processing.steps.takingLonger");
 }
 
+function alpha(hex: string, opacity: number) {
+  if (!hex.startsWith("#")) return hex;
+
+  const clean = hex.replace("#", "");
+  const bigint = parseInt(clean, 16);
+
+  const r = (bigint >> 16) & 255;
+  const g = (bigint >> 8) & 255;
+  const b = bigint & 255;
+
+  return `rgba(${r},${g},${b},${opacity})`;
+}
+
 export function ProcessingSetDetail({ set }: { set: StudySet }) {
   const { colors } = useAppTheme();
   const { t } = useTranslation("set");
@@ -22,11 +35,11 @@ export function ProcessingSetDetail({ set }: { set: StudySet }) {
 
   const progressPercent = useMemo(() => {
     if (elapsedSeconds <= 30) {
-      return 8 + (elapsedSeconds / 30) * 62; // 8 -> 70
+      return 8 + (elapsedSeconds / 30) * 62;
     }
 
     if (elapsedSeconds <= 90) {
-      return 70 + ((elapsedSeconds - 30) / 60) * 25; // 70 -> 95
+      return 70 + ((elapsedSeconds - 30) / 60) * 25;
     }
 
     return 95;
@@ -55,7 +68,6 @@ export function ProcessingSetDetail({ set }: { set: StudySet }) {
     [elapsedSeconds, t]
   );
 
-
   return (
     <ScrollView
       style={{
@@ -66,69 +78,181 @@ export function ProcessingSetDetail({ set }: { set: StudySet }) {
         padding: 20,
         gap: 16,
         paddingBottom: 32,
-        paddingTop:40
+        paddingTop: 40,
       }}
       showsVerticalScrollIndicator={false}
     >
       <View
         style={{
           backgroundColor: colors.card,
-          borderColor: colors.border,
+          borderColor: colors.softBorder,
           borderWidth: 1,
-          borderRadius: 28,
+          borderRadius: 30,
           padding: 22,
           gap: 18,
+          shadowColor: colors.aiGlow,
+          shadowOpacity: 0.14,
+          shadowRadius: 22,
+          shadowOffset: { width: 0, height: 10 },
+          elevation: 4,
+          overflow: "hidden",
         }}
       >
         <View
+          pointerEvents="none"
           style={{
-            width: 56,
-            height: 56,
-            borderRadius: 18,
-            backgroundColor: "rgba(239,68,68,0.10)",
+            position: "absolute",
+            top: -70,
+            right: -70,
+            width: 180,
+            height: 180,
+            borderRadius: 999,
+            backgroundColor: alpha(colors.aiGlow, 0.1),
+          }}
+        />
+
+        <View
+          pointerEvents="none"
+          style={{
+            position: "absolute",
+            bottom: -90,
+            left: -80,
+            width: 220,
+            height: 220,
+            borderRadius: 999,
+            backgroundColor: alpha(colors.primary, 0.08),
+          }}
+        />
+
+        <View
+          style={{
+            flexDirection: "row",
             alignItems: "center",
-            justifyContent: "center",
+            justifyContent: "space-between",
+            gap: 14,
           }}
         >
-          <Image
-            source={require("@/src/assets/images/youtube.png")}
-            style={{ width: 28, height: 28, resizeMode: "contain" }}
-          />
+          <View
+            style={{
+              width: 58,
+              height: 58,
+              borderRadius: 20,
+              backgroundColor: colors.dangerSoft,
+              alignItems: "center",
+              justifyContent: "center",
+              borderWidth: 1,
+              borderColor: alpha(colors.danger, 0.18),
+            }}
+          >
+            <Image
+              source={require("@/src/assets/images/youtube.png")}
+              style={{ width: 29, height: 29, resizeMode: "contain" }}
+            />
+          </View>
+
+          <View
+            style={{
+              borderRadius: 999,
+              backgroundColor: colors.primarySoft,
+              borderWidth: 1,
+              borderColor: colors.softBorder,
+              paddingHorizontal: 12,
+              paddingVertical: 7,
+              flexDirection: "row",
+              alignItems: "center",
+              gap: 7,
+            }}
+          >
+            <Ionicons name="sparkles" color={colors.aiGlow} size={14} />
+            <Text
+              style={{
+                color: colors.primary,
+                fontSize: 12,
+                fontWeight: "900",
+              }}
+            >
+              AI
+            </Text>
+          </View>
         </View>
 
         <View style={{ gap: 8 }}>
-          <Text style={{ color: colors.text, fontSize: 25, fontWeight: "900" }}>
+          <Text
+            style={{
+              color: colors.text,
+              fontSize: 26,
+              fontWeight: "900",
+              letterSpacing: -0.5,
+            }}
+          >
             {t("detail.processing.title")}
           </Text>
 
-          <Text style={{ color: colors.mutedText, lineHeight: 21 }}>
+          <Text
+            style={{
+              color: colors.mutedText,
+              lineHeight: 22,
+              fontSize: 14.5,
+            }}
+          >
             {t("detail.processing.description")}
           </Text>
         </View>
 
         <View
           style={{
-            backgroundColor: colors.background,
-            borderColor: colors.border,
+            backgroundColor: colors.elevatedCard,
+            borderColor: colors.softBorder,
             borderWidth: 1,
-            borderRadius: 18,
-            padding: 14,
-            gap: 12,
+            borderRadius: 22,
+            padding: 15,
+            gap: 13,
           }}
         >
-          <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
-            <Ionicons name="time-outline" color={colors.primary} size={18} />
-            <Text style={{ color: colors.text, fontWeight: "800", flex: 1 }}>
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 9 }}>
+            <View
+              style={{
+                width: 30,
+                height: 30,
+                borderRadius: 999,
+                backgroundColor: colors.primarySoft,
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Ionicons name="time-outline" color={colors.primary} size={17} />
+            </View>
+
+            <Text
+              style={{
+                color: colors.text,
+                fontWeight: "900",
+                flex: 1,
+                lineHeight: 20,
+              }}
+            >
               {statusMessage}
+            </Text>
+
+            <Text
+              style={{
+                color: colors.subtleText,
+                fontSize: 12,
+                fontWeight: "800",
+              }}
+            >
+              {Math.round(progressPercent)}%
             </Text>
           </View>
 
           <View
             style={{
-              height: 10,
+              height: 11,
               borderRadius: 999,
-              backgroundColor: "rgba(148,163,184,0.18)",
+              backgroundColor: colors.progressTrack,
               overflow: "hidden",
+              borderWidth: 1,
+              borderColor: alpha(colors.primary, 0.08),
             }}
           >
             <View
@@ -139,6 +263,18 @@ export function ProcessingSetDetail({ set }: { set: StudySet }) {
                 backgroundColor: colors.primary,
               }}
             />
+
+            <View
+              pointerEvents="none"
+              style={{
+                position: "absolute",
+                left: 0,
+                top: 0,
+                bottom: 0,
+                width: `${progressPercent}%`,
+                backgroundColor: alpha(colors.aiGlow, 0.18),
+              }}
+            />
           </View>
         </View>
 
@@ -147,7 +283,7 @@ export function ProcessingSetDetail({ set }: { set: StudySet }) {
             icon={
               <Ionicons
                 name="sparkles-outline"
-                color={colors.primary}
+                color={colors.aiGlow}
                 size={16}
               />
             }
@@ -155,7 +291,7 @@ export function ProcessingSetDetail({ set }: { set: StudySet }) {
           />
           <TrustRow
             icon={
-              <Ionicons name="bulb-outline" color={colors.primary} size={16} />
+              <Ionicons name="bulb-outline" color={colors.warning} size={16} />
             }
             text={t("detail.processing.trustRows.mainIdeas")}
           />
@@ -163,7 +299,7 @@ export function ProcessingSetDetail({ set }: { set: StudySet }) {
             icon={
               <Ionicons
                 name="checkmark-done-outline"
-                color={colors.primary}
+                color={colors.success}
                 size={16}
               />
             }
@@ -189,7 +325,7 @@ export function ProcessingSetDetail({ set }: { set: StudySet }) {
 
       <SkeletonCard
         title={t("detail.processing.skeleton.conceptsTitle")}
-        icon={<Ionicons name="bulb-outline" color={colors.primary} size={18} />}
+        icon={<Ionicons name="bulb-outline" color={colors.warning} size={18} />}
       >
         <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8 }}>
           {["Type Coercion", "Scope", "Promises", "Event Loop", "Closures"].map(
@@ -207,7 +343,7 @@ export function ProcessingSetDetail({ set }: { set: StudySet }) {
         icon={
           <Ionicons
             name="checkmark-done-outline"
-            color={colors.primary}
+            color={colors.success}
             size={18}
           />
         }
@@ -220,7 +356,15 @@ export function ProcessingSetDetail({ set }: { set: StudySet }) {
               key={option}
               style={{ flexDirection: "row", alignItems: "center", gap: 10 }}
             >
-              <Text style={{ color: colors.mutedText }}>{option})</Text>
+              <Text
+                style={{
+                  color: colors.subtleText,
+                  fontWeight: "800",
+                  width: 18,
+                }}
+              >
+                {option})
+              </Text>
               <SkeletonLine width="78%" />
             </View>
           ))}
@@ -237,7 +381,20 @@ function TrustRow({ icon, text }: { icon: React.ReactNode; text: string }) {
 
   return (
     <View style={{ flexDirection: "row", alignItems: "flex-start", gap: 10 }}>
-      <View style={{ marginTop: 2 }}>{icon}</View>
+      <View
+        style={{
+          marginTop: 2,
+          width: 24,
+          height: 24,
+          borderRadius: 999,
+          backgroundColor: colors.primarySoft,
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        {icon}
+      </View>
+
       <Text style={{ flex: 1, color: colors.mutedText, lineHeight: 20 }}>
         {text}
       </Text>
@@ -260,17 +417,47 @@ function SkeletonCard({
     <View
       style={{
         backgroundColor: colors.card,
-        borderColor: colors.border,
+        borderColor: colors.softBorder,
         borderWidth: 1,
-        borderRadius: 22,
+        borderRadius: 24,
         padding: 18,
         gap: 14,
         position: "relative",
         overflow: "hidden",
+        shadowColor: colors.primary,
+        shadowOpacity: 0.06,
+        shadowRadius: 14,
+        shadowOffset: { width: 0, height: 8 },
+        elevation: 2,
       }}
     >
+      <View
+        pointerEvents="none"
+        style={{
+          position: "absolute",
+          top: -50,
+          right: -50,
+          width: 120,
+          height: 120,
+          borderRadius: 999,
+          backgroundColor: alpha(colors.aiGlow, 0.06),
+        }}
+      />
+
       <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
-        {icon}
+        <View
+          style={{
+            width: 32,
+            height: 32,
+            borderRadius: 999,
+            backgroundColor: colors.primarySoft,
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          {icon}
+        </View>
+
         <Text style={{ color: colors.text, fontSize: 17, fontWeight: "900" }}>
           {title}
         </Text>
@@ -288,13 +475,7 @@ function SkeletonLine({
   width: DimensionValue;
   height?: number;
 }) {
-  return (
-    <ShimmerBox
-      width={width}
-      height={height}
-      borderRadius={999}
-    />
-  );
+  return <ShimmerBox width={width} height={height} borderRadius={999} />;
 }
 
 function SkeletonChip({ text }: { text: string }) {
@@ -307,13 +488,14 @@ function SkeletonChip({ text }: { text: string }) {
         overflow: "hidden",
       }}
     >
-      <ShimmerBox width={110} height={34} borderRadius={999}>
+      <ShimmerBox width={112} height={35} borderRadius={999}>
         <Text
           style={{
             color: colors.text,
-            opacity: 0.35,
+            opacity: 0.38,
             paddingHorizontal: 12,
             paddingVertical: 8,
+            fontWeight: "800",
           }}
         >
           {text}
@@ -334,22 +516,27 @@ function ShimmerBox({
   borderRadius: number;
   children?: React.ReactNode;
 }) {
+  const { colors } = useAppTheme();
   const shimmerAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    Animated.loop(
+    const animation = Animated.loop(
       Animated.timing(shimmerAnim, {
         toValue: 1,
-        duration: 1800,
+        duration: 1900,
         easing: Easing.inOut(Easing.ease),
         useNativeDriver: true,
       })
-    ).start();
+    );
+
+    animation.start();
+
+    return () => animation.stop();
   }, [shimmerAnim]);
 
   const translateX = shimmerAnim.interpolate({
     inputRange: [0, 1],
-    outputRange: [-260, 320],
+    outputRange: [-240, 320],
   });
 
   return (
@@ -358,39 +545,50 @@ function ShimmerBox({
         width,
         height,
         borderRadius,
-        backgroundColor: "rgba(148,163,184,0.16)",
+        backgroundColor: colors.primarySoft,
         overflow: "hidden",
         justifyContent: "center",
+        borderWidth: 1,
+        borderColor: alpha(colors.primary, 0.06),
       }}
     >
+      <View
+        pointerEvents="none"
+        style={{
+          position: "absolute",
+          inset: 0,
+          backgroundColor: alpha(colors.elevatedCard, 0.62),
+        }}
+      />
+
       {children}
 
       <Animated.View
         pointerEvents="none"
         style={{
           position: "absolute",
-          top: -height,
-          bottom: -height,
+          top: -height * 1.5,
+          bottom: -height * 1.5,
           width: 180,
-          transform: [{ translateX }, { rotate: "12deg" }],
-          opacity: 0.55,
+          transform: [{ translateX }, { rotate: "10deg" }],
+          opacity: 1,
         }}
       >
         <View
           style={{
             flex: 1,
-            backgroundColor: "rgba(255,255,255,0.10)",
+            backgroundColor: alpha(colors.aiGlow, 0.08),
           }}
         />
 
         <View
           style={{
             position: "absolute",
-            left: 45,
+            left: 42,
             top: 0,
             bottom: 0,
-            width: 90,
-            backgroundColor: "rgba(255,255,255,0.22)",
+            width: 96,
+            backgroundColor: alpha(colors.aiGlow, 0.18),
             borderRadius: 999,
           }}
         />
@@ -401,8 +599,8 @@ function ShimmerBox({
             left: 72,
             top: 0,
             bottom: 0,
-            width: 36,
-            backgroundColor: "rgba(255,255,255,0.32)",
+            width: 38,
+            backgroundColor: alpha(colors.primary, 0.22),
             borderRadius: 999,
           }}
         />
@@ -420,8 +618,8 @@ function OverlayLabel({ label }: { label: string }) {
         position: "absolute",
         right: 16,
         bottom: 16,
-        backgroundColor: "rgba(15,23,42,0.08)",
-        borderColor: colors.border,
+        backgroundColor: colors.primarySoft,
+        borderColor: colors.softBorder,
         borderWidth: 1,
         borderRadius: 999,
         paddingHorizontal: 10,
@@ -430,10 +628,9 @@ function OverlayLabel({ label }: { label: string }) {
     >
       <Text
         style={{
-          color: colors.text,
+          color: colors.primary,
           fontSize: 12,
-          fontWeight: "800",
-          opacity: 0.7,
+          fontWeight: "900",
         }}
       >
         {label}

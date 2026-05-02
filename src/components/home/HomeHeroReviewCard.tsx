@@ -9,6 +9,9 @@ type Props = {
   onCreatePress: () => void;
 };
 
+const flameImage = require("@/src/assets/images/flame.png");
+const brainImage = require("@/src/assets/images/brain-hero.png");
+
 export function HomeHeroReviewCard({
   dueCards,
   streakCount,
@@ -28,9 +31,51 @@ export function HomeHeroReviewCard({
         borderRadius: 26,
         padding: 20,
         gap: 16,
+        overflow: "hidden",
+        position: "relative",
       }}
     >
-      <View style={{ gap: 10 }}>
+      {/* Decorative background glow */}
+      <View
+        pointerEvents="none"
+        style={{
+          position: "absolute",
+          top: -20,
+          right: -10,
+          width: 170,
+          height: 170,
+          borderRadius: 999,
+          backgroundColor: colors.onPrimarySoft,
+          opacity: 0.45,
+        }}
+      />
+
+      {/* Decorative brain */}
+      <View
+        pointerEvents="none"
+        style={{
+          position: "absolute",
+          top: 18,
+          right: 10,
+          width: 120,
+          height: 120,
+          alignItems: "center",
+          justifyContent: "center",
+          opacity: 0.95,
+        }}
+      >
+        <Image
+          source={brainImage}
+          style={{
+            width: 105,
+            height: 105,
+            resizeMode: "contain",
+          }}
+        />
+      </View>
+
+      {/* Content */}
+      <View style={{ gap: 10, paddingRight: 110 }}>
         <Text
           style={{
             color: colors.primaryForeground,
@@ -55,7 +100,7 @@ export function HomeHeroReviewCard({
           }}
         >
           <Image
-            source={require("@/src/assets/images/flame.png")}
+            source={flameImage}
             style={{
               width: 16,
               height: 20,
@@ -77,7 +122,7 @@ export function HomeHeroReviewCard({
         </View>
       </View>
 
-      <View>
+      <View style={{ paddingRight: 90 }}>
         <Text
           style={{
             color: colors.primaryForeground,

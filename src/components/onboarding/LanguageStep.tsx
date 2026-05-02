@@ -19,10 +19,7 @@ type Props = {
   onSelectLanguage: (language: Language) => void;
 };
 
-export function LanguageStep({
-  selectedLanguage,
-  onSelectLanguage,
-}: Props) {
+export function LanguageStep({ selectedLanguage, onSelectLanguage }: Props) {
   const { colors } = useAppTheme();
   const { t } = useTranslation("onboarding");
 
@@ -32,12 +29,17 @@ export function LanguageStep({
   };
 
   return (
-    <View style={{ gap: 20 }}>
+    <View
+      style={{
+        flex: 1,
+        justifyContent: "space-between",
+        paddingBottom: 24,
+      }}
+    >
       <View
         style={{
           flex: 1,
           justifyContent: "center",
-          alignItems: "center",
         }}
       >
         <Text
@@ -46,6 +48,7 @@ export function LanguageStep({
             fontSize: 32,
             fontWeight: "900",
             lineHeight: 38,
+            textAlign: "center",
           }}
         >
           {t("languageTitle")}
@@ -57,6 +60,7 @@ export function LanguageStep({
             fontSize: 16,
             lineHeight: 23,
             marginTop: 10,
+            textAlign: "center",
           }}
         >
           {t("languageSubtitle")}

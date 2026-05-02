@@ -30,8 +30,7 @@ export function OnboardingSlide({ title, subtitle, image }: Props) {
           source={image}
           style={{
             width: "100%",
-            height: "100%",
-            maxHeight: 530,
+            height: 500,
           }}
           resizeMode="contain"
         />
