@@ -11,12 +11,13 @@ import { useFocusEffect, useRouter } from "expo-router";
 import { useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ScrollView } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function HomeScreen() {
   const router = useRouter();
   const { colors } = useAppTheme();
   const { t } = useTranslation("tabs");
-
+  const insets = useSafeAreaInsets();
   const [sets, setSets] = useState<SetItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [streakCount, setStreakCount] = useState(0);
@@ -115,11 +116,11 @@ export default function HomeScreen() {
       style={{
         flex: 1,
         backgroundColor: colors.background,
-        paddingTop: 40,
       }}
       contentContainerStyle={{
-        padding: 20,
-        paddingBottom: 120,
+        paddingHorizontal: 20,
+        paddingTop: 60,
+        paddingBottom: Math.max(insets.bottom, 12) + 170,
         gap: 18,
       }}
       showsVerticalScrollIndicator={false}
