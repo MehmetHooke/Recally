@@ -136,3 +136,21 @@ export async function createYoutubeSetJob(youtubeUrl: string) {
     throw error;
   }
 }
+
+//----------------------TEXT INPUT--------------------
+
+export const createTextSetJob = async (text: string) => {
+  const language = i18n.language === "tr" ? "tr" : "en";
+
+  const callable = httpsCallable(functions, "createTextSetJob");
+
+  const response = await callable({
+    text,
+    language,
+  });
+
+  return response.data as {
+    ok: boolean;
+    setId?: string;
+  };
+};

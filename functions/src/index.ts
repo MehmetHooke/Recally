@@ -645,3 +645,252 @@ export const processYoutubeSetJob = onDocumentCreated(
     }
   },
 );
+
+//--------------------TEXT INPUT-------------------------------
+
+type GeneratedTextCard = {
+  question: string;
+  answer: string;
+  explanation: string;
+};
+
+function getDefaultTextSetTitle(language: AppLanguage) {
+  return language === "tr" ? "Metin Çalışma Seti" : "Text Study Set";
+}
+
+function normalizeTextInput(text: unknown) {
+  if (typeof text !== "string" || !text.trim()) {
+    throw new HttpsError("invalid-argument", "text alanı gerekli");
+  }
+
+  return text.trim();
+}
+
+async function generateTextContent(text: string, language: AppLanguage) {
+  const model = genAI.getGenerativeModel({
+    model: "gemini-3-flash-preview",
+  });
+
+  const prompt = `
+You are an expert learning designer.
+
+Given the following study content:
+"""
+${text}
+"""
+
+Create a learning set from this content.
+
+Rules:
+- Return ONLY valid JSON.
+- Do not use markdown.
+- Do not wrap response in code fences.
+- Create exactly 6 flashcards.
+- The title must be specific, meaningful, and 3-8 words long.
+- ${getLanguageInstruction(language)}
+
+Return this JSON structure:
+{
+  "ok": true,
+  "title": "Specific study topic title",
+  "summary": {
+    "overview": "A short 3-5 sentence overview.",
+    "sections": [
+      {
+        "title": "Section title",
+        "description": "Short explanation.",
+        "bullets": [
+          "Important point 1",
+          "Important point 2",
+          "Important point 3"
+        ]
+      }
+    ],
+    "keyTakeaways": [
+      "Main takeaway 1",
+      "Main takeaway 2",
+      "Main takeaway 3"
+    ]
+  },
+  "keyConcepts": [
+    "Concept 1",
+    "Concept 2",
+    "Concept 3"
+  ],
+  "cards": [
+    {
+      "question": "Question text?",
+      "answer": "Answer text.",
+      "explanation": "Short explanation."
+    }
+  ]
+}
+`;
+
+  const result = await model.generateContent(prompt);
+  const responseText = result.response.text();
+
+  const cleanText = responseText
+    .replace(/```json/g, "")
+    .replace(/```/g, "")
+    .trim();
+
+  const parsed = JSON.parse(cleanText);
+
+  const cards: GeneratedTextCard[] = Array.isArray(parsed.cards)
+    ? parsed.cards.slice(0, 6).map((card: any) => ({
+        question: card.question || "",
+        answer: card.answer || "",
+        explanation: card.explanation || "",
+      }))
+    : [];
+
+  return {
+    title:
+      normalizeGeneratedTitle(parsed.title) || getDefaultTextSetTitle(language),
+    summary: parsed.summary || {
+      overview: "",
+      sections: [],
+      keyTakeaways: [],
+    },
+    keyConcepts: Array.isArray(parsed.keyConcepts) ? parsed.keyConcepts : [],
+    cards,
+  };
+}
+
+async function writeTextSetCards(
+  uid: string,
+  setId: string,
+  cards: GeneratedTextCard[],
+) {
+  const batch = firestore.batch();
+  const cardsCollection = getSetRef(uid, setId).collection("cards");
+  const now = Timestamp.now();
+
+  cards.forEach((card, index) => {
+    const cardRef = cardsCollection.doc(`card_${index + 1}`);
+
+    batch.set(cardRef, {
+      question: card.question,
+      answer: card.answer,
+      explanation: card.explanation,
+      cardType: "basic",
+      status: "new",
+      intervalDays: 0,
+      reviewCount: 0,
+      knewCount: 0,
+      forgotCount: 0,
+      lastReviewedAt: null,
+      nextReviewAt: now,
+      createdAt: FieldValue.serverTimestamp(),
+      updatedAt: FieldValue.serverTimestamp(),
+    });
+  });
+
+  await batch.commit();
+}
+
+export const createTextSetJob = onCall(
+  {
+    region: "us-central1",
+    timeoutSeconds: 300,
+    memory: "1GiB",
+  },
+  async (request) => {
+    const uid = request.auth?.uid;
+
+    if (!uid) {
+      throw new HttpsError("unauthenticated", "Kullanıcı bulunamadı");
+    }
+
+    const language = normalizeLanguage(request.data?.language);
+    const text = normalizeTextInput(request.data?.text);
+
+    const setRef = firestore
+      .collection("users")
+      .doc(uid)
+      .collection("sets")
+      .doc();
+
+    await setRef.set({
+      title: language === "tr" ? "Metin hazırlanıyor..." : "Preparing text...",
+      sourceType: "text",
+      sourceText: text,
+      language,
+      status: "processing",
+      summary: null,
+      keyConcepts: [],
+      cards: [],
+      cardCount: 0,
+      totalCards: 0,
+      masteredCount: 0,
+      dueCount: 0,
+      errorMessage: null,
+      createdAt: FieldValue.serverTimestamp(),
+      updatedAt: FieldValue.serverTimestamp(),
+    });
+
+    return {
+      ok: true,
+      setId: setRef.id,
+    };
+  },
+);
+
+export const processTextSetJob = onDocumentCreated(
+  {
+    document: "users/{uid}/sets/{setId}",
+    region: "us-central1",
+    timeoutSeconds: 300,
+    memory: "1GiB",
+  },
+  async (event) => {
+    const snapshot = event.data;
+
+    if (!snapshot) return;
+
+    const uid = event.params.uid;
+    const setId = event.params.setId;
+    const data = snapshot.data();
+
+    if (data?.sourceType !== "text" || data?.status !== "processing") {
+      return;
+    }
+
+    const setRef = getSetRef(uid, setId);
+
+    try {
+      const language = normalizeLanguage(data.language);
+      const parsed = await generateTextContent(data.sourceText, language);
+
+      await writeTextSetCards(uid, setId, parsed.cards);
+
+      await setRef.update({
+        status: "completed",
+        title: parsed.title,
+        summary: parsed.summary,
+        keyConcepts: parsed.keyConcepts,
+        cards: parsed.cards,
+        cardCount: parsed.cards.length,
+        totalCards: parsed.cards.length,
+        dueCount: parsed.cards.length,
+        masteredCount: 0,
+        errorMessage: null,
+        updatedAt: FieldValue.serverTimestamp(),
+        completedAt: FieldValue.serverTimestamp(),
+      });
+    } catch (error) {
+      console.error("PROCESS TEXT SET JOB ERROR:", error);
+
+      await setRef.update({
+        status: "failed",
+        errorMessage:
+          error instanceof Error
+            ? error.message
+            : "Metin işlenirken hata oluştu.",
+        updatedAt: FieldValue.serverTimestamp(),
+        failedAt: FieldValue.serverTimestamp(),
+      });
+    }
+  },
+);
