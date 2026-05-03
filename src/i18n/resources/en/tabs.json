@@ -12,9 +12,10 @@
         "otherSources": {
             "title": "Other sources",
             "pasteText": "Paste text",
-            "pdfUpload": "Upload PDF · coming soon",
+            "pdfUpload": "Upload PDF",
             "textModeComingSoonMessage": "Text mode works in the previous flow. We are building the main experience around YouTube.",
-            "pdfComingSoonMessage": "PDF support will be added later."
+            "pdfComingSoonMessage": "PDF support will be added later.",
+            "pdfComingSoonShort": "PDF support is coming soon."
         },
         "alerts": {
             "errorTitle": "Error",
@@ -25,6 +26,19 @@
         "errors": {
             "setCreateFailed": "Could not create the set.",
             "videoProcessingFailed": "Something went wrong while processing the video."
+        },
+        "textCard": {
+            "title": "Paste Text",
+            "description": "Turn your notes, article, or any study text into recall cards.",
+            "placeholder": "Paste your notes, article, or anything here…",
+            "submitButton": "Generate Cards",
+            "loadingButton": "Generating...",
+            "clearButton": "Clear",
+            "minHint": "{{count}}/80 minimum characters",
+            "readyHint": "{{count}} characters ready",
+            "emptyMessage": "Please paste some text to generate cards.",
+            "tooShortMessage": "Add a bit more text for better cards.",
+            "processingFailed": "An error occurred while processing the text."
         }
     },
     "navbar": {

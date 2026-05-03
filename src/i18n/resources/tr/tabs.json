@@ -1,7 +1,7 @@
 {
     "add": {
         "title": "Oluştur",
-        "subtitle": "Öğrendiğin içeriği saniyeler içinde özet ve soru kartlarına çevir.",
+        "subtitle": "Öğrenmek istediğin içeriği saniyeler içinde özet ve soru kartlarına çevir.",
         "youtubeCard": {
             "title": "YouTube videosunu teste çevir",
             "description": "Linki yapıştır. Recallly videoyu öğrenilebilir özet, ana kavramlar ve quiz kartlarına dönüştürsün.",
@@ -12,9 +12,11 @@
         "otherSources": {
             "title": "Diğer kaynaklar",
             "pasteText": "Metin yapıştır",
-            "pdfUpload": "PDF yükle · yakında",
+            "pdfUpload": "PDF yükle",
             "textModeComingSoonMessage": "Metin modu önceki akışta çalışıyor. Ana deneyimi YouTube üzerine kuruyoruz.",
-            "pdfComingSoonMessage": "PDF desteği sonra eklenecek."
+            "pdfComingSoonMessage": "PDF desteği sonra eklenecek.",
+            
+            "pdfComingSoonShort": "PDF desteği yakında eklenecek."
         },
         "alerts": {
             "errorTitle": "Hata",
@@ -25,6 +27,20 @@
         "errors": {
             "setCreateFailed": "Set oluşturulamadı.",
             "videoProcessingFailed": "Video işlenirken bir hata oluştu."
+        },
+
+                "textCard": {
+            "title": "Metin Yapıştır",
+            "description": "Notlarını, makaleni veya öğrenmek istediğin herhangi bir metni kartlara dönüştür.",
+            "placeholder": "Notlarını, makaleni veya herhangi bir metni buraya yapıştır…",
+            "submitButton": "Kartları Oluştur",
+            "loadingButton": "Oluşturuluyor...",
+            "clearButton": "Temizle",
+            "minHint": "{{count}}/80 minimum karakter",
+            "readyHint": "{{count}} karakter hazır",
+            "emptyMessage": "Lütfen kart oluşturmak için bir metin yapıştır.",
+            "tooShortMessage": "Daha iyi kartlar için biraz daha uzun bir metin ekle.",
+            "processingFailed": "Metin işlenirken hata oluştu."
         }
     },
     "navbar": {
