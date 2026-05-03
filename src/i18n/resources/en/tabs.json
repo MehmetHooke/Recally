@@ -102,12 +102,17 @@
         },
         "continue": {
             "title": "Continue learning",
+            "subtitle": "Pick up where you left off",
+            "emptySubtitle": "Create your first study set",
             "viewAll": "View all",
             "emptyTitle": "Create your first recall set",
             "emptyDescription": "Paste notes, text, or a YouTube link and turn it into review cards.",
             "emptyButton": "Create cards",
+            "cardMeta": "{{count}} cards",
             "dueMeta": "{{count}} cards ready to review",
             "noDueMeta": "No review needed today",
+            "dueBadge": "{{count}} due",
+            "doneBadge": "Ready",
             "progressLabel": "{{progress}}%",
             "reviewCta": "Review now",
             "openCta": "Open set"
