@@ -51,11 +51,13 @@
         "title": "Settings",
         "theme": {
             "title": "Theme",
+            "description": "Choose how Recallly looks on your device.",
             "light": "Light mode",
             "dark": "Dark mode"
         },
         "language": {
             "title": "Language",
+            "description": "Select the language used across the app.",
             "turkish": "Turkish",
             "english": "English"
         },

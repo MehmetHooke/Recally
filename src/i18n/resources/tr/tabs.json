@@ -15,7 +15,6 @@
             "pdfUpload": "PDF yükle",
             "textModeComingSoonMessage": "Metin modu önceki akışta çalışıyor. Ana deneyimi YouTube üzerine kuruyoruz.",
             "pdfComingSoonMessage": "PDF desteği sonra eklenecek.",
-            
             "pdfComingSoonShort": "PDF desteği yakında eklenecek."
         },
         "alerts": {
@@ -28,8 +27,7 @@
             "setCreateFailed": "Set oluşturulamadı.",
             "videoProcessingFailed": "Video işlenirken bir hata oluştu."
         },
-
-                "textCard": {
+        "textCard": {
             "title": "Metin Yapıştır",
             "description": "Notlarını, makaleni veya öğrenmek istediğin herhangi bir metni kartlara dönüştür.",
             "placeholder": "Notlarını, makaleni veya herhangi bir metni buraya yapıştır…",
@@ -53,25 +51,27 @@
         "title": "Ayarlar",
         "theme": {
             "title": "Tema",
+            "description": "Recallly’nin cihazında nasıl görüneceğini seç.",
             "light": "Açık tema",
             "dark": "Koyu tema"
         },
         "language": {
             "title": "Dil",
+            "description": "Uygulama genelinde kullanılacak dili seç.",
             "turkish": "Türkçe",
             "english": "İngilizce"
         },
         "notifications": {
             "title": "Bildirimler",
-            "description": "Günlük hatırlatıcı yakında eklenecek."
+            "description": "Günlük hatırlatmalar yakında eklenecek."
         },
         "premium": {
             "title": "Premium",
             "description": "Daha fazla çalışma seti oluştur ve öğrenme akışının tamamını aç.",
-            "premiumDescription": "Premium planın aktif. Sınırsız çalışma seti ve AI üretiminin keyfini çıkar.",
+            "premiumDescription": "Premium planın aktif. Sınırsız çalışma seti ve AI oluşturmanın keyfini çıkar.",
             "button": "Yükselt",
-            "setsUsage": "kart kullanıldı",
-            "premiumPlan": "Ücretli Plan",
+            "setsUsage": "set kullanıldı",
+            "premiumPlan": "Premium Plan",
             "freePlan": "Ücretsiz Plan"
         },
         "logout": "Çıkış yap"
