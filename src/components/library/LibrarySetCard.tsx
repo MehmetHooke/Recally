@@ -18,21 +18,46 @@ export function LibrarySetCard({ item, onPress }: Props) {
   const reviewProgress = item.reviewProgress ?? 0;
   const masteryProgress = item.masteryProgress ?? 0;
 
-  const statusLabel =
-    due > 0
-      ? t("library.setCard.status.due")
-      : masteryProgress >= 100
-        ? t("library.setCard.status.mastered")
-        : t("library.setCard.status.inProgress");
+  const isProcessing = item.status === "processing";
+  const isFailed = item.status === "failed";
 
-  const statusColor =
-    due > 0
-      ? colors.primary
-      : masteryProgress >= 100
-        ? "#16A34A"
-        : colors.mutedText;
+  const statusLabel = isFailed
+    ? t("library.setCard.status.failed")
+    : isProcessing
+      ? t("library.setCard.status.processing")
+      : due > 0
+        ? t("library.setCard.status.due")
+        : masteryProgress >= 100
+          ? t("library.setCard.status.mastered")
+          : t("library.setCard.status.inProgress");
 
-  const summaryPreview = getSummaryPreview(item.summary) || item.sourceText;
+  const statusColor = isFailed
+    ? colors.danger
+    : isProcessing
+      ? colors.warning
+      : due > 0
+        ? colors.primary
+        : masteryProgress >= 100
+          ? "#16A34A"
+          : colors.mutedText;
+
+  const displayTitle = isFailed
+    ? t("library.setCard.failedTitle")
+    : isProcessing
+      ? t("library.setCard.processingTitle")
+      : item.title;
+
+  const summaryPreview = isFailed
+    ? item.errorMessage || t("library.setCard.failedDescription")
+    : isProcessing
+      ? t("library.setCard.processingDescription")
+      : getSummaryPreview(item.summary) || item.sourceText;
+
+  const ctaLabel = isFailed
+    ? t("library.setCard.failedCta")
+    : isProcessing
+      ? t("library.setCard.processingCta")
+      : t("library.setCard.cta");
 
   const iconSource =
     item.sourceType === "youtube"
@@ -61,7 +86,7 @@ export function LibrarySetCard({ item, onPress }: Props) {
           }}
           numberOfLines={1}
         >
-          {item.title}
+          {displayTitle}
         </Text>
 
         <Text
@@ -147,12 +172,12 @@ export function LibrarySetCard({ item, onPress }: Props) {
 
       <Text
         style={{
-          color: colors.primary,
+          color: isFailed ? colors.danger : colors.primary,
           fontWeight: "900",
           marginTop: 2,
         }}
       >
-        {t("library.setCard.cta")}
+        {ctaLabel}
       </Text>
     </TouchableOpacity>
   );

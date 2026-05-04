@@ -200,6 +200,19 @@
                 "due": "Tekrar zamanı",
                 "mastered": "Tam öğrenildi",
                 "inProgress": "Devam ediyor"
+            },
+            "failedTitle": "Set oluşturulamadı",
+            "processingTitle": "Video hazırlanıyor...",
+            "failedDescription": "Bu içerik işlenirken bir sorun oluştu. Lütfen tekrar deneyebilirsin.",
+            "processingDescription": "İçeriğin analiz ediliyor. Hazır olduğunda sana bildireceğiz.",
+            "failedCta": "Detayı gör →",
+            "processingCta": "Hazırlanıyor →",
+            "status": {
+                "failed": "Başarısız",
+                "processing": "Hazırlanıyor",
+                "due": "Tekrar zamanı",
+                "mastered": "Tamamlandı",
+                "inProgress": "Devam ediyor"
             }
         }
     }

@@ -200,6 +200,19 @@
                 "due": "Review due",
                 "mastered": "Mastered",
                 "inProgress": "In progress"
+            },
+            "failedTitle": "Set creation failed",
+            "processingTitle": "Video is being prepared...",
+            "failedDescription": "Something went wrong while processing this content. You can try again.",
+            "processingDescription": "Your content is being analyzed. We’ll notify you when it’s ready.",
+            "failedCta": "View details →",
+            "processingCta": "Preparing →",
+            "status": {
+                "failed": "Failed",
+                "processing": "Processing",
+                "due": "Due",
+                "mastered": "Mastered",
+                "inProgress": "In progress"
             }
         }
     }
