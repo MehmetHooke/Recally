@@ -1,7 +1,9 @@
 import "@/global.css";
 import { AppAlertProvider } from "@/src/context/AppAlertContext";
 import { AuthProvider, useAuth } from "@/src/context/AuthContext";
+import { ProcessingSetWatcherProvider } from "@/src/context/ProcessingSetWatcherProvider";
 import { initI18n } from "@/src/i18n";
+import { configureNotifications } from "@/src/services/notificationService";
 import { getOnboardingCompleted } from "@/src/services/onboarding";
 import { ThemeProvider } from "@/src/theme/ThemeProvider";
 import { Stack } from "expo-router";
@@ -26,6 +28,12 @@ function RootLayoutInner() {
     getOnboardingCompleted()
       .then(setOnboardingCompletedState)
       .finally(() => setOnboardingReady(true));
+  }, []);
+
+  useEffect(() => {
+    configureNotifications().catch((error) => {
+      console.log("notification config error:", error);
+    });
   }, []);
 
   if (loading || !onboardingReady) {
@@ -63,14 +71,16 @@ export default function RootLayout() {
   }
 
   return (
-    <SafeAreaProvider>
-      <ThemeProvider>
-        <AuthProvider>
-          <AppAlertProvider>
+  <SafeAreaProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <AppAlertProvider>
+          <ProcessingSetWatcherProvider>
             <RootLayoutInner />
-          </AppAlertProvider>
-        </AuthProvider>
-      </ThemeProvider>
-    </SafeAreaProvider>
+          </ProcessingSetWatcherProvider>
+        </AppAlertProvider>
+      </AuthProvider>
+    </ThemeProvider>
+  </SafeAreaProvider>
   );
 }
