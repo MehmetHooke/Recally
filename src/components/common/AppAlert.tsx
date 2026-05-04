@@ -1,3 +1,4 @@
+import type { AppAlertPayload, AppAlertType } from "@/src/context/AppAlertContext";
 import { useAppTheme } from "@/src/theme/useTheme";
 import { Ionicons } from "@expo/vector-icons";
 import { useEffect, useMemo, useRef } from "react";
@@ -11,7 +12,6 @@ import {
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import type { AppAlertPayload, AppAlertType } from "@/src/context/AppAlertContext";
 
 type Props = {
   alert: (AppAlertPayload & { id: number }) | null;
@@ -19,8 +19,13 @@ type Props = {
   onDismiss: () => void;
   onHidden: () => void;
 };
+type AlertTypeMeta = {
+  icon: keyof typeof Ionicons.glyphMap;
+  accent: string;
+  softBackground: string;
+};
 
-function getTypeMeta(type: AppAlertType) {
+function getTypeMeta(type: AppAlertType): AlertTypeMeta {
   switch (type) {
     case "success":
       return {
