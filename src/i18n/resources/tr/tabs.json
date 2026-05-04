@@ -196,11 +196,7 @@
             "dueBadge": "{{count}} bekleyen",
             "masteredBadge": "%{{progress}} tamamlandı",
             "cta": "Özeti oku ve test et →",
-            "status": {
-                "due": "Tekrar zamanı",
-                "mastered": "Tam öğrenildi",
-                "inProgress": "Devam ediyor"
-            },
+
             "failedTitle": "Set oluşturulamadı",
             "processingTitle": "Video hazırlanıyor...",
             "failedDescription": "Bu içerik işlenirken bir sorun oluştu. Lütfen tekrar deneyebilirsin.",

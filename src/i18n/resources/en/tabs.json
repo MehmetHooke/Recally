@@ -196,11 +196,7 @@
             "dueBadge": "{{count}} due",
             "masteredBadge": "{{progress}}% mastered",
             "cta": "Read summary and test yourself →",
-            "status": {
-                "due": "Review due",
-                "mastered": "Mastered",
-                "inProgress": "In progress"
-            },
+
             "failedTitle": "Set creation failed",
             "processingTitle": "Video is being prepared...",
             "failedDescription": "Something went wrong while processing this content. You can try again.",
