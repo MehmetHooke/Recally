@@ -24,6 +24,9 @@ import {
 import Animated, { LinearTransition } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+const themeImage = require("@/src/assets/images/solar-eclipse.png");
+const languageImage = require("@/src/assets/images/translate.png");
+
 type UserPlan = "free" | "premium";
 
 type SettingsUser = {
@@ -179,8 +182,7 @@ export default function SettingsScreen() {
             <SettingsSectionAccordion
               title={t("settings.theme.title")}
               description={t("settings.theme.description")}
-              iconName="color-palette"
-              iconColor={colors.primary}
+              iconSource={themeImage}
               iconBackgroundColor={colors.primarySoft}
               iconBorderColor={alpha(colors.primary, 0.18)}
               expanded={expandedSetting === "theme"}
@@ -193,9 +195,8 @@ export default function SettingsScreen() {
             <SettingsSectionAccordion
               title={t("settings.language.title")}
               description={t("settings.language.description")}
-              iconName="language"
-              iconColor={colors.secondary}
-              iconBackgroundColor={colors.secondarySoft}
+              iconSource={languageImage}
+              iconBackgroundColor={colors.primarySoft}
               iconBorderColor={alpha(colors.secondary, 0.18)}
               expanded={expandedSetting === "language"}
               onPress={() => toggleSetting("language")}
