@@ -1,13 +1,20 @@
 import { Ionicons } from "@expo/vector-icons";
 import type React from "react";
-import { Pressable, Text, View } from "react-native";
+import {
+  Image,
+  ImageSourcePropType,
+  Pressable,
+  Text,
+  View,
+} from "react-native";
 import Animated, { LinearTransition } from "react-native-reanimated";
 
 type Props = {
   title: string;
   description: string;
-  iconName: keyof typeof Ionicons.glyphMap;
-  iconColor: string;
+  iconSource?: ImageSourcePropType;
+  iconName?: keyof typeof Ionicons.glyphMap;
+  iconColor?: string;
   iconBackgroundColor: string;
   iconBorderColor: string;
   expanded: boolean;
@@ -19,6 +26,7 @@ type Props = {
 export function SettingsSectionAccordion({
   title,
   description,
+  iconSource,
   iconName,
   iconColor,
   iconBackgroundColor,
@@ -50,9 +58,9 @@ export function SettingsSectionAccordion({
       >
         <View
           style={{
-            width: 48,
-            height: 48,
-            borderRadius: 16,
+            width: 52,
+            height: 52,
+            borderRadius: 18,
             backgroundColor: iconBackgroundColor,
             borderWidth: 1,
             borderColor: iconBorderColor,
@@ -60,7 +68,22 @@ export function SettingsSectionAccordion({
             justifyContent: "center",
           }}
         >
-          <Ionicons name={iconName} size={23} color={iconColor} />
+          {iconSource ? (
+            <Image
+              source={iconSource}
+              style={{
+                width: 45,
+                height: 45,
+                resizeMode: "contain",
+              }}
+            />
+          ) : iconName ? (
+            <Ionicons
+              name={iconName}
+              size={24}
+              color={iconColor || colors.primary}
+            />
+          ) : null}
         </View>
 
         <View style={{ flex: 1 }}>
