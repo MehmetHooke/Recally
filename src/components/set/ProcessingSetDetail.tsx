@@ -1,10 +1,12 @@
+import { useAppAlert } from "@/src/context/AppAlertContext";
 import { useAppTheme } from "@/src/theme/useTheme";
 import type { StudySet } from "@/src/types/study-set";
 import { Ionicons } from "@expo/vector-icons";
+import { router } from "expo-router";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import type { DimensionValue } from "react-native";
-import { Animated, Easing, Image, ScrollView, Text, View } from "react-native";
+import { Animated, Easing, Image, Pressable, ScrollView, Text, View } from "react-native";
 
 function getProcessingMessage(seconds: number, t: (key: string) => string) {
   if (seconds < 10) return t("detail.processing.steps.checkingConnection");
@@ -31,7 +33,11 @@ function alpha(hex: string, opacity: number) {
 export function ProcessingSetDetail({ set }: { set: StudySet }) {
   const { colors } = useAppTheme();
   const { t } = useTranslation("set");
+  const { showAlert } = useAppAlert();
+
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
+
+  const hasShownLeaveInfoRef = useRef(false);
 
   const progressPercent = useMemo(() => {
     if (elapsedSeconds <= 30) {
@@ -62,6 +68,21 @@ export function ProcessingSetDetail({ set }: { set: StudySet }) {
     const interval = setInterval(updateElapsed, 1000);
     return () => clearInterval(interval);
   }, [set.createdAt]);
+
+  useEffect(() => {
+    if (hasShownLeaveInfoRef.current) {
+      return;
+    }
+
+    hasShownLeaveInfoRef.current = true;
+
+    showAlert({
+      type: "info",
+      title: t("detail.processing.leaveInfo.title"),
+      message: t("detail.processing.leaveInfo.message"),
+      durationMs: 5600,
+    });
+  }, [showAlert, t]);
 
   const statusMessage = useMemo(
     () => getProcessingMessage(elapsedSeconds, t),
@@ -372,6 +393,88 @@ export function ProcessingSetDetail({ set }: { set: StudySet }) {
 
         <OverlayLabel label={t("detail.processing.aiPreparing")} />
       </SkeletonCard>
+
+      <View
+        style={{
+          backgroundColor: colors.card,
+          borderColor: colors.softBorder,
+          borderWidth: 1,
+          borderRadius: 24,
+          padding: 16,
+          gap: 12,
+        }}
+      >
+        <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+          <View
+            style={{
+              width: 36,
+              height: 36,
+              borderRadius: 999,
+              backgroundColor: colors.primarySoft,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Ionicons
+              name="notifications-outline"
+              color={colors.primary}
+              size={18}
+            />
+          </View>
+
+          <View style={{ flex: 1, gap: 3 }}>
+            <Text
+              style={{
+                color: colors.text,
+                fontSize: 15,
+                fontWeight: "900",
+              }}
+            >
+              {t("detail.processing.leaveCard.title")}
+            </Text>
+
+            <Text
+              style={{
+                color: colors.mutedText,
+                fontSize: 13.5,
+                lineHeight: 19,
+              }}
+            >
+              {t("detail.processing.leaveCard.description")}
+            </Text>
+          </View>
+        </View>
+
+        <Pressable
+          onPress={() => router.replace("/(tabs)")}
+          style={{
+            backgroundColor: colors.primary,
+            borderRadius: 18,
+            paddingVertical: 15,
+            alignItems: "center",
+            justifyContent: "center",
+            flexDirection: "row",
+            gap: 8,
+            
+          }}
+        >
+          <Ionicons
+            name="home-outline"
+            color={colors.primaryForeground}
+            size={18}
+          />
+
+          <Text
+            style={{
+              color: colors.primaryForeground,
+              fontSize: 15,
+              fontWeight: "900",
+            }}
+          >
+            {t("detail.processing.leaveCard.button")}
+          </Text>
+        </Pressable>
+      </View>
     </ScrollView>
   );
 }

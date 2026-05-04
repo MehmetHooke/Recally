@@ -131,7 +131,7 @@ export function FailedSetDetail({ set }: { set: StudySet }) {
           }}
         >
           <Text style={{ color: colors.text, fontWeight: "900" }}>
-            {t("detail.failed.newLinkButton")}
+            {t("detail.failed.moveBack")}
           </Text>
         </Pressable>
       </View>

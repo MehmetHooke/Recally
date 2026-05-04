@@ -3,7 +3,7 @@
         "title": "Oluştur",
         "subtitle": "Öğrenmek istediğin içeriği saniyeler içinde özet ve soru kartlarına çevir.",
         "youtubeCard": {
-            "title": "YouTube videosunu teste çevir",
+            "title": "YouTube videosunu analiz et",
             "description": "Linki yapıştır. Recallly videoyu öğrenilebilir özet, ana kavramlar ve quiz kartlarına dönüştürsün.",
             "placeholder": "https://youtube.com/watch?v=...",
             "submitButton": "Videoyu öğrenme setine çevir",
@@ -39,6 +39,14 @@
             "emptyMessage": "Lütfen kart oluşturmak için bir metin yapıştır.",
             "tooShortMessage": "Daha iyi kartlar için biraz daha uzun bir metin ekle.",
             "processingFailed": "Metin işlenirken hata oluştu."
+        },
+        "processing": {
+            "leaveInfoTitle": "Bu ekranda beklemek zorunda değilsin",
+            "leaveInfoMessage": "Öğrenme setin hazır olduğunda sana bildireceğiz.",
+            "readyNotificationTitle": "Kartların hazır",
+            "readyNotificationBody": "Şimdi tekrar etmeye başlayabilirsin.",
+            "failedNotificationTitle": "Set oluşturulamadı",
+            "failedNotificationBody": "Öğrenme setin oluşturulurken bir sorun oluştu."
         }
     },
     "navbar": {

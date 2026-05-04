@@ -3,7 +3,7 @@
         "title": "Create",
         "subtitle": "Turn what you are learning into summaries and question cards in seconds.",
         "youtubeCard": {
-            "title": "Turn a YouTube video into a quiz",
+            "title": "Analyze a YouTube video",
             "description": "Paste the link. Let Recallly turn the video into a learnable summary, key concepts, and quiz cards.",
             "placeholder": "https://youtube.com/watch?v=...",
             "submitButton": "Turn video into a learning set",
@@ -39,6 +39,14 @@
             "emptyMessage": "Please paste some text to generate cards.",
             "tooShortMessage": "Add a bit more text for better cards.",
             "processingFailed": "An error occurred while processing the text."
+        },
+        "processing": {
+            "leaveInfoTitle": "You can leave this screen",
+            "leaveInfoMessage": "We’ll notify you when your learning set is ready.",
+            "readyNotificationTitle": "Your cards are ready",
+            "readyNotificationBody": "You can start reviewing now.",
+            "failedNotificationTitle": "Set creation failed",
+            "failedNotificationBody": "Something went wrong while creating your learning set."
         }
     },
     "navbar": {

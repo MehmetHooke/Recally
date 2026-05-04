@@ -6,7 +6,7 @@
             "description": "This can sometimes happen because of video access, video length, or high AI demand.",
             "savedLink": "Saved link",
             "retryButton": "Try again",
-            "newLinkButton": "Add a new link"
+            "moveBack": "Back to page"
         },
         "errors": {
             "setNotFound": "Set not found",
@@ -68,6 +68,21 @@
             },
             "reviewLoading": {
                 "loading": "Loading..."
+            },
+            "leaveInfo": {
+                "title": "You can leave this screen",
+                "message": "We’ll notify you when your learning set is ready."
+            },
+            "notifications": {
+                "readyTitle": "Your cards are ready",
+                "readyBody": "You can start reviewing now.",
+                "failedTitle": "Set creation failed",
+                "failedBody": "Something went wrong while creating your learning set."
+            },
+            "leaveCard": {
+                "title": "You can keep using the app",
+                "description": "We’ll notify you when your set is ready. You can return home now.",
+                "button": "Back to Home"
             }
         }
     },
