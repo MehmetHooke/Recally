@@ -296,7 +296,7 @@ function ContinueSetCard({
           <Text
             style={{
               color: colors.text,
-              fontSize: 16,
+              fontSize: 14,
               lineHeight: 22,
               fontWeight: "900",
             }}
@@ -308,7 +308,7 @@ function ContinueSetCard({
           <Text
             style={{
               color: colors.mutedText,
-              fontSize: 13,
+              fontSize: 12,
               fontWeight: "700",
               marginTop: 4,
             }}
