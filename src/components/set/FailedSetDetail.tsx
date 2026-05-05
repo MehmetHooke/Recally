@@ -3,7 +3,14 @@ import type { StudySet } from "@/src/types/study-set";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useTranslation } from "react-i18next";
-import { Image, Pressable, ScrollView, Text, View } from "react-native";
+import {
+  Image,
+  Pressable,
+  ScrollView,
+  Text,
+  useWindowDimensions,
+  View,
+} from "react-native";
 
 type Props = {
   set: StudySet;
@@ -22,8 +29,22 @@ export function FailedSetDetail({
 }: Props) {
   const { colors } = useAppTheme();
   const { t } = useTranslation("set");
+  const { width } = useWindowDimensions();
 
   const isBusy = retrying || deleting;
+
+  const imageSize = Math.min(width * 0.82, 340);
+  const cardTopOffset = imageSize * 0.36;
+
+  const readableSurface =
+    colors.background === "#0B0B0C"
+      ? "rgba(11,11,12,0.72)"
+      : "rgba(255,255,255,0.72)";
+
+  const readableBorder =
+    colors.background === "#0B0B0C"
+      ? "rgba(255,255,255,0.08)"
+      : "rgba(255,255,255,0.72)";
 
   return (
     <ScrollView
@@ -35,6 +56,7 @@ export function FailedSetDetail({
         flexGrow: 1,
         padding: 20,
         justifyContent: "center",
+        position: "relative",
       }}
       showsVerticalScrollIndicator={false}
     >
@@ -46,11 +68,9 @@ export function FailedSetDetail({
           position: "absolute",
           top: -5,
           right: -16,
-          width: 330,
-          height: 330,
-          
+          width: imageSize,
+          height: imageSize,
           zIndex: 2,
-
         }}
       />
 
@@ -61,67 +81,64 @@ export function FailedSetDetail({
           borderWidth: 1,
           borderRadius: 28,
           padding: 24,
-          marginTop:120,
+          marginTop: cardTopOffset,
           gap: 18,
-          zIndex:2,
+          zIndex: 2,
           overflow: "hidden",
           position: "relative",
-          
         }}
       >
         <View
           style={{
-            position:"absolute",
-            top:10,
-            left:10,
-            zIndex:4,
+            position: "absolute",
+            top: 10,
+            left: 10,
+            zIndex: 4,
             width: 56,
             height: 56,
             borderRadius: 18,
             backgroundColor: "rgba(239,68,68,0.12)",
             alignItems: "center",
             justifyContent: "center",
-
           }}
         >
+
           <Ionicons name="warning-outline" color="#ef4444" size={26} />
         </View>
+
+        <Text
+          style={{
+            color: colors.text,
+            fontSize: 24,
+            fontWeight: "900",
+            textAlign: "center",
+            letterSpacing: -0.4,
+          }}
+        >
+          {t("detail.failed.title")}
+        </Text>
 
         <View
           style={{
             gap: 4,
             zIndex: 3,
-            backgroundColor:
-              colors.background === "#0B0B0C"
-                ? "rgba(11,11,12,0.72)"
-                : "rgba(255,255,255,0.72)",
-            borderColor:
-              colors.background === "#0B0B0C"
-                ? "rgba(255,255,255,0.08)"
-                : "rgba(255,255,255,0.72)",
+            
+            backgroundColor: readableSurface,
+            borderColor: readableBorder,
             borderWidth: 1,
             borderRadius: 20,
             paddingVertical: 14,
             paddingHorizontal: 14,
           }}
         >
-          <Text
-            style={{
-              color: colors.text,
-              fontSize: 24,
-              fontWeight: "900",
-              textAlign: "center",
-              zIndex: 1
-            }}
-          >
-            {t("detail.failed.title")}
-          </Text>
 
           <Text
             style={{
-              color: colors.mutedText,
+              color: colors.text,
+              opacity: 0.72,
               lineHeight: 21,
               textAlign: "center",
+              fontWeight: "600",
             }}
           >
             {t("detail.failed.description")}
@@ -130,9 +147,11 @@ export function FailedSetDetail({
           {set.errorMessage ? (
             <Text
               style={{
-                color: colors.mutedText,
+                color: colors.text,
+                opacity: 0.58,
                 lineHeight: 21,
                 textAlign: "center",
+                fontWeight: "500",
               }}
             >
               {set.errorMessage}
@@ -148,7 +167,7 @@ export function FailedSetDetail({
             borderRadius: 16,
             padding: 14,
             gap: 8,
-
+            zIndex: 3,
           }}
         >
           <Text style={{ color: colors.text, fontWeight: "800" }}>
@@ -178,6 +197,7 @@ export function FailedSetDetail({
             justifyContent: "center",
             gap: 8,
             opacity: isBusy ? 0.6 : 1,
+            zIndex: 3,
           }}
         >
           <Ionicons
@@ -212,6 +232,7 @@ export function FailedSetDetail({
             justifyContent: "center",
             gap: 8,
             opacity: isBusy ? 0.6 : 1,
+            zIndex: 3,
           }}
         >
           <Ionicons name="trash-outline" color="#ef4444" size={18} />
@@ -237,9 +258,9 @@ export function FailedSetDetail({
             borderWidth: 1,
             paddingVertical: 15,
             borderRadius: 16,
-            zIndex: 1,
             alignItems: "center",
             opacity: isBusy ? 0.6 : 1,
+            zIndex: 3,
           }}
         >
           <Text style={{ color: colors.text, fontWeight: "900" }}>
