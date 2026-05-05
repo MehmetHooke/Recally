@@ -36,15 +36,7 @@ export function FailedSetDetail({
   const imageSize = Math.min(width * 0.82, 340);
   const cardTopOffset = imageSize * 0.36;
 
-  const readableSurface =
-    colors.background === "#0B0B0C"
-      ? "rgba(11,11,12,0.72)"
-      : "rgba(255,255,255,0.72)";
 
-  const readableBorder =
-    colors.background === "#0B0B0C"
-      ? "rgba(255,255,255,0.08)"
-      : "rgba(255,255,255,0.72)";
 
   return (
     <ScrollView
@@ -82,7 +74,7 @@ export function FailedSetDetail({
           borderRadius: 28,
           padding: 24,
           marginTop: cardTopOffset,
-          gap: 18,
+          gap: 12,
           zIndex: 2,
           overflow: "hidden",
           position: "relative",
@@ -123,10 +115,7 @@ export function FailedSetDetail({
             gap: 4,
             zIndex: 3,
             
-            backgroundColor: readableSurface,
-            borderColor: readableBorder,
-            borderWidth: 1,
-            borderRadius: 20,
+
             paddingVertical: 14,
             paddingHorizontal: 14,
           }}
