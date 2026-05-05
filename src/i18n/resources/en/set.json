@@ -2,11 +2,19 @@
     "detail": {
         "backButton": "Go back",
         "failed": {
-            "title": "Video could not be processed",
-            "description": "This can sometimes happen because of video access, video length, or high AI demand.",
-            "savedLink": "Saved link",
+            "title": "Set could not be created",
+            "description": "Something went wrong while processing this content. You can try again with the same content.",
+            "savedLink": "Saved content",
             "retryButton": "Try again",
-            "moveBack": "Back to page"
+            "retryingButton": "Trying again...",
+            "deleteButton": "Delete set",
+            "deletingButton": "Deleting...",
+            "moveBack": "Go back",
+            "retryErrorTitle": "Retry failed",
+            "retryFailedMessage": "Could not start a new process for this content.",
+            "missingSourceMessage": "The source content for this set could not be found.",
+            "deleteErrorTitle": "Could not delete set",
+            "deleteFailedMessage": "Something went wrong while deleting the set."
         },
         "errors": {
             "setNotFound": "Set not found",

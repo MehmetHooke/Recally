@@ -3,10 +3,18 @@
         "backButton": "Geri dön",
         "failed": {
             "title": "Video işlenemedi",
-            "description": "Bu bazen video erişimi, uzunluk veya AI yoğunluğundan olabilir.",
+            "description": "Bu içerik işlenirken bir sorun oluştu. İstersen aynı içerikle tekrar deneyebilirsin.",
             "savedLink": "Kaydedilen link",
             "retryButton": "Tekrar dene",
-            "moveBack": "Geri dön"
+            "retryingButton": "Tekrar deneniyor...",
+            "moveBack": "Geri dön",
+            "deleteButton": "Sil",
+            "deletingButton": "Siliniyor...",
+            "retryErrorTitle": "Tekrar denenemedi",
+            "retryFailedMessage": "Bu içerik için tekrar işlem başlatılamadı.",
+            "missingSourceMessage": "Bu setin kaynak içeriği bulunamadı.",
+            "deleteErrorTitle": "Set silinemedi",
+            "deleteFailedMessage": "Set silinirken bir sorun oluştu."
         },
         "errors": {
             "setNotFound": "Set bulunamadı",

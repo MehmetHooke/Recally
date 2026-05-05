@@ -3,20 +3,40 @@ import type { StudySet } from "@/src/types/study-set";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useTranslation } from "react-i18next";
-import { Pressable, Text, View } from "react-native";
+import { Image, Pressable, ScrollView, Text, View } from "react-native";
 
-export function FailedSetDetail({ set }: { set: StudySet }) {
+type Props = {
+  set: StudySet;
+  onRetry: () => void;
+  onDelete: () => void;
+  retrying?: boolean;
+  deleting?: boolean;
+};
+
+export function FailedSetDetail({
+  set,
+  onRetry,
+  onDelete,
+  retrying = false,
+  deleting = false,
+}: Props) {
   const { colors } = useAppTheme();
   const { t } = useTranslation("set");
 
+  const isBusy = retrying || deleting;
+
   return (
-    <View
+    <ScrollView
       style={{
         flex: 1,
         backgroundColor: colors.background,
+      }}
+      contentContainerStyle={{
+        flexGrow: 1,
         padding: 20,
         justifyContent: "center",
       }}
+      showsVerticalScrollIndicator={false}
     >
       <View
         style={{
@@ -28,8 +48,18 @@ export function FailedSetDetail({ set }: { set: StudySet }) {
           gap: 18,
         }}
       >
+        <Image
+          source={require("@/src/assets/images/failedChartecter.png")}
+          resizeMode="contain"
+          style={{
+            width: "100%",
+            height: 190,
+          }}
+        />
+
         <View
           style={{
+            alignSelf: "center",
             width: 56,
             height: 56,
             borderRadius: 18,
@@ -47,6 +77,7 @@ export function FailedSetDetail({ set }: { set: StudySet }) {
               color: colors.text,
               fontSize: 24,
               fontWeight: "900",
+              textAlign: "center",
             }}
           >
             {t("detail.failed.title")}
@@ -56,6 +87,7 @@ export function FailedSetDetail({ set }: { set: StudySet }) {
             style={{
               color: colors.mutedText,
               lineHeight: 21,
+              textAlign: "center",
             }}
           >
             {t("detail.failed.description")}
@@ -66,6 +98,7 @@ export function FailedSetDetail({ set }: { set: StudySet }) {
               style={{
                 color: colors.mutedText,
                 lineHeight: 21,
+                textAlign: "center",
               }}
             >
               {set.errorMessage}
@@ -87,13 +120,20 @@ export function FailedSetDetail({ set }: { set: StudySet }) {
             {t("detail.failed.savedLink")}
           </Text>
 
-          <Text style={{ color: colors.mutedText, lineHeight: 20 }}>
+          <Text
+            numberOfLines={4}
+            style={{
+              color: colors.mutedText,
+              lineHeight: 20,
+            }}
+          >
             {set.sourceText}
           </Text>
         </View>
 
         <Pressable
-          onPress={() => router.replace("/(tabs)/add")}
+          onPress={onRetry}
+          disabled={isBusy}
           style={{
             backgroundColor: colors.primary,
             paddingVertical: 15,
@@ -102,6 +142,7 @@ export function FailedSetDetail({ set }: { set: StudySet }) {
             flexDirection: "row",
             justifyContent: "center",
             gap: 8,
+            opacity: isBusy ? 0.6 : 1,
           }}
         >
           <Ionicons
@@ -109,18 +150,52 @@ export function FailedSetDetail({ set }: { set: StudySet }) {
             color={colors.primaryForeground}
             size={18}
           />
+
           <Text
             style={{
               color: colors.primaryForeground,
               fontWeight: "900",
             }}
           >
-            {t("detail.failed.retryButton")}
+            {retrying
+              ? t("detail.failed.retryingButton")
+              : t("detail.failed.retryButton")}
+          </Text>
+        </Pressable>
+
+        <Pressable
+          onPress={onDelete}
+          disabled={isBusy}
+          style={{
+            backgroundColor: "rgba(239,68,68,0.10)",
+            borderColor: "rgba(239,68,68,0.22)",
+            borderWidth: 1,
+            paddingVertical: 15,
+            borderRadius: 16,
+            alignItems: "center",
+            flexDirection: "row",
+            justifyContent: "center",
+            gap: 8,
+            opacity: isBusy ? 0.6 : 1,
+          }}
+        >
+          <Ionicons name="trash-outline" color="#ef4444" size={18} />
+
+          <Text
+            style={{
+              color: "#ef4444",
+              fontWeight: "900",
+            }}
+          >
+            {deleting
+              ? t("detail.failed.deletingButton")
+              : t("detail.failed.deleteButton")}
           </Text>
         </Pressable>
 
         <Pressable
           onPress={() => router.replace("/(tabs)/add")}
+          disabled={isBusy}
           style={{
             backgroundColor: colors.background,
             borderColor: colors.border,
@@ -128,6 +203,7 @@ export function FailedSetDetail({ set }: { set: StudySet }) {
             paddingVertical: 15,
             borderRadius: 16,
             alignItems: "center",
+            opacity: isBusy ? 0.6 : 1,
           }}
         >
           <Text style={{ color: colors.text, fontWeight: "900" }}>
@@ -135,6 +211,6 @@ export function FailedSetDetail({ set }: { set: StudySet }) {
           </Text>
         </Pressable>
       </View>
-    </View>
+    </ScrollView>
   );
 }
