@@ -123,7 +123,14 @@
             "doneBadge": "Ready",
             "progressLabel": "{{progress}}%",
             "reviewCta": "Review now",
-            "openCta": "Open set"
+            "openCta": "Open set",
+            "failedTitle": "Content could not be created",
+            "processingTitle": "Preparing content",
+            "failedMeta": "Processing failed. You can try again.",
+            "processingMeta": "Your cards are being prepared...",
+            "failedBadge": "Failed",
+            "failedProgressLabel": "Process could not be completed",
+            "fixCta": "Open issue"
         },
         "weakSpot": {
             "title": "Weak Spot",
@@ -196,7 +203,6 @@
             "dueBadge": "{{count}} due",
             "masteredBadge": "{{progress}}% mastered",
             "cta": "Read summary and test yourself →",
-
             "failedTitle": "Set creation failed",
             "processingTitle": "Video is being prepared...",
             "failedDescription": "Something went wrong while processing this content. You can try again.",

@@ -118,7 +118,14 @@
             "doneBadge": "Hazır",
             "progressLabel": "%{{progress}}",
             "reviewCta": "Şimdi tekrar et",
-            "openCta": "Seti aç"
+            "openCta": "Seti aç",
+            "failedTitle": "İçerik oluşturulamadı",
+            "processingTitle": "İçerik hazırlanıyor",
+            "failedMeta": "İşlem başarısız oldu. Tekrar deneyebilirsin.",
+            "processingMeta": "Kartların hazırlanıyor...",
+            "failedBadge": "Hata",
+            "failedProgressLabel": "İşlem tamamlanamadı",
+            "fixCta": "Sorunu aç"
         },
         "stats": {
             "sets": "Set",
@@ -196,7 +203,6 @@
             "dueBadge": "{{count}} bekleyen",
             "masteredBadge": "%{{progress}} tamamlandı",
             "cta": "Özeti oku ve test et →",
-
             "failedTitle": "Set oluşturulamadı",
             "processingTitle": "Video hazırlanıyor...",
             "failedDescription": "Bu içerik işlenirken bir sorun oluştu. Lütfen tekrar deneyebilirsin.",

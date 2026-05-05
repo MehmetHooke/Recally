@@ -227,14 +227,23 @@ function ContinueSetCard({
 
   const setWithOptionalFields = set as SetItem & {
     sourceType?: "youtube" | "text" | "pdf" | string;
+    status?: "processing" | "completed" | "failed" | string;
     totalCards?: number;
     cardCount?: number;
   };
 
   const hasDue = dueCards > 0;
   const sourceType = setWithOptionalFields.sourceType;
+  const status = setWithOptionalFields.status;
+  const isFailed = status === "failed";
+  const isProcessing = status === "processing";
   const totalCards =
     setWithOptionalFields.totalCards ?? setWithOptionalFields.cardCount ?? 0;
+  const displayTitle = isFailed
+    ? t("home.continue.failedTitle")
+    : isProcessing
+      ? t("home.continue.processingTitle")
+      : set.title;
 
   const sourceIcon =
     sourceType === "youtube"
@@ -243,25 +252,38 @@ function ContinueSetCard({
         ? "document-text"
         : "layers";
 
-  const sourceColor =
-    sourceType === "youtube" ? colors.danger : colors.primary;
+  const sourceColor = isFailed
+    ? colors.danger
+    : sourceType === "youtube"
+      ? colors.danger
+      : colors.primary;
 
-  const sourceBackground =
-    sourceType === "youtube" ? colors.dangerSoft : colors.primarySoft;
+  const sourceBackground = isFailed
+    ? colors.dangerSoft
+    : sourceType === "youtube"
+      ? colors.dangerSoft
+      : colors.primarySoft;
 
-  const metaText =
-    totalCards > 0
-      ? t("home.continue.cardMeta", { count: totalCards })
-      : hasDue
-        ? t("home.continue.dueMeta", { count: dueCards })
-        : t("home.continue.noDueMeta");
+  const metaText = isFailed
+    ? t("home.continue.failedMeta")
+    : isProcessing
+      ? t("home.continue.processingMeta")
+      : totalCards > 0
+        ? t("home.continue.cardMeta", { count: totalCards })
+        : hasDue
+          ? t("home.continue.dueMeta", { count: dueCards })
+          : t("home.continue.noDueMeta");
 
   return (
     <Pressable
       onPress={onPress}
       style={({ pressed }) => ({
         backgroundColor: colors.background,
-        borderColor: hasDue ? alpha(colors.primary, 0.28) : colors.border,
+        borderColor: isFailed
+          ? alpha(colors.danger, 0.28)
+          : hasDue
+            ? alpha(colors.primary, 0.28)
+            : colors.border,
         borderWidth: 1,
         borderRadius: 20,
         padding: 14,
@@ -302,7 +324,7 @@ function ContinueSetCard({
             }}
             numberOfLines={1}
           >
-            {set.title}
+            {displayTitle}
           </Text>
 
           <Text
@@ -320,8 +342,16 @@ function ContinueSetCard({
 
         <View
           style={{
-            backgroundColor: hasDue ? colors.primarySoft : colors.card,
-            borderColor: hasDue ? alpha(colors.primary, 0.22) : colors.border,
+            backgroundColor: isFailed
+              ? colors.dangerSoft
+              : hasDue
+                ? colors.primarySoft
+                : colors.card,
+            borderColor: isFailed
+              ? alpha(colors.danger, 0.22)
+              : hasDue
+                ? alpha(colors.primary, 0.22)
+                : colors.border,
             borderWidth: 1,
             borderRadius: 999,
             paddingHorizontal: 10,
@@ -330,14 +360,20 @@ function ContinueSetCard({
         >
           <Text
             style={{
-              color: hasDue ? colors.primary : colors.mutedText,
+              color: isFailed
+                ? colors.danger
+                : hasDue
+                  ? colors.primary
+                  : colors.mutedText,
               fontSize: 11,
               fontWeight: "900",
             }}
           >
-            {hasDue
-              ? t("home.continue.dueBadge", { count: dueCards })
-              : t("home.continue.doneBadge")}
+            {isFailed
+              ? t("home.continue.failedBadge")
+              : hasDue
+                ? t("home.continue.dueBadge", { count: dueCards })
+                : t("home.continue.doneBadge")}
           </Text>
         </View>
       </View>
@@ -358,9 +394,11 @@ function ContinueSetCard({
               fontWeight: "800",
             }}
           >
-            {t("home.continue.progressLabel", {
-              progress: reviewProgress,
-            })}
+            {isFailed
+              ? t("home.continue.failedProgressLabel")
+              : t("home.continue.progressLabel", {
+                progress: reviewProgress,
+              })}
           </Text>
         </View>
 
@@ -376,7 +414,11 @@ function ContinueSetCard({
             style={{
               width: `${reviewProgress}%`,
               height: "100%",
-              backgroundColor: hasDue ? colors.primary : colors.success,
+              backgroundColor: isFailed
+                ? colors.danger
+                : hasDue
+                  ? colors.primary
+                  : colors.success,
               borderRadius: 999,
             }}
           />
@@ -396,14 +438,20 @@ function ContinueSetCard({
       >
         <Text
           style={{
-            color: hasDue ? colors.primary : colors.text,
+            color: isFailed
+              ? colors.danger
+              : hasDue
+                ? colors.primary
+                : colors.text,
             fontWeight: "900",
             fontSize: 14,
           }}
         >
-          {hasDue
-            ? t("home.continue.reviewCta")
-            : t("home.continue.openCta")}
+          {isFailed
+            ? t("home.continue.fixCta")
+            : hasDue
+              ? t("home.continue.reviewCta")
+              : t("home.continue.openCta")}
         </Text>
 
         <View
@@ -411,7 +459,7 @@ function ContinueSetCard({
             width: 34,
             height: 34,
             borderRadius: 999,
-            backgroundColor: hasDue ? colors.primary : colors.card,
+            backgroundColor: hasDue ? colors.primary : colors.danger,
             alignItems: "center",
             justifyContent: "center",
             borderWidth: hasDue ? 0 : 1,
@@ -419,9 +467,9 @@ function ContinueSetCard({
           }}
         >
           <Ionicons
-            name={hasDue ? "play" : "chevron-forward"}
+            name={isFailed ? "chevron-forward" : hasDue ? "play" : "chevron-forward"}
+            color={isFailed || hasDue ? colors.primaryForeground : colors.mutedText}
             size={16}
-            color={hasDue ? colors.primaryForeground : colors.mutedText}
           />
         </View>
       </View>
