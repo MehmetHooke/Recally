@@ -38,6 +38,22 @@ export function FailedSetDetail({
       }}
       showsVerticalScrollIndicator={false}
     >
+      <Image
+        source={require("@/src/assets/images/failedChartecter.png")}
+        resizeMode="contain"
+
+        style={{
+          position: "absolute",
+          top: -5,
+          right: -16,
+          width: 330,
+          height: 330,
+          
+          zIndex: 2,
+
+        }}
+      />
+
       <View
         style={{
           backgroundColor: colors.card,
@@ -45,39 +61,57 @@ export function FailedSetDetail({
           borderWidth: 1,
           borderRadius: 28,
           padding: 24,
+          marginTop:120,
           gap: 18,
+          zIndex:2,
+          overflow: "hidden",
+          position: "relative",
+          
         }}
       >
-        <Image
-          source={require("@/src/assets/images/failedChartecter.png")}
-          resizeMode="contain"
-          style={{
-            width: "100%",
-            height: 190,
-          }}
-        />
-
         <View
           style={{
-            alignSelf: "center",
+            position:"absolute",
+            top:10,
+            left:10,
+            zIndex:4,
             width: 56,
             height: 56,
             borderRadius: 18,
             backgroundColor: "rgba(239,68,68,0.12)",
             alignItems: "center",
             justifyContent: "center",
+
           }}
         >
           <Ionicons name="warning-outline" color="#ef4444" size={26} />
         </View>
 
-        <View style={{ gap: 8 }}>
+        <View
+          style={{
+            gap: 4,
+            zIndex: 3,
+            backgroundColor:
+              colors.background === "#0B0B0C"
+                ? "rgba(11,11,12,0.72)"
+                : "rgba(255,255,255,0.72)",
+            borderColor:
+              colors.background === "#0B0B0C"
+                ? "rgba(255,255,255,0.08)"
+                : "rgba(255,255,255,0.72)",
+            borderWidth: 1,
+            borderRadius: 20,
+            paddingVertical: 14,
+            paddingHorizontal: 14,
+          }}
+        >
           <Text
             style={{
               color: colors.text,
               fontSize: 24,
               fontWeight: "900",
               textAlign: "center",
+              zIndex: 1
             }}
           >
             {t("detail.failed.title")}
@@ -114,6 +148,7 @@ export function FailedSetDetail({
             borderRadius: 16,
             padding: 14,
             gap: 8,
+
           }}
         >
           <Text style={{ color: colors.text, fontWeight: "800" }}>
@@ -202,6 +237,7 @@ export function FailedSetDetail({
             borderWidth: 1,
             paddingVertical: 15,
             borderRadius: 16,
+            zIndex: 1,
             alignItems: "center",
             opacity: isBusy ? 0.6 : 1,
           }}
