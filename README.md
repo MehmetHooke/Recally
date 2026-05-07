@@ -161,20 +161,17 @@ At a high level:
 
 ## Screenshots
 
-### Home
-![Home Screen](./global/home.png)
+| Home | Create |
+| --- | --- |
+| <img src="./global/home.png" alt="Home Screen" width="260" /> | <img src="./global/create.png" alt="Create Screen" width="260" /> |
 
-### Create
-![Create Screen](./global/create.png)
+| Library | Set Detail |
+| --- | --- |
+| <img src="./global/library.png" alt="Library Screen" width="260" /> | <img src="./global/setDetail.png" alt="Set Detail Screen" width="260" /> |
 
-### Library
-![Library Screen](./global/library.png)
-
-### Set Detail
-![Set Detail Screen](./global/setDetail.png)
-
-### Settings
-![Settings Screen](./global/settings.png)
+| Settings | |
+| --- | --- |
+| <img src="./global/settings.png" alt="Settings Screen" width="260" /> |  |
 
 ## Project Structure
 
